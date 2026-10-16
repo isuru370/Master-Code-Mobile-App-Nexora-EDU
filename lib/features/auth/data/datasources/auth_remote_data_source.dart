@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -35,7 +36,7 @@ class AuthRemoteDataSource {
       if (response.statusCode == 200) {
         final result = LoginResponseModel.fromJson(data);
 
-        await SessionStorage.saveAuth(token: result.token, user: result.user);
+        await SessionStorage.saveSession(result);
 
         return result;
       }
@@ -52,6 +53,60 @@ class AuthRemoteDataSource {
     } catch (e) {
       debugPrint('LOGIN ERROR: $e');
       rethrow;
+    }
+  }
+
+    /// GET /api/me - checks the saved token and refreshes the saved
+  /// role / branches. Throws:
+  ///   UnauthorizedException - token expired or logged out (401)
+  ///   ServerException       - account / role inactive etc. (403) or server error
+  ///   NetworkException      - no internet / server not reachable
+  Future<LoginResponseModel> me() async {
+    final token = await SessionStorage.getToken();
+
+    if (token == null || token.trim().isEmpty) {
+      throw const UnauthorizedException('Not logged in');
+    }
+
+    try {
+      final response = await http
+          .get(
+            Uri.parse(ApiConstants.me),
+            headers: ApiConstants.headers(token: token),
+          )
+          .timeout(const Duration(seconds: 10));
+
+      debugPrint('ME RESPONSE CODE: ${response.statusCode}');
+
+      Map<String, dynamic> data = {};
+      try {
+        final decoded = jsonDecode(response.body);
+        if (decoded is Map<String, dynamic>) {
+          data = decoded;
+        }
+      } catch (_) {}
+
+      final serverMessage = (data['message'] ?? 'Something went wrong')
+          .toString();
+
+      if (response.statusCode == 200) {
+        final result = LoginResponseModel.fromJson(data);
+
+        // /me has no token - the saved token is kept
+        await SessionStorage.saveSession(result);
+
+        return result;
+      }
+
+      if (response.statusCode == 401) {
+        throw UnauthorizedException(serverMessage);
+      }
+
+      throw ServerException(serverMessage, response.statusCode);
+    } on http.ClientException {
+      throw const NetworkException('No internet connection');
+    } on TimeoutException {
+      throw const NetworkException('Server is not responding');
     }
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/storage/session_storage.dart';
+import '../../../../core/navigation/role_router.dart';
 import '../bloc/auth/auth_bloc.dart';
 
 class SigninPage extends StatefulWidget {
@@ -87,19 +88,15 @@ class _SigninPageState extends State<SigninPage> {
               final user = state.userModel;
 
               final role = user.userType?.code.toUpperCase() ?? '';
+              final route = RoleRouter.homeRouteFor(role);
 
               debugPrint('LOGIN ROLE: $role');
 
-              if (role == 'TEACHER') {
+              if (route != null) {
+                // SUPER_ADMIN / ADMIN / BRANCH_ADMIN / USER -> /dashboard
+                // TEACHER -> /teacher-dashboard
                 Navigator.of(context).pushReplacementNamed(
-                  '/teacher-dashboard',
-                  arguments: {'token': state.token, 'user_model': user},
-                );
-              } else if (role == 'ADMIN' ||
-                  role == 'SUPER_ADMIN' ||
-                  role == 'USER') {
-                Navigator.of(context).pushReplacementNamed(
-                  '/dashboard',
+                  route,
                   arguments: {'token': state.token, 'user_model': user},
                 );
               } else {

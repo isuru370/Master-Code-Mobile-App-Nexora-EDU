@@ -28,3 +28,12 @@ final class MobileDashboardError extends MobileDashboardState {
   @override
   List<Object> get props => [message];
 }
+/// 401 from the server: the saved token is no longer valid.
+final class MobileDashboardSessionExpired extends MobileDashboardState {
+  final String message;
+
+  const MobileDashboardSessionExpired(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
