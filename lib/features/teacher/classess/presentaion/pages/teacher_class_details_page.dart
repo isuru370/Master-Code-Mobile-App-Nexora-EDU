@@ -198,7 +198,7 @@ class TeacherClassDetailsPage extends StatelessWidget {
             height: 50,
 
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(.15),
+              color: Colors.white.withValues(alpha: .15),
               borderRadius: BorderRadius.circular(14),
             ),
 
@@ -239,7 +239,7 @@ class TeacherClassDetailsPage extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
 
             style: TextStyle(
-              color: Colors.white.withOpacity(.80),
+              color: Colors.white.withValues(alpha: .80),
               fontSize: 13,
               fontWeight: FontWeight.w500,
             ),
@@ -258,7 +258,7 @@ class TeacherClassDetailsPage extends StatelessWidget {
             ),
 
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(.14),
+              color: Colors.white.withValues(alpha: .14),
               borderRadius: BorderRadius.circular(20),
             ),
 

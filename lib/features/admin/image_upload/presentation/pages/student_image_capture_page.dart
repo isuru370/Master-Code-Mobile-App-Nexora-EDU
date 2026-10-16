@@ -354,7 +354,7 @@ class _StudentImageCapturePageState extends State<StudentImageCapturePage> {
                                   color: AppColors.successLight,
                                   borderRadius: AppColors.radiusLarge,
                                   border: Border.all(
-                                    color: AppColors.success.withOpacity(0.30),
+                                    color: AppColors.success.withValues(alpha: 0.30),
                                   ),
                                 ),
                                 child: Column(
@@ -393,7 +393,7 @@ class _StudentImageCapturePageState extends State<StudentImageCapturePage> {
                 ),
                 if (_isUploading)
                   Container(
-                    color: Colors.black.withOpacity(0.35),
+                    color: Colors.black.withValues(alpha: 0.35),
                     child: Center(
                       child: Container(
                         padding: const EdgeInsets.all(24),

@@ -298,7 +298,7 @@ class _DashboardPageState extends State<DashboardPage> {
             leading: Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: color.withOpacity(.12),
+                color: color.withValues(alpha: .12),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Icon(icon, color: color),
@@ -430,7 +430,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   width: 90,
                   height: 90,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(.1),
+                    color: AppColors.primary.withValues(alpha: .1),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -709,7 +709,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               vertical: 3,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(.18),
+                              color: Colors.white.withValues(alpha: .18),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
@@ -1312,7 +1312,7 @@ class _DashboardPageState extends State<DashboardPage> {
         borderRadius: BorderRadius.circular(34),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xff2563EB).withOpacity(.25),
+            color: const Color(0xff2563EB).withValues(alpha: .25),
             blurRadius: 30,
             offset: const Offset(0, 14),
           ),
@@ -1372,9 +1372,9 @@ class _DashboardPageState extends State<DashboardPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.10),
+        color: Colors.white.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -1406,7 +1406,7 @@ class _DashboardPageState extends State<DashboardPage> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(.04),
+            color: Colors.black.withValues(alpha: .04),
             blurRadius: 18,
             offset: const Offset(0, 8),
           ),
@@ -1418,7 +1418,7 @@ class _DashboardPageState extends State<DashboardPage> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: color.withOpacity(.10),
+              color: color.withValues(alpha: .10),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Icon(icon, color: color),
@@ -1497,10 +1497,10 @@ class _QuickActionCard extends StatelessWidget {
         child: Ink(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [color.withOpacity(.12), color.withOpacity(.03)],
+              colors: [color.withValues(alpha: .12), color.withValues(alpha: .03)],
             ),
             borderRadius: BorderRadius.circular(26),
-            border: Border.all(color: color.withOpacity(.12)),
+            border: Border.all(color: color.withValues(alpha: .12)),
           ),
           child: Padding(
             padding: const EdgeInsets.all(10),
@@ -1551,12 +1551,12 @@ class _StatCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 18,
             offset: const Offset(0, 8),
           ),
         ],
-        border: Border.all(color: Colors.grey.withOpacity(0.08)),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.08)),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -1565,7 +1565,7 @@ class _StatCard extends StatelessWidget {
             width: 46,
             height: 46,
             decoration: BoxDecoration(
-              color: color.withOpacity(0.12),
+              color: color.withValues(alpha: 0.12),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: color, size: 24),

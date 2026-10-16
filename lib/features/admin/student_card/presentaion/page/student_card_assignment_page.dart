@@ -287,7 +287,7 @@ class _StudentCardAssignmentPageState extends State<StudentCardAssignmentPage> {
              */
             if (loading)
               Container(
-                color: Colors.black.withOpacity(0.4),
+                color: Colors.black.withValues(alpha: 0.4),
                 child: const Center(
                   child: Card(
                     elevation: 8,
@@ -322,7 +322,7 @@ class _StudentCardAssignmentPageState extends State<StudentCardAssignmentPage> {
              */
             if (_isScanning)
               Container(
-                color: Colors.black.withOpacity(0.6),
+                color: Colors.black.withValues(alpha: 0.6),
                 child: Center(
                   child: Card(
                     elevation: 8,
@@ -361,7 +361,7 @@ class _StudentCardAssignmentPageState extends State<StudentCardAssignmentPage> {
                                 height: 250,
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                    color: Colors.white.withOpacity(0.8),
+                                    color: Colors.white.withValues(alpha: 0.8),
                                     width: 3,
                                   ),
                                   borderRadius: BorderRadius.circular(12),

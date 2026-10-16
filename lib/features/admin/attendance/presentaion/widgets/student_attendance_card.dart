@@ -30,7 +30,7 @@ class StudentAttendanceCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.08),
+              color: Colors.grey.withValues(alpha: 0.08),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -50,7 +50,7 @@ class StudentAttendanceCard extends StatelessWidget {
                     width: 28,
                     height: 28,
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.1),
+                      color: AppColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Center(
@@ -178,9 +178,9 @@ class StudentAttendanceCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(0.05),
+                    color: Colors.blue.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.blue.withOpacity(0.1)),
+                    border: Border.all(color: Colors.blue.withValues(alpha: 0.1)),
                   ),
                   child: Row(
                     children: [
@@ -216,10 +216,10 @@ class StudentAttendanceCard extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.orange.withOpacity(0.1),
+                            color: Colors.orange.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
-                              color: Colors.orange.withOpacity(0.2),
+                              color: Colors.orange.withValues(alpha: 0.2),
                             ),
                           ),
                           child: Row(
@@ -328,13 +328,13 @@ class StudentAttendanceCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: isPresent
-            ? Colors.green.withOpacity(0.08)
-            : Colors.red.withOpacity(0.08),
+            ? Colors.green.withValues(alpha: 0.08)
+            : Colors.red.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isPresent
-              ? Colors.green.withOpacity(0.2)
-              : Colors.red.withOpacity(0.2),
+              ? Colors.green.withValues(alpha: 0.2)
+              : Colors.red.withValues(alpha: 0.2),
         ),
       ),
       child: Row(
@@ -365,13 +365,13 @@ class StudentAttendanceCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: isPaid
-            ? Colors.blue.withOpacity(0.08)
-            : Colors.orange.withOpacity(0.08),
+            ? Colors.blue.withValues(alpha: 0.08)
+            : Colors.orange.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isPaid
-              ? Colors.blue.withOpacity(0.2)
-              : Colors.orange.withOpacity(0.2),
+              ? Colors.blue.withValues(alpha: 0.2)
+              : Colors.orange.withValues(alpha: 0.2),
         ),
       ),
       child: Row(
@@ -403,13 +403,13 @@ class StudentAttendanceCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: isEnrolled
-            ? Colors.teal.withOpacity(0.1)
-            : Colors.red.withOpacity(0.1),
+            ? Colors.teal.withValues(alpha: 0.1)
+            : Colors.red.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isEnrolled
-              ? Colors.teal.withOpacity(0.2)
-              : Colors.red.withOpacity(0.2),
+              ? Colors.teal.withValues(alpha: 0.2)
+              : Colors.red.withValues(alpha: 0.2),
         ),
       ),
       child: Row(
@@ -594,7 +594,7 @@ class StudentAttendanceCard extends StatelessWidget {
                         ),
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(
-                            color: Colors.orange.withOpacity(0.4),
+                            color: Colors.orange.withValues(alpha: 0.4),
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 13),
                           shape: RoundedRectangleBorder(
@@ -633,8 +633,8 @@ class StudentAttendanceCard extends StatelessWidget {
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(
                           color: student.enrollmentStatus
-                              ? Colors.red.withOpacity(0.4)
-                              : Colors.grey.withOpacity(0.4),
+                              ? Colors.red.withValues(alpha: 0.4)
+                              : Colors.grey.withValues(alpha: 0.4),
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 13),
                         shape: RoundedRectangleBorder(
@@ -679,7 +679,7 @@ class StudentAttendanceCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.08),
+              color: AppColors.primary.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, size: 18, color: AppColors.primary),

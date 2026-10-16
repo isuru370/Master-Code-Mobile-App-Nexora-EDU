@@ -663,7 +663,7 @@ class _PaymentPageState extends State<PaymentPage> {
                       padding: const EdgeInsets.all(12),
                       margin: const EdgeInsets.only(bottom: 12),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.1),
+                        color: AppColors.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
@@ -849,7 +849,7 @@ class _PaymentPageState extends State<PaymentPage> {
                           ],
                         ),
                       );
-                    }).toList(),
+                    }),
 
                     const SizedBox(height: 12),
 
@@ -1136,7 +1136,7 @@ Widget _paymentStatusBadge(String status) {
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
     decoration: BoxDecoration(
-      color: color.withOpacity(0.1),
+      color: color.withValues(alpha: 0.1),
       borderRadius: BorderRadius.circular(999),
     ),
     child: Text(
@@ -1158,7 +1158,7 @@ Widget _premiumBadge({
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
     decoration: BoxDecoration(
-      color: color.withOpacity(.10),
+      color: color.withValues(alpha: .10),
       borderRadius: BorderRadius.circular(999),
     ),
     child: Row(

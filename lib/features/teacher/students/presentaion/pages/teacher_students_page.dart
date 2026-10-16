@@ -210,7 +210,7 @@ class _TeacherStudentsPageState extends State<TeacherStudentsPage> {
               width: 54,
               height: 54,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.16),
+                color: Colors.white.withValues(alpha: 0.16),
                 borderRadius: BorderRadius.circular(17),
               ),
               child: const Icon(
@@ -250,7 +250,7 @@ class _TeacherStudentsPageState extends State<TeacherStudentsPage> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.12),
+                color: Colors.white.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Column(
@@ -370,7 +370,7 @@ class _TeacherStudentsPageState extends State<TeacherStudentsPage> {
                         height: 32,
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? Colors.white.withOpacity(0.16)
+                              ? Colors.white.withValues(alpha: 0.16)
                               : AppColors.primaryLight,
                           borderRadius: BorderRadius.circular(10),
                         ),

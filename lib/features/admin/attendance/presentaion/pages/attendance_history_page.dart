@@ -267,7 +267,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                             height: 62,
 
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(.14),
+                              color: Colors.white.withValues(alpha: .14),
 
                               borderRadius: BorderRadius.circular(18),
                             ),
@@ -406,7 +406,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                                     height: 58,
 
                                     decoration: BoxDecoration(
-                                      color: statusColor.withOpacity(.12),
+                                      color: statusColor.withValues(alpha: .12),
 
                                       borderRadius: BorderRadius.circular(18),
                                     ),
@@ -481,7 +481,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                                     ),
 
                                     decoration: BoxDecoration(
-                                      color: statusColor.withOpacity(.12),
+                                      color: statusColor.withValues(alpha: .12),
 
                                       borderRadius: BorderRadius.circular(999),
                                     ),
@@ -557,11 +557,11 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
       padding: const EdgeInsets.all(16),
 
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(.12),
+        color: Colors.white.withValues(alpha: .12),
 
         borderRadius: BorderRadius.circular(22),
 
-        border: Border.all(color: Colors.white.withOpacity(.12)),
+        border: Border.all(color: Colors.white.withValues(alpha: .12)),
       ),
 
       child: Row(
@@ -571,7 +571,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
             height: 42,
 
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(.10),
+              color: Colors.white.withValues(alpha: .10),
 
               borderRadius: BorderRadius.circular(14),
             ),
@@ -627,7 +627,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: color.withOpacity(.10),
+          color: color.withValues(alpha: .10),
           borderRadius: BorderRadius.circular(999),
         ),
         child: Row(

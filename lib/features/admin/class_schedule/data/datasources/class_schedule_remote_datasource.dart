@@ -101,8 +101,8 @@ class ClassScheduleRemoteDatasource {
         headers: ApiConstants.headers(token: token),
       );
 
-      print('CLASS SCHEDULE RESPONSE CODE: ${response.statusCode}');
-      print('CLASS SCHEDULE RESPONSE BODY: ${response.body}');
+      debugPrint('CLASS SCHEDULE RESPONSE CODE: ${response.statusCode}');
+      debugPrint('CLASS SCHEDULE RESPONSE BODY: ${response.body}');
 
       if (response.statusCode == 200) {
         return ClassScheduleResponseModel.fromJson(jsonDecode(response.body));

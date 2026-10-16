@@ -1,7 +1,7 @@
 import 'package:get_it/get_it.dart';
 
 import '../data/datasources/read_payment_remote_datasource.dart';
-import '../data/repository/read_payment_repositoryImpl.dart';
+import '../data/repository/read_payment_repository_impl.dart';
 import '../domain/repositories/read_payment_repository.dart';
 import '../domain/usecases/read_payment_usecase.dart';
 import '../presentation/bloc/read_payment/read_payment_bloc.dart';

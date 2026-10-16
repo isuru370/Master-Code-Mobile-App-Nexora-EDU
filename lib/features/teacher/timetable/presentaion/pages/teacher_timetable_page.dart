@@ -374,7 +374,7 @@ class _TeacherTimetablePageState extends State<TeacherTimetablePage> {
                   width: 52,
                   height: 52,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.16),
+                    color: Colors.white.withValues(alpha: 0.16),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: const Icon(
@@ -436,7 +436,7 @@ class _TeacherTimetablePageState extends State<TeacherTimetablePage> {
 
             const SizedBox(height: 18),
 
-            Container(height: 1, color: Colors.white.withOpacity(0.14)),
+            Container(height: 1, color: Colors.white.withValues(alpha: 0.14)),
 
             const SizedBox(height: 15),
 
@@ -653,7 +653,7 @@ class _TeacherTimetablePageState extends State<TeacherTimetablePage> {
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: statusColor.withOpacity(0.25),
+                color: statusColor.withValues(alpha: 0.25),
                 blurRadius: 0,
                 spreadRadius: 4,
               ),
@@ -672,7 +672,7 @@ class _TeacherTimetablePageState extends State<TeacherTimetablePage> {
               borderRadius: AppColors.radiusMedium,
               border: Border.all(
                 color: item.isCancelled
-                    ? AppColors.danger.withOpacity(0.35)
+                    ? AppColors.danger.withValues(alpha: 0.35)
                     : AppColors.border,
               ),
               boxShadow: AppColors.softShadow,

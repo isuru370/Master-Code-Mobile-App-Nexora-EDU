@@ -1,7 +1,7 @@
-/// Models for the grouped sections of GET /api/mobile-dashboard.
-///
-/// Every fromJson is null-safe: a missing / wrong value becomes 0, '' or null,
-/// so an older backend never crashes the dashboard.
+// Models for the grouped sections of GET /api/mobile-dashboard.
+//
+// Every fromJson is null-safe: a missing / wrong value becomes 0, '' or null,
+// so an older backend never crashes the dashboard.
 
 /// Small safe JSON readers used by the dashboard models.
 class JsonRead {

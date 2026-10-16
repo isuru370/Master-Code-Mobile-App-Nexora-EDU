@@ -531,7 +531,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
+            color: AppColors.primary.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -558,7 +558,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                 width: 100,
                 height: 100,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
+                  color: Colors.white.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -570,7 +570,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                 width: 80,
                 height: 80,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
+                  color: Colors.white.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -582,7 +582,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: const Icon(
@@ -608,7 +608,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                         Text(
                           '${schedules.length} sessions in ${_getMonthNameFromType(_selectedMonthType)}',
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
                             fontSize: 12,
                           ),
                         ),
@@ -620,7 +620,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                               vertical: 3,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.green.withOpacity(0.3),
+                              color: Colors.green.withValues(alpha: 0.3),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
@@ -638,7 +638,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(
@@ -683,7 +683,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
+                    color: Colors.grey.withValues(alpha: 0.1),
                     blurRadius: 5,
                     offset: const Offset(0, 2),
                   ),
@@ -752,7 +752,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
               });
             },
             backgroundColor: Colors.white,
-            selectedColor: AppColors.primary.withOpacity(0.1),
+            selectedColor: AppColors.primary.withValues(alpha: 0.1),
             checkmarkColor: AppColors.primary,
             labelStyle: TextStyle(
               color: isSelected ? AppColors.primary : Colors.grey[700],
@@ -814,7 +814,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -888,9 +888,9 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: statusColor.withOpacity(0.1),
+                      color: statusColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: statusColor.withOpacity(0.3)),
+                      border: Border.all(color: statusColor.withValues(alpha: 0.3)),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -939,9 +939,9 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                   child: Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.red.withOpacity(0.05),
+                      color: Colors.red.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.red.withOpacity(0.2)),
+                      border: Border.all(color: Colors.red.withValues(alpha: 0.2)),
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1017,7 +1017,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          side: BorderSide(color: Colors.blue.withOpacity(0.5)),
+                          side: BorderSide(color: Colors.blue.withValues(alpha: 0.5)),
                         ),
                       ),
                     ),
@@ -1035,7 +1035,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          side: BorderSide(color: Colors.red.withOpacity(0.5)),
+                          side: BorderSide(color: Colors.red.withValues(alpha: 0.5)),
                         ),
                       ),
                     ),
@@ -1072,7 +1072,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.05),
+                    color: statusColor.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -1159,9 +1159,9 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.red.withOpacity(0.1),
+                        color: Colors.red.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.red.withOpacity(0.3)),
+                        border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
                       ),
                       child: const Row(
                         children: [

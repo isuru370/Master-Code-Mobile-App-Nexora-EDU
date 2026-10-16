@@ -219,7 +219,7 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
           // Loading Overlay for PDF Generation
           if (_isGeneratingPdf)
             Container(
-              color: Colors.black.withOpacity(0.5),
+              color: Colors.black.withValues(alpha: 0.5),
               child: const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -261,7 +261,7 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
+            color: AppColors.primary.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 4),
           ),
@@ -278,16 +278,16 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.white.withOpacity(0.2)),
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
                 ),
                 child: Row(
                   children: [
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: const Icon(
@@ -320,7 +320,7 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
                                   vertical: 4,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.2),
+                                  color: Colors.white.withValues(alpha: 0.2),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Row(
@@ -358,7 +358,7 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
                   Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(
@@ -372,7 +372,7 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
                     'Select a session to mark attendance',
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withValues(alpha: 0.9),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -418,7 +418,7 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -469,7 +469,7 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
                           end: Alignment.bottomRight,
                           colors: [
                             getStatusColor(),
-                            getStatusColor().withOpacity(0.7),
+                            getStatusColor().withValues(alpha: 0.7),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(12),
@@ -510,10 +510,10 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: getStatusColor().withOpacity(0.1),
+                        color: getStatusColor().withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: getStatusColor().withOpacity(0.3),
+                          color: getStatusColor().withValues(alpha: 0.3),
                         ),
                       ),
                       child: Text(
@@ -552,8 +552,8 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
                       ),
                       decoration: BoxDecoration(
                         color: isCompleted
-                            ? Colors.green.withOpacity(0.1)
-                            : Colors.orange.withOpacity(0.1),
+                            ? Colors.green.withValues(alpha: 0.1)
+                            : Colors.orange.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(

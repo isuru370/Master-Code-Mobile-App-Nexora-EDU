@@ -1,7 +1,7 @@
 import 'package:get_it/get_it.dart';
 
 import '../data/datasources/mark_payment_remote_data_source.dart';
-import '../data/repositories/mark_payment_repository_Impl.dart';
+import '../data/repositories/mark_payment_repository_impl.dart';
 import '../domain/repositories/mark_payment_repository.dart';
 import '../domain/usecases/get_payment_history_usecase.dart';
 import '../domain/usecases/get_today_payments_usecase.dart';

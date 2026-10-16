@@ -22,7 +22,7 @@ import '../../features/admin/students/core/read_student_injection.dart';
 import '../../features/admin/students/core/student_classes_injection.dart';
 import '../../features/admin/students/core/student_injection.dart';
 import '../../features/admin/today_classes/core/init_today_class_injection.dart';
-import '../../features/auth/core/auth_injection.dart' as authDI;
+import '../../features/auth/core/auth_injection.dart' as auth_di;
 import '../../features/teacher/classess/core/teacher_classes_injection.dart';
 import '../../features/teacher/dashboard/core/teacher_dashboard_injection.dart';
 import '../../features/teacher/students/core/teacher_student_injection.dart';
@@ -31,7 +31,7 @@ import '../../features/teacher/timetable/core/teacher_timetable_injection.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
-  await authDI.initAuthDI();
+  await auth_di.initAuthDI();
   await initStudentGradeDI();
   await initStudentDI();
   await initStudentClassesDI();

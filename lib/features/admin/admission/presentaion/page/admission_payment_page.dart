@@ -132,7 +132,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
                 width: 70,
                 height: 70,
                 decoration: BoxDecoration(
-                  color: AppColors.warning.withOpacity(0.1),
+                  color: AppColors.warning.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -290,7 +290,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
                     margin: const EdgeInsets.symmetric(horizontal: 20),
                     child: TabBar(
                       indicator: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(30),
                       ),
                       indicatorSize: TabBarIndicatorSize.tab,
@@ -425,9 +425,9 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.12),
+        color: Colors.white.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: Colors.white.withOpacity(0.18)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
       ),
       child: Column(
         children: [
@@ -506,7 +506,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
                 Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: AppColors.success.withOpacity(0.08),
+                    color: AppColors.success.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(18),
                   ),
                   child: const Icon(
@@ -564,7 +564,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
                   message: 'Reprint Receipt',
                   child: Container(
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.1),
+                      color: AppColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: IconButton(
@@ -758,7 +758,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
                 Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: AppColors.danger.withOpacity(0.08),
+                    color: AppColors.danger.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(18),
                   ),
                   child: const Icon(
@@ -804,7 +804,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.08),
+                color: AppColors.primary.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(22),
               ),
               child: Row(
@@ -897,7 +897,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.10),
+        color: color.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(100),
       ),
       child: Text(
@@ -915,7 +915,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
+        color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(22),
       ),
       child: Column(

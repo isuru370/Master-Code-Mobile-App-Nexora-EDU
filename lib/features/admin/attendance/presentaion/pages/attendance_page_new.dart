@@ -220,10 +220,10 @@ class _AttendancePageNewState extends State<AttendancePageNew> {
                         width: double.infinity,
                         padding: const EdgeInsets.all(14),
                         decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.08),
+                          color: Colors.blue.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(18),
                           border: Border.all(
-                            color: Colors.blue.withOpacity(0.18),
+                            color: Colors.blue.withValues(alpha: 0.18),
                           ),
                         ),
                         child: Row(
@@ -492,9 +492,9 @@ class _AttendancePageNewState extends State<AttendancePageNew> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.14),
+        color: Colors.white.withValues(alpha: 0.14),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: Colors.white.withOpacity(0.18)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -540,7 +540,7 @@ class _AttendancePageNewState extends State<AttendancePageNew> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.10),
+              color: color.withValues(alpha: 0.10),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Icon(icon, color: color, size: 20),
@@ -590,7 +590,7 @@ class _AttendancePageNewState extends State<AttendancePageNew> {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.10),
+                  color: AppColors.primary.withValues(alpha: 0.10),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(icon, color: AppColors.primary, size: 20),

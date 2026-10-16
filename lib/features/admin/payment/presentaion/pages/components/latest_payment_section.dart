@@ -26,8 +26,8 @@ class LatestPaymentSection extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: isPaid
-            ? Colors.green.withOpacity(0.08)
-            : Colors.red.withOpacity(0.08),
+            ? Colors.green.withValues(alpha: 0.08)
+            : Colors.red.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: isPaid ? Colors.green.shade300 : Colors.red.shade300,

@@ -229,7 +229,7 @@ class _StudentListPageState extends State<StudentListPage> {
                                       CircleAvatar(
                                         radius: 30,
                                         backgroundColor: AppColors.primary
-                                            .withOpacity(.1),
+                                            .withValues(alpha: .1),
 
                                         backgroundImage: student.imgUrl != null
                                             ? NetworkImage(student.imgUrl!)
@@ -297,7 +297,7 @@ class _StudentListPageState extends State<StudentListPage> {
 
                                             decoration: BoxDecoration(
                                               color: AppColors.primary
-                                                  .withOpacity(.08),
+                                                  .withValues(alpha: .08),
 
                                               borderRadius:
                                                   BorderRadius.circular(12),
