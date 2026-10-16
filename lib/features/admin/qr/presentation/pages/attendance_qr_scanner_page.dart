@@ -553,7 +553,7 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
                       (_attendanceSuccess
                               ? AppColors.success
                               : AppColors.primary)
-                          .withOpacity(0.4),
+                          .withValues(alpha: 0.4),
                   width: 1,
                 ),
                 borderRadius: BorderRadius.circular(8),
@@ -574,7 +574,7 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.7),
+          color: Colors.black.withValues(alpha: 0.7),
           borderRadius: BorderRadius.circular(30),
         ),
         child: Row(
@@ -603,7 +603,7 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: AppColors.success.withOpacity(0.9),
+          color: AppColors.success.withValues(alpha: 0.9),
           borderRadius: BorderRadius.circular(30),
         ),
         child: Row(
@@ -625,7 +625,7 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.blue.withOpacity(0.8),
+          color: Colors.blue.withValues(alpha: 0.8),
           borderRadius: BorderRadius.circular(30),
         ),
         child: Row(
@@ -646,7 +646,7 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.6),
+        color: Colors.black.withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(30),
       ),
       child: const Text(
@@ -915,7 +915,7 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
                 ),
                 decoration: BoxDecoration(
                   color: alreadyMarked
-                      ? AppColors.warning.withOpacity(0.12)
+                      ? AppColors.warning.withValues(alpha: 0.12)
                       : AppColors.successLight,
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -1181,12 +1181,12 @@ class _SummaryCard extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             blurRadius: 6,
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             offset: const Offset(0, 4),
           ),
         ],
         border: Border.all(
-          color: isPaid ? AppColors.success : color.withOpacity(0.15),
+          color: isPaid ? AppColors.success : color.withValues(alpha: 0.15),
           width: isPaid ? 2 : 1,
         ),
       ),
@@ -1196,7 +1196,7 @@ class _SummaryCard extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 14,
-            backgroundColor: (isPaid ? AppColors.success : color).withOpacity(
+            backgroundColor: (isPaid ? AppColors.success : color).withValues(alpha: 
               0.12,
             ),
             child: Icon(

@@ -237,7 +237,7 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
                             width: 62,
 
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(.14),
+                              color: Colors.white.withValues(alpha: .14),
 
                               borderRadius: BorderRadius.circular(18),
                             ),
@@ -416,7 +416,7 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
 
                                           decoration: BoxDecoration(
                                             color: AppColors.primary
-                                                .withOpacity(.10),
+                                                .withValues(alpha: .10),
 
                                             borderRadius: BorderRadius.circular(
                                               14,
@@ -567,11 +567,11 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
       padding: const EdgeInsets.all(16),
 
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(.12),
+        color: Colors.white.withValues(alpha: .12),
 
         borderRadius: BorderRadius.circular(22),
 
-        border: Border.all(color: Colors.white.withOpacity(.12)),
+        border: Border.all(color: Colors.white.withValues(alpha: .12)),
       ),
 
       child: Column(
@@ -613,7 +613,7 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
 
       decoration: BoxDecoration(
-        color: color.withOpacity(.10),
+        color: color.withValues(alpha: .10),
 
         borderRadius: BorderRadius.circular(999),
       ),

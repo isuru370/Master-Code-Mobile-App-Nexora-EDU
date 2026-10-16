@@ -216,7 +216,7 @@ class _TeacherClassesPageState extends State<TeacherClassesPage> {
                 height: 42,
 
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
 
@@ -281,7 +281,7 @@ class _TeacherClassesPageState extends State<TeacherClassesPage> {
             label,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.white.withOpacity(0.75),
+              color: Colors.white.withValues(alpha: 0.75),
               fontSize: 10,
               fontWeight: FontWeight.w500,
             ),
@@ -295,7 +295,7 @@ class _TeacherClassesPageState extends State<TeacherClassesPage> {
     return Container(
       width: 1,
       height: 35,
-      color: Colors.white.withOpacity(0.20),
+      color: Colors.white.withValues(alpha: 0.20),
     );
   }
 

@@ -376,7 +376,7 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(.10),
+                    color: AppColors.primary.withValues(alpha: .10),
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: const Icon(
@@ -690,7 +690,7 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
 
                   Switch(
                     value: _isStudentFreeCard,
-                    activeColor: AppColors.primary,
+                    activeThumbColor: AppColors.primary,
                     onChanged: _onFreeCardChanged,
                   ),
                 ],
@@ -749,16 +749,16 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(.06),
+        color: AppColors.primary.withValues(alpha: .06),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withOpacity(.15)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: .15)),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(.10),
+              color: AppColors.primary.withValues(alpha: .10),
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(
@@ -930,12 +930,12 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
         borderRadius: BorderRadius.circular(22),
         border: Border.all(
           color: isActive
-              ? Colors.green.withOpacity(0.20)
-              : Colors.red.withOpacity(0.20),
+              ? Colors.green.withValues(alpha: 0.20)
+              : Colors.red.withValues(alpha: 0.20),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.06),
+            color: Colors.grey.withValues(alpha: 0.06),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -964,8 +964,8 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
                 ),
                 decoration: BoxDecoration(
                   color: isActive
-                      ? Colors.green.withOpacity(0.12)
-                      : Colors.red.withOpacity(0.12),
+                      ? Colors.green.withValues(alpha: 0.12)
+                      : Colors.red.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -983,8 +983,8 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
               Container(
                 decoration: BoxDecoration(
                   color: isActive
-                      ? Colors.red.withOpacity(0.10)
-                      : Colors.green.withOpacity(0.10),
+                      ? Colors.red.withValues(alpha: 0.10)
+                      : Colors.green.withValues(alpha: 0.10),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: IconButton(
@@ -1133,9 +1133,9 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.red.withOpacity(0.08),
+        color: Colors.red.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.red.withOpacity(0.2)),
+        border: Border.all(color: Colors.red.withValues(alpha: 0.2)),
       ),
       child: Text(
         message,

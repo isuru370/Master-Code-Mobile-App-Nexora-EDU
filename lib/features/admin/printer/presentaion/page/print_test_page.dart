@@ -319,7 +319,7 @@ class _PrintTestPageState extends State<PrintTestPage> {
                     height: 64,
 
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(.12),
+                      color: Colors.white.withValues(alpha: .12),
 
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -402,7 +402,7 @@ class _PrintTestPageState extends State<PrintTestPage> {
                         padding: const EdgeInsets.all(10),
 
                         decoration: BoxDecoration(
-                          color: AppColors.info.withOpacity(.10),
+                          color: AppColors.info.withValues(alpha: .10),
 
                           borderRadius: BorderRadius.circular(14),
                         ),
@@ -664,7 +664,7 @@ class _PrintTestPageState extends State<PrintTestPage> {
                       height: 52,
 
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(.10),
+                        color: AppColors.primary.withValues(alpha: .10),
 
                         borderRadius: BorderRadius.circular(16),
                       ),

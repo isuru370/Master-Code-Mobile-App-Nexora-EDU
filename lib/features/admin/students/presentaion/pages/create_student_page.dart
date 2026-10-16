@@ -220,7 +220,7 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
                             width: 68,
                             height: 68,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(.14),
+                              color: Colors.white.withValues(alpha: .14),
                               borderRadius: BorderRadius.circular(22),
                             ),
                             child: const Icon(
@@ -246,7 +246,7 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
                                 Text(
                                   'Register and manage student records easily',
                                   style: TextStyle(
-                                    color: Colors.white.withOpacity(.82),
+                                    color: Colors.white.withValues(alpha: .82),
                                     height: 1.4,
                                   ),
                                 ),
@@ -476,7 +476,7 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
 
               if (_isLoading)
                 Container(
-                  color: Colors.black.withOpacity(.25),
+                  color: Colors.black.withValues(alpha: .25),
                   child: const Center(child: CircularProgressIndicator()),
                 ),
             ],

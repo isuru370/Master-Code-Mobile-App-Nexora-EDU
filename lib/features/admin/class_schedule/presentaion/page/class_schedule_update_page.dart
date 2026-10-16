@@ -260,18 +260,18 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
       );
 
       // Add debug print
-      print('=== UPDATE REQUEST ===');
-      print('schedule_id: ${widget.schedule.id}');
-      print('class_category_fee_id: ${widget.classCategoryFeeId}');
-      print('class_hall_id: $_selectedHallId');
-      print('class_date: ${AppDateTime.formatForApi(_selectedDate)}');
-      print('start_time: ${_formatTimeOfDay(_startTime)}');
-      print('end_time: ${_formatTimeOfDay(_endTime)}');
-      print('day_of_week: $_dayOfWeek');
-      print(
+      debugPrint('=== UPDATE REQUEST ===');
+      debugPrint('schedule_id: ${widget.schedule.id}');
+      debugPrint('class_category_fee_id: ${widget.classCategoryFeeId}');
+      debugPrint('class_hall_id: $_selectedHallId');
+      debugPrint('class_date: ${AppDateTime.formatForApi(_selectedDate)}');
+      debugPrint('start_time: ${_formatTimeOfDay(_startTime)}');
+      debugPrint('end_time: ${_formatTimeOfDay(_endTime)}');
+      debugPrint('day_of_week: $_dayOfWeek');
+      debugPrint(
         'note: ${_noteController.text.trim().isEmpty ? null : _noteController.text.trim()}',
       );
-      print('======================');
+      debugPrint('======================');
 
       context.read<ClassScheduleBloc>().add(UpdateClassScheduleEvent(request));
     }
@@ -420,7 +420,7 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: const Icon(
@@ -446,7 +446,7 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
                     Text(
                       'Update schedule for ${widget.className}',
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                         fontSize: 12,
                       ),
                     ),
@@ -459,7 +459,7 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
+              color: Colors.white.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -474,7 +474,7 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
                         'Current Schedule',
                         style: TextStyle(
                           fontSize: 11,
-                          color: Colors.white.withOpacity(0.8),
+                          color: Colors.white.withValues(alpha: 0.8),
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -495,7 +495,7 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.2),
+                    color: statusColor.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -762,9 +762,9 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.05),
+        color: AppColors.primary.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [

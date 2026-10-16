@@ -1,9 +1,15 @@
 class ApiConstants {
-  static const String baseUrl = 'http://10.17.162.230:8000';
+  /// Server address. Set it at build time, no code change needed:
+  ///
+  ///   flutter run --dart-define=API_BASE_URL=http://192.168.1.10:8000
+  ///   flutter build apk --release --dart-define=API_BASE_URL=https://mihisaraeducation.nexorait.lk
+  ///
+  /// Without --dart-define the default below is used.
+  static const String baseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'http://10.17.162.230:8000',
+  );
   static const String apiUrl = '$baseUrl/api';
-
-  //http://10.239.47.230:8000
-  //https://mihisaraeducation.nexorait.lk
 
   static const String login = '$apiUrl/login';
   static const String logout = '$apiUrl/logout';

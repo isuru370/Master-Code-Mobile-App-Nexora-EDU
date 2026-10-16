@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexorait_education_app/features/admin/class_schedule/presentaion/page/ongoing_class_page.dart';
 import 'package:nexorait_education_app/features/admin/student_classes/presentaion/pages/create_student_classes.dart';
 import 'package:nexorait_education_app/features/admin/students/presentaion/pages/create_student_page.dart';
 import 'package:nexorait_education_app/features/admin/students/presentaion/pages/student_list_page.dart';
 import 'package:nexorait_education_app/features/admin/today_classes/presentaion/page/today_classes_page.dart';
-import 'package:nexorait_education_app/features/auth/domain/usecases/logout_usecase.dart';
 
 import '../features/admin/admission/presentaion/page/admission_payment_page.dart';
 import '../features/admin/attendance/presentaion/pages/attendance_history_page.dart';
@@ -36,47 +34,29 @@ import '../features/admin/student_image/presentaion/pages/student_image_page.dar
 import '../features/admin/student_tute/presentation/pages/create_tute_page.dart';
 import '../features/admin/student_tute/presentation/pages/tute_view_page.dart';
 import '../features/admin/students/presentaion/pages/create_new_student_page.dart';
-import '../features/auth/data/datasources/auth_remote_data_source.dart';
-import '../features/auth/data/repositories/auth_repository_impl.dart';
-import '../features/auth/domain/usecases/login_usecase.dart';
-import '../features/auth/presentation/bloc/auth/auth_bloc.dart';
 import '../features/auth/presentation/pages/signin_page.dart';
 import '../features/splash_screen.dart';
 import '../features/teacher/dashboard/presentaion/pages/teacher_dashboard_page.dart';
 
 class AppRoutes {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
-    final repository = AuthRepositoryImpl(AuthRemoteDataSource());
-    final loginUseCase = LoginUseCase(repository);
-    final logoutUseCase = LogoutUseCase(repository);
-
-    final authBloc = AuthBloc(
-      loginUseCase: loginUseCase,
-      logoutUseCase: logoutUseCase,
-    );
-
+    // AuthBloc comes from the MultiBlocProvider in main.dart (one for the
+    // whole app). It used to be created here on every navigation and was
+    // never closed.
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       case '/signup':
-        return MaterialPageRoute(
-          builder: (_) =>
-              BlocProvider.value(value: authBloc, child: const SigninPage()),
-        );
+      case '/signin':
+        return MaterialPageRoute(builder: (_) => const SigninPage());
 
       case '/dashboard':
         return MaterialPageRoute(
-          builder: (_) => BlocProvider.value(
-            value: authBloc, // re-use the same AuthBloc from login
-            child: DashboardPage(),
-          ),
+          builder: (_) => DashboardPage(),
         );
       case '/teacher-dashboard':
         return MaterialPageRoute(
-          builder: (_) => BlocProvider.value(
-            value: authBloc, // re-use the same AuthBloc from login
-            child: TeacherDashboardPage(),
-          ),
+          builder: (_) => TeacherDashboardPage(),
         );
 
       case '/print_test_screen':
@@ -271,10 +251,7 @@ class AppRoutes {
       //         UserProfilePage(token: args['token'], user: args['user_model']),
       //   );
       default:
-        return MaterialPageRoute(
-          builder: (_) =>
-              BlocProvider.value(value: authBloc, child: const SigninPage()),
-        );
+        return MaterialPageRoute(builder: (_) => const SigninPage());
     }
   }
 }

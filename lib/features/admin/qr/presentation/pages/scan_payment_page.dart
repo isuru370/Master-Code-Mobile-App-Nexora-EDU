@@ -523,7 +523,7 @@ class _ScanPaymentPageState extends State<ScanPaymentPage> {
         margin: const EdgeInsets.symmetric(horizontal: 60),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.7),
+          color: Colors.black.withValues(alpha: 0.7),
           borderRadius: BorderRadius.circular(30),
         ),
         child: const Row(
@@ -553,7 +553,7 @@ class _ScanPaymentPageState extends State<ScanPaymentPage> {
         margin: const EdgeInsets.symmetric(horizontal: 30),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.red.withOpacity(0.85),
+          color: Colors.red.withValues(alpha: 0.85),
           borderRadius: BorderRadius.circular(30),
         ),
         child: Text(
@@ -568,7 +568,7 @@ class _ScanPaymentPageState extends State<ScanPaymentPage> {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.blue.withOpacity(0.8),
+          color: Colors.blue.withValues(alpha: 0.8),
           borderRadius: BorderRadius.circular(30),
         ),
         child: const Row(
@@ -588,7 +588,7 @@ class _ScanPaymentPageState extends State<ScanPaymentPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.6),
+        color: Colors.black.withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(30),
       ),
       child: const Text(
@@ -677,9 +677,9 @@ class _ScanPaymentPageState extends State<ScanPaymentPage> {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               margin: const EdgeInsets.only(bottom: 14),
               decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.08),
+                color: Colors.red.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.red.withOpacity(0.25)),
+                border: Border.all(color: Colors.red.withValues(alpha: 0.25)),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,

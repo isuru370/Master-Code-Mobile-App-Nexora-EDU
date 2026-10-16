@@ -337,7 +337,7 @@ class _StudentImagePageState extends State<StudentImagePage> {
               ),
               if (isBusy)
                 Container(
-                  color: Colors.black.withOpacity(0.18),
+                  color: Colors.black.withValues(alpha: 0.18),
                   child: const Center(child: CircularProgressIndicator()),
                 ),
             ],

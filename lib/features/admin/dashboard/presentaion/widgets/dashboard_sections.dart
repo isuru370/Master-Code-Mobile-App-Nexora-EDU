@@ -145,7 +145,7 @@ class _AlertTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: fg.withOpacity(.25)),
+        border: Border.all(color: fg.withValues(alpha: .25)),
       ),
       child: Row(
         children: [
@@ -835,7 +835,7 @@ class _StockBox extends StatelessWidget {
 
     return DashboardCard(
       color: bg,
-      borderColor: fg.withOpacity(.25),
+      borderColor: fg.withValues(alpha: .25),
       padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -889,7 +889,7 @@ class _Chip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withOpacity(.12),
+        color: color.withValues(alpha: .12),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(

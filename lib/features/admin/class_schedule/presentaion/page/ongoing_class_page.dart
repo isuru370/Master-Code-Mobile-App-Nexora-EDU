@@ -227,7 +227,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
+            color: AppColors.primary.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -256,7 +256,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                 width: 120,
                 height: 120,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
+                  color: Colors.white.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -268,7 +268,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                 width: 100,
                 height: 100,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
+                  color: Colors.white.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -280,7 +280,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                 width: 60,
                 height: 60,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -294,7 +294,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: const Icon(
@@ -321,7 +321,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                         Text(
                           'Join your ongoing classes and track your progress',
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
                             fontSize: 13,
                           ),
                         ),
@@ -332,7 +332,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                             vertical: 6,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
+                            color: Colors.white.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Row(
@@ -347,7 +347,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                               Text(
                                 'Institute Active Classes',
                                 style: TextStyle(
-                                  color: Colors.white.withOpacity(0.95),
+                                  color: Colors.white.withValues(alpha: 0.95),
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -380,7 +380,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.05),
+                  color: Colors.grey.withValues(alpha: 0.05),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -446,7 +446,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                     });
                   },
                   backgroundColor: Colors.white,
-                  selectedColor: AppColors.primary.withOpacity(0.1),
+                  selectedColor: AppColors.primary.withValues(alpha: 0.1),
                   checkmarkColor: AppColors.primary,
                   labelStyle: TextStyle(
                     color: isSelected ? AppColors.primary : Colors.grey[700],
@@ -485,7 +485,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),

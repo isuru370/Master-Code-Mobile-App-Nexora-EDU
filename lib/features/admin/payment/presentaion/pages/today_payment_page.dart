@@ -195,11 +195,11 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
         ),
       );
     } finally {
-      if (!mounted) return;
-
-      setState(() {
-        _reprintingId = '';
-      });
+      if (mounted) {
+        setState(() {
+          _reprintingId = '';
+        });
+      }
     }
   }
 
@@ -226,7 +226,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                   width: 70,
                   height: 70,
                   decoration: BoxDecoration(
-                    color: AppColors.warning.withOpacity(0.1),
+                    color: AppColors.warning.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -406,7 +406,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                       height: 60,
                       width: 60,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(.15),
+                        color: Colors.white.withValues(alpha: .15),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: const Icon(
@@ -662,7 +662,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                       */
                       CircleAvatar(
                         radius: 30,
-                        backgroundColor: AppColors.primary.withOpacity(.10),
+                        backgroundColor: AppColors.primary.withValues(alpha: .10),
 
                         backgroundImage: hasImage
                             ? NetworkImage(student.imgUrl!)
@@ -750,7 +750,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                                   vertical: 5,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: AppColors.primary.withOpacity(.10),
+                                  color: AppColors.primary.withValues(alpha: .10),
                                   borderRadius: BorderRadius.circular(999),
                                 ),
                                 child: Text(
@@ -787,7 +787,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                                   child: Container(
                                     padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
-                                      color: AppColors.primary.withOpacity(0.1),
+                                      color: AppColors.primary.withValues(alpha: 0.1),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: isReprinting
@@ -840,7 +840,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                     padding: const EdgeInsets.all(12),
 
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.05),
+                      color: AppColors.primary.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(16),
                     ),
 
@@ -878,7 +878,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                           ),
 
                           decoration: BoxDecoration(
-                            color: AppColors.warning.withOpacity(0.1),
+                            color: AppColors.warning.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
 

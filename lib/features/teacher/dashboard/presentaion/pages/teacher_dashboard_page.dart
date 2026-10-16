@@ -552,7 +552,7 @@ class _TeacherHomePageState extends State<_TeacherHomePage> {
               width: 120,
               height: 120,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.08),
+                color: Colors.white.withValues(alpha: 0.08),
                 shape: BoxShape.circle,
               ),
             ),
@@ -565,7 +565,7 @@ class _TeacherHomePageState extends State<_TeacherHomePage> {
               width: 100,
               height: 100,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.06),
+                color: Colors.white.withValues(alpha: 0.06),
                 shape: BoxShape.circle,
               ),
             ),
@@ -580,7 +580,7 @@ class _TeacherHomePageState extends State<_TeacherHomePage> {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
+                  color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: const Text(
@@ -612,7 +612,7 @@ class _TeacherHomePageState extends State<_TeacherHomePage> {
               Text(
                 'Here is your teaching overview for today.',
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.82),
+                  color: Colors.white.withValues(alpha: 0.82),
                   fontSize: 12,
                   height: 1.4,
                 ),
@@ -651,7 +651,7 @@ class _TeacherHomePageState extends State<_TeacherHomePage> {
   }) {
     return Row(
       children: [
-        Icon(icon, size: 19, color: Colors.white.withOpacity(0.9)),
+        Icon(icon, size: 19, color: Colors.white.withValues(alpha: 0.9)),
 
         const SizedBox(width: 7),
 
@@ -670,7 +670,7 @@ class _TeacherHomePageState extends State<_TeacherHomePage> {
             Text(
               label,
               style: TextStyle(
-                color: Colors.white.withOpacity(0.72),
+                color: Colors.white.withValues(alpha: 0.72),
                 fontSize: 10,
               ),
             ),

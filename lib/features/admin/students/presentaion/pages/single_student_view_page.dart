@@ -288,11 +288,11 @@ class SingleStudentViewPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
 
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(.15),
+        color: Colors.white.withValues(alpha: .15),
 
         borderRadius: BorderRadius.circular(100),
 
-        border: Border.all(color: Colors.white.withOpacity(.2)),
+        border: Border.all(color: Colors.white.withValues(alpha: .2)),
       ),
 
       child: Row(
@@ -339,7 +339,7 @@ class SingleStudentViewPage extends StatelessWidget {
             padding: const EdgeInsets.all(10),
 
             decoration: BoxDecoration(
-              color: color.withOpacity(.1),
+              color: color.withValues(alpha: .1),
               borderRadius: BorderRadius.circular(14),
             ),
 
@@ -395,7 +395,7 @@ class SingleStudentViewPage extends StatelessWidget {
                 padding: const EdgeInsets.all(10),
 
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(.08),
+                  color: AppColors.primary.withValues(alpha: .08),
                   borderRadius: BorderRadius.circular(14),
                 ),
 

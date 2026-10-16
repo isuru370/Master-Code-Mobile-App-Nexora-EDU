@@ -87,7 +87,7 @@ class _TodayClassesPageState extends State<TodayClassesPage> {
             width: 62,
             height: 62,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(.14),
+              color: Colors.white.withValues(alpha: .14),
               borderRadius: BorderRadius.circular(18),
             ),
             child: const Icon(
@@ -166,7 +166,7 @@ class _TodayClassesPageState extends State<TodayClassesPage> {
                   width: 54,
                   height: 54,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(.10),
+                    color: AppColors.primary.withValues(alpha: .10),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: const Icon(
@@ -210,7 +210,7 @@ class _TodayClassesPageState extends State<TodayClassesPage> {
                     vertical: 7,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(.10),
+                    color: AppColors.primary.withValues(alpha: .10),
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(
@@ -334,7 +334,7 @@ class _TodayClassesPageState extends State<TodayClassesPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: color.withOpacity(.10),
+        color: color.withValues(alpha: .10),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Row(
@@ -528,7 +528,7 @@ class _TodayClassesPageState extends State<TodayClassesPage> {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(.10),
+                        color: AppColors.primary.withValues(alpha: .10),
                         borderRadius: BorderRadius.circular(999),
                       ),
                       child: const Text(
