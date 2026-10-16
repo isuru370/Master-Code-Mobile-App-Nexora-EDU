@@ -39,7 +39,12 @@ class StudentModel {
   final int gradeId;
   final String? classType;
 
+  /// Registration only: the admission ID sent as 'admission_id'
   final int? admission;
+
+  /// Read from the server: true when the admission fee is paid
+  /// (backend sends "admission": true / false)
+  final bool? admissionPaid;
 
   final String? studentSchool;
   final String? imgUrl;
@@ -82,6 +87,7 @@ class StudentModel {
     required this.gradeId,
     this.classType,
     this.admission,
+    this.admissionPaid,
     this.studentSchool,
     this.imgUrl,
     this.lastImageUpdateAt,
@@ -124,6 +130,7 @@ class StudentModel {
       gradeId: _int(json['grade_id']) ?? 0,
       classType: _string(json['class_type']),
       admission: _int(json['admission']),
+      admissionPaid: _bool(json['admission']),
       studentSchool: _string(json['student_school']),
       imgUrl: rawPath == null || rawPath.isEmpty
           ? null

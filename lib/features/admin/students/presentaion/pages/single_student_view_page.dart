@@ -200,15 +200,15 @@ class SingleStudentViewPage extends StatelessWidget {
                   Expanded(
                     child: _buildStatusCard(
                       title: 'Admission',
-                      value: student.admission == true
+                      value: student.admissionPaid == true
                           ? 'Completed'
                           : 'Pending',
 
-                      icon: student.admission == true
+                      icon: student.admissionPaid == true
                           ? Icons.payments_rounded
                           : Icons.pending_rounded,
 
-                      color: student.admission == true
+                      color: student.admissionPaid == true
                           ? AppColors.primary
                           : AppColors.warning,
                     ),
