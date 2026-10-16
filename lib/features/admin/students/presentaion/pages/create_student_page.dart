@@ -9,6 +9,7 @@ import '../../data/models/students_model.dart';
 import '../bloc/students/students_bloc.dart';
 import '../widgets/admission_dialog.dart';
 import '../widgets/admission_receipt_print.dart';
+import '../widgets/branch_selector_field.dart';
 
 class CreateStudentPage extends StatefulWidget {
   const CreateStudentPage({super.key});
@@ -27,6 +28,7 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
   final _guardianMobileController = TextEditingController();
 
   int? _selectedGradeId;
+  int? _selectedBranchId;
   String _selectedGender = 'male';
   bool _isLoading = false;
   int? _selectedAdmissionId;
@@ -63,6 +65,16 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
   }
 
   Future<void> _showAdmissionDialog() async {
+    // Check the form first - no point choosing an admission for a bad form
+    if (!_formKey.currentState!.validate()) return;
+
+    if (_selectedBranchId == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please select a branch')));
+      return;
+    }
+
     final result = await showDialog<AdmissionDialogResult>(
       context: context,
       builder: (_) => const AdmissionDialog(),
@@ -91,6 +103,13 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
       return;
     }
 
+    if (_selectedBranchId == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please select a branch')));
+      return;
+    }
+
     setState(() {
       _isLoading = true;
     });
@@ -98,6 +117,7 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
     final quickImageText = _quickImageIdController.text.trim();
 
     final student = StudentModel(
+      branchId: _selectedBranchId,
       temporaryQrCode: 'TMP${_temporaryQrCodeController.text.trim()}',
       quickImageId: (quickImageText.isEmpty) ? null : quickImageText,
       initialName: _lnameController.text.trim(),
@@ -262,7 +282,7 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
             backgroundColor: AppColors.primary,
             foregroundColor: Colors.white,
             title: const Text(
-              'Create Student',
+              'Temporary Card Registration',
               style: TextStyle(fontWeight: FontWeight.w700),
             ),
           ),
@@ -333,6 +353,14 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          const SizedBox(height: 18),
+
+                          // Student's main branch
+                          BranchSelectorField(
+                            enabled: !_isLoading,
+                            onChanged: (id) => _selectedBranchId = id,
+                          ),
+
                           const SizedBox(height: 18),
 
                           _buildTextField(

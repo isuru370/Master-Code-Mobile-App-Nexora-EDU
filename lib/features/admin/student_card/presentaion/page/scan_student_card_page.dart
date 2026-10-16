@@ -244,7 +244,12 @@ class _ScanStudentCardPageState extends State<ScanStudentCardPage>
                 Navigator.pushNamed(
                   context,
                   '/register-student',
-                  arguments: {'qrCode': _lastScannedValue.toUpperCase()},
+                  arguments: {
+                    'qrCode': _lastScannedValue.toUpperCase(),
+                    // the student is registered in the card's branch
+                    'cardBranchId': state.response.cardBranchId,
+                    'cardBranchName': state.response.cardBranchName,
+                  },
                 ).then((_) {
                   _resetScanner();
                 });

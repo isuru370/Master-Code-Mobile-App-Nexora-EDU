@@ -5,6 +5,9 @@ import 'grade_model.dart';
 
 class StudentModel {
   final int? id;
+
+  /// Student's main branch (sent when registering)
+  final int? branchId;
   final String? cardQrCode;
 
   final String? temporaryQrCode;
@@ -56,6 +59,7 @@ class StudentModel {
 
   StudentModel({
     this.id,
+    this.branchId,
     this.cardQrCode,
     this.temporaryQrCode,
     this.temporaryQrCodeExpireDate,
@@ -96,6 +100,7 @@ class StudentModel {
 
     return StudentModel(
       id: _int(json['id']),
+      branchId: _int(json['branch_id']),
       temporaryQrCode: _string(json['temporary_qr_code']),
       temporaryQrCodeExpireDate: _parseDate(
         json['temporary_qr_code_expire_date'],
@@ -176,6 +181,7 @@ class StudentModel {
 
   Map<String, dynamic> toJson() {
     return {
+      'branch_id': branchId,
       'temporary_qr_code': temporaryQrCode,
       'quick_image_id': quickImageId,
       'initial_name': initialName,
@@ -188,6 +194,7 @@ class StudentModel {
 
   Map<String, dynamic> toNewJson() {
     return {
+      'branch_id': branchId,
       'card_qr_code': cardQrCode,
       'quick_image_id': quickImageId,
       'initial_name': initialName,

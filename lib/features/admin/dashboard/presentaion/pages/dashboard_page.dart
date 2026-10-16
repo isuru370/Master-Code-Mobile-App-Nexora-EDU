@@ -36,7 +36,8 @@ class _DashboardPageState extends State<DashboardPage> {
   bool _loggingOut = false;
 
   /// Can this role use the feature? (empty list = old backend -> show all)
-  bool _can(String feature) => _features.isEmpty || _features.contains(feature);
+  bool _can(String feature) =>
+      _features.isEmpty || _features.contains(feature);
 
   bool get _hasManyBranches => _branches.length > 1;
 
@@ -182,10 +183,7 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
             subtitle: subtitle == null ? null : Text(subtitle),
             trailing: selected
-                ? const Icon(
-                    Icons.check_circle_rounded,
-                    color: AppColors.primary,
-                  )
+                ? const Icon(Icons.check_circle_rounded, color: AppColors.primary)
                 : null,
             onTap: () => Navigator.pop(sheetContext, value),
           );
@@ -275,15 +273,108 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
+  /// Register Student -> choose the card type.
+  ///   Temporary card (TMP001...)  -> /create_student  (type the TMP number)
+  ///   Permanent card (QR)         -> scan the card -> /register-student
+  Future<void> _openRegisterChooser() async {
+    final choice = await showModalBottomSheet<String>(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (sheetContext) {
+        Widget option({
+          required String value,
+          required IconData icon,
+          required Color color,
+          required String title,
+          required String subtitle,
+        }) {
+          return ListTile(
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 6,
+            ),
+            leading: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: color.withOpacity(.12),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Icon(icon, color: color),
+            ),
+            title: Text(
+              title,
+              style: const TextStyle(fontWeight: FontWeight.w700),
+            ),
+            subtitle: Text(subtitle),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () => Navigator.pop(sheetContext, value),
+          );
+        }
+
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.fromLTRB(20, 20, 20, 8),
+                child: Text(
+                  'Register Student',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.dark,
+                  ),
+                ),
+              ),
+              option(
+                value: 'temporary',
+                icon: Icons.qr_code_2_rounded,
+                color: AppColors.warning,
+                title: 'Temporary Card',
+                subtitle: 'Register with a TMP number (TMP001...)',
+              ),
+              option(
+                value: 'card',
+                icon: Icons.credit_card_rounded,
+                color: AppColors.primary,
+                title: 'Permanent Card',
+                subtitle: 'Scan the student card QR',
+              ),
+              const SizedBox(height: 12),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (!mounted || choice == null) return;
+
+    if (choice == 'temporary') {
+      await Navigator.pushNamed(context, '/create_student');
+    } else {
+      await Navigator.pushNamed(
+        context,
+        '/qr-scan-student-card',
+        arguments: {'type': ScanStudentCard.studentCard},
+      );
+    }
+
+    // New student -> refresh the numbers
+    if (mounted) {
+      context.read<MobileDashboardBloc>().add(GetMobileDashboardEvent());
+    }
+  }
+
   /// Token is no longer valid (401) -> back to sign in.
   Future<void> _goToSignIn(String message) async {
     await SessionStorage.clear();
 
     if (!mounted) return;
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
 
     Navigator.pushNamedAndRemoveUntil(
       context,
@@ -452,26 +543,20 @@ class _DashboardPageState extends State<DashboardPage> {
       floatingActionButton: !_can('search_student')
           ? null
           : FloatingActionButton.extended(
-              backgroundColor: AppColors.primary,
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  '/qr-scan',
-                  arguments: {'type': ScanType.student},
-                );
-              },
-              icon: const Icon(
-                Icons.qr_code_scanner_rounded,
-                color: Colors.white,
-              ),
-              label: const Text(
-                'Search Student',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
+        backgroundColor: AppColors.primary,
+        onPressed: () {
+          Navigator.pushNamed(
+            context,
+            '/qr-scan',
+            arguments: {'type': ScanType.student},
+          );
+        },
+        icon: const Icon(Icons.qr_code_scanner_rounded, color: Colors.white),
+        label: const Text(
+          'Search Student',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+        ),
+      ),
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColors.primary,
@@ -655,140 +740,135 @@ class _DashboardPageState extends State<DashboardPage> {
                   _sectionHeader('STUDENT MANAGEMENT', Icons.people_rounded),
                   if (_can('register_student'))
                     _drawerTile(
-                      icon: Icons.person_add_alt_1_rounded,
-                      title: 'Register Student',
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/qr-scan-student-card',
-                          arguments: {'type': ScanStudentCard.studentCard},
-                        );
-                      },
-                    ),
+                    icon: Icons.person_add_alt_1_rounded,
+                    title: 'Register Student',
+                    onTap: () {
+                      Navigator.pop(context); // close the drawer
+                      _openRegisterChooser();
+                    },
+                  ),
                   if (_can('reassign_card'))
                     _drawerTile(
-                      icon: Icons.person_add_alt_1_rounded,
-                      title: 'Re Assign Student',
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/qr-scan-student-card',
-                          arguments: {
-                            'type': ScanStudentCard.assignStudentCard,
-                          },
-                        );
-                      },
-                    ),
+                    icon: Icons.person_add_alt_1_rounded,
+                    title: 'Re Assign Student',
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/qr-scan-student-card',
+                        arguments: {'type': ScanStudentCard.assignStudentCard},
+                      );
+                    },
+                  ),
                   if (_can('capture_image'))
                     _drawerTile(
-                      icon: Icons.image_outlined,
-                      title: 'Capture Image',
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/image_capture',
-                          arguments: {'registered': false},
-                        );
-                      },
-                    ),
+                    icon: Icons.image_outlined,
+                    title: 'Capture Image',
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/image_capture',
+                        arguments: {'registered': false},
+                      );
+                    },
+                  ),
                   if (_can('students'))
                     _drawerTile(
-                      icon: Icons.people_alt_rounded,
-                      title: 'Students',
-                      onTap: () {
-                        Navigator.pushNamed(context, '/students');
-                      },
-                    ),
+                    icon: Icons.people_alt_rounded,
+                    title: 'Students',
+                    onTap: () {
+                      Navigator.pushNamed(context, '/students');
+                    },
+                  ),
                   if (_can('student_images'))
                     _drawerTile(
-                      icon: Icons.school_rounded,
-                      title: 'Student Images',
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/qr-scan-student-card',
-                          arguments: {'type': ScanStudentCard.studentImage},
-                        );
-                      },
-                    ),
+                    icon: Icons.school_rounded,
+                    title: 'Student Images',
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/qr-scan-student-card',
+                        arguments: {'type': ScanStudentCard.studentImage},
+                      );
+                    },
+                  ),
                   const Divider(height: 24, thickness: 1),
                   _sectionHeader('CLASS & ATTENDANCE', Icons.class_rounded),
                   if (_can('today_classes'))
                     _drawerTile(
-                      icon: Icons.payments_rounded,
-                      title: 'Today Classes',
-                      onTap: () {
-                        Navigator.pushNamed(context, '/today-class');
-                      },
-                    ),
+                    icon: Icons.payments_rounded,
+                    title: 'Today Classes',
+                    onTap: () {
+                      Navigator.pushNamed(context, '/today-class');
+                    },
+                  ),
                   if (_can('add_class'))
                     _drawerTile(
-                      icon: Icons.payments_rounded,
-                      title: 'Add Class',
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/qr-scan',
-                          arguments: {'type': ScanType.classes},
-                        );
-                      },
-                    ),
+                    icon: Icons.payments_rounded,
+                    title: 'Add Class',
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/qr-scan',
+                        arguments: {'type': ScanType.classes},
+                      );
+                    },
+                  ),
                   if (_can('class_schedule'))
                     _drawerTile(
-                      icon: Icons.class_outlined,
-                      title: 'Class Schedule',
-                      onTap: () {
-                        Navigator.pushNamed(context, '/class_ongoing');
-                      },
-                    ),
+                    icon: Icons.class_outlined,
+                    title: 'Class Schedule',
+                    onTap: () {
+                      Navigator.pushNamed(context, '/class_ongoing');
+                    },
+                  ),
                   if (_can('attendance'))
                     _drawerTile(
-                      icon: Icons.fact_check_rounded,
-                      title: 'Attendance',
-                      onTap: () {
-                        Navigator.pushNamed(context, '/attendance-scan');
-                      },
-                    ),
+                    icon: Icons.fact_check_rounded,
+                    title: 'Attendance',
+                    onTap: () {
+                      Navigator.pushNamed(context, '/attendance-scan');
+                    },
+                  ),
                   const Divider(height: 24, thickness: 1),
                   _sectionHeader('FINANCIAL', Icons.attach_money_rounded),
                   if (_can('payment'))
                     _drawerTile(
-                      icon: Icons.payments_rounded,
-                      title: 'Payment',
-                      onTap: () {
-                        Navigator.pushNamed(context, '/payment-scan');
-                      },
-                    ),
+                    icon: Icons.payments_rounded,
+                    title: 'Payment',
+                    onTap: () {
+                      Navigator.pushNamed(context, '/payment-scan');
+                    },
+                  ),
                   if (_can('today_payments'))
                     _drawerTile(
-                      icon: Icons.monetization_on_outlined,
-                      title: 'Today Payments',
-                      onTap: () {
-                        Navigator.pushNamed(context, '/today-payment');
-                      },
-                    ),
+                    icon: Icons.monetization_on_outlined,
+                    title: 'Today Payments',
+                    onTap: () {
+                      Navigator.pushNamed(context, '/today-payment');
+                    },
+                  ),
                   if (_can('admission'))
                     _drawerTile(
-                      icon: Icons.monetization_on_outlined,
-                      title: 'Admission',
-                      onTap: () {
-                        Navigator.pushNamed(context, '/admission-payment');
-                      },
-                    ),
+                    icon: Icons.monetization_on_outlined,
+                    title: 'Admission',
+                    onTap: () {
+                      Navigator.pushNamed(context, '/admission-payment');
+                    },
+                  ),
                   const Divider(height: 24, thickness: 1),
                   _sectionHeader('OTHER', Icons.more_horiz_rounded),
                   if (_can('student_tute'))
                     _drawerTile(
-                      icon: Icons.menu_book_rounded,
-                      title: 'Student Tute',
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/qr-scan',
-                          arguments: {'type': ScanType.tute},
-                        );
-                      },
-                    ),
+                    icon: Icons.menu_book_rounded,
+                    title: 'Student Tute',
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/qr-scan',
+                        arguments: {'type': ScanType.tute},
+                      );
+                    },
+                  ),
                   const SizedBox(height: 16),
                 ],
               ),
@@ -961,11 +1041,7 @@ class _DashboardPageState extends State<DashboardPage> {
           icon: Icons.person_add_alt_1_rounded,
           label: 'Register',
           color: AppColors.primaryDark,
-          onTap: () => Navigator.pushNamed(
-            context,
-            '/qr-scan-student-card',
-            arguments: {'type': ScanStudentCard.studentCard},
-          ),
+          onTap: _openRegisterChooser,
         ),
     ];
 

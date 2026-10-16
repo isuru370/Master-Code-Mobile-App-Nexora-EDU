@@ -10,11 +10,22 @@ import '../../data/models/students_model.dart';
 import '../bloc/students/students_bloc.dart';
 import '../widgets/admission_dialog.dart';
 import '../widgets/admission_receipt_print.dart';
+import '../widgets/branch_selector_field.dart';
 
 class CreateNewStudentPage extends StatefulWidget {
   final String qrCode;
 
-  const CreateNewStudentPage({super.key, required this.qrCode});
+  /// Branch of the scanned card (from POST /qr-code). The student is
+  /// registered in this branch - the server rejects any other branch.
+  final int? cardBranchId;
+  final String? cardBranchName;
+
+  const CreateNewStudentPage({
+    super.key,
+    required this.qrCode,
+    this.cardBranchId,
+    this.cardBranchName,
+  });
 
   @override
   State<CreateNewStudentPage> createState() => _CreateNewStudentPageState();
@@ -31,6 +42,7 @@ class _CreateNewStudentPageState extends State<CreateNewStudentPage> {
   final _guardianMobileController = TextEditingController();
 
   int? _selectedGradeId;
+  int? _selectedBranchId;
   String _selectedGender = 'male';
   bool _isLoading = false;
   int? _selectedAdmissionId;
@@ -71,6 +83,15 @@ class _CreateNewStudentPageState extends State<CreateNewStudentPage> {
   }
 
   Future<void> _showAdmissionDialog() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    if (_selectedBranchId == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please select a branch')));
+      return;
+    }
+
     final result = await showDialog<AdmissionDialogResult>(
       context: context,
       builder: (_) => const AdmissionDialog(),
@@ -105,7 +126,15 @@ class _CreateNewStudentPageState extends State<CreateNewStudentPage> {
 
     final quickImageText = _quickImageIdController.text.trim();
 
+    if (_selectedBranchId == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please select a branch')));
+      return;
+    }
+
     final student = StudentModel(
+      branchId: _selectedBranchId,
       cardQrCode: _cardQrCodeController.text.trim().toUpperCase(),
       quickImageId: (quickImageText.isEmpty) ? null : quickImageText,
       initialName: _lnameController.text.trim(),
@@ -262,7 +291,7 @@ class _CreateNewStudentPageState extends State<CreateNewStudentPage> {
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
               title: const Text(
-                'New Student Registration',
+                'Permanent Card Registration',
                 style: TextStyle(fontWeight: FontWeight.w700),
               ),
             ),
@@ -350,6 +379,17 @@ class _CreateNewStudentPageState extends State<CreateNewStudentPage> {
                                   label: 'Student Card QR Code',
                                   icon: Icons.credit_card_rounded,
                                   readOnly: true,
+                                ),
+
+                                const SizedBox(height: 18),
+
+                                // Card's branch (locked). Older server without
+                                // branch_id -> normal dropdown.
+                                BranchSelectorField(
+                                  lockedBranchId: widget.cardBranchId,
+                                  lockedBranchName: widget.cardBranchName,
+                                  enabled: !_isLoading,
+                                  onChanged: (id) => _selectedBranchId = id,
                                 ),
 
                                 const SizedBox(height: 18),

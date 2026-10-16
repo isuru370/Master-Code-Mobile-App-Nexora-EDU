@@ -98,7 +98,11 @@ class AppRoutes {
       case '/register-student':
         final args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
-          builder: (_) => CreateNewStudentPage(qrCode: args['qrCode']),
+          builder: (_) => CreateNewStudentPage(
+            qrCode: args['qrCode'],
+            cardBranchId: args['cardBranchId'] as int?,
+            cardBranchName: args['cardBranchName'] as String?,
+          ),
         );
       case '/register-details':
         final args = settings.arguments as Map<String, dynamic>;
