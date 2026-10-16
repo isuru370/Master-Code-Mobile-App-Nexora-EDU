@@ -453,6 +453,8 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
 
             BlocBuilder<ClassRoomBloc, ClassRoomState>(
               builder: (context, state) {
+                // Backend returns only the classes of the user's branches;
+                // the enrollment takes its branch from the selected class.
                 final classItems = state is ClassRoomLoaded
                     ? state.response.data
                     : _availableClasses;
@@ -479,6 +481,8 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
                 }
 
                 return DropdownButtonFormField<int>(
+                  // new key = fresh dropdown when the parent choice changes
+                  key: ValueKey('class-$_selectedGradeId'),
                   initialValue: _selectedClassId,
                   isExpanded: true,
                   itemHeight: null,
@@ -510,7 +514,9 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
                                 ),
                               ),
                               TextSpan(
-                                text: teacher,
+                                text: classItem.branchName == null
+                                    ? teacher
+                                    : '$teacher • ${classItem.branchName}',
                                 style: TextStyle(
                                   fontSize: 11,
                                   color: Colors.grey.shade600,
@@ -573,6 +579,8 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
             const SizedBox(height: 8),
 
             DropdownButtonFormField<int>(
+              // new key = fresh dropdown when the parent choice changes
+              key: ValueKey('category-$_selectedClassId'),
               initialValue: _selectedCategoryFeeId,
               isExpanded: true,
               decoration: _fieldDecoration(
@@ -605,6 +613,8 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
             const SizedBox(height: 8),
 
             DropdownButtonFormField<int>(
+              // new key = fresh dropdown when the parent choice changes
+              key: ValueKey('fee-$_selectedCategoryFeeId'),
               initialValue: _selectedFeeOptionId,
               isExpanded: true,
               decoration: _fieldDecoration(

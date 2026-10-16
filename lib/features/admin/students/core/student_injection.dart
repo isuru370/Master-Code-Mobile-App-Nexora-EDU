@@ -5,7 +5,6 @@ import '../data/repositories/students_repository_impl.dart';
 import '../domain/repositories/students_repository.dart';
 import '../domain/usecases/create_new_student_usecase.dart';
 import '../domain/usecases/create_student_usecase.dart';
-import '../domain/usecases/get_students_custom_id_usecase.dart';
 import '../domain/usecases/students_usecase.dart';
 import '../presentaion/bloc/students/students_bloc.dart';
 
@@ -24,7 +23,6 @@ Future<void> initStudentDI() async {
   sl.registerLazySingleton(() => CreateStudentUsecase(sl()));
   sl.registerLazySingleton(() => CreateNewStudentUsecase(sl()));
   sl.registerLazySingleton(() => GetStudentsUseCase(sl()));
-  sl.registerLazySingleton(() => GetStudentsCustomIdUsecase(sl()));
 
   //BLOC
   sl.registerFactory(
@@ -32,7 +30,6 @@ Future<void> initStudentDI() async {
       createStudentUsecase: sl(),
       createNewStudentUsecase: sl(),
       getStudentsUseCase: sl(),
-      getStudentsCustomIdUsecase: sl(),
     ),
   );
 }

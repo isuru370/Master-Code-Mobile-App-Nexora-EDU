@@ -3,9 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexorait_education_app/features/admin/class_schedule/presentaion/page/ongoing_class_page.dart';
 import 'package:nexorait_education_app/features/admin/student_classes/presentaion/pages/create_student_classes.dart';
 import 'package:nexorait_education_app/features/admin/students/presentaion/pages/create_student_page.dart';
-import 'package:nexorait_education_app/features/admin/students/presentaion/pages/student_custom_id_page.dart';
 import 'package:nexorait_education_app/features/admin/students/presentaion/pages/student_list_page.dart';
-import 'package:nexorait_education_app/features/admin/today_attendance/presentation/pages/today_attendance_page.dart';
 import 'package:nexorait_education_app/features/admin/today_classes/presentaion/page/today_classes_page.dart';
 import 'package:nexorait_education_app/features/auth/domain/usecases/logout_usecase.dart';
 
@@ -112,12 +110,6 @@ class AppRoutes {
             studentCardLoaded: args['response'],
           ),
         );
-      case '/student-id-numbers':
-        final token = settings.arguments as String?;
-
-        return MaterialPageRoute(
-          builder: (_) => StudentCustomIdPage(token: token ?? ''),
-        );
       case '/qr-scan':
         final args = settings.arguments as Map<String, dynamic>;
 
@@ -209,18 +201,6 @@ class AppRoutes {
         final args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
           builder: (_) => AttendanceReportPage(scheduleId: args['schedule_id']),
-        );
-      case '/today-attendance':
-        final args = settings.arguments as Map<String, dynamic>; // cast as Map
-
-        return MaterialPageRoute(
-          builder: (_) => TodayAttendancePage(
-            token: args['token'], // pass the token
-            classId: args['class_id'], // pass the classId
-            attendanceId: args['attendance_id'], // pass the attendanceId
-            classCategory:
-                args['class_has_category_id'], // pass the classCategory
-          ),
         );
       case '/attendance-history':
         final args = settings.arguments as Map<String, dynamic>; // cast as Map

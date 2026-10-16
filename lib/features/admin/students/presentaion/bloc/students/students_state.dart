@@ -20,15 +20,6 @@ class StudentsLoaded extends StudentsState {
   List<Object> get props => [students];
 }
 
-class StudentCustomIdLoaded extends StudentsState {
-  final List<StudentCustomIdModel> studentCustomIdModel;
-
-  const StudentCustomIdLoaded(this.studentCustomIdModel);
-
-  @override
-  List<Object> get props => [studentCustomIdModel];
-}
-
 class StudentsCreated extends StudentsState {
   final CreateStudentResponseModel response;
   final String message;

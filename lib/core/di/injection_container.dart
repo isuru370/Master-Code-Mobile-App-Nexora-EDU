@@ -21,7 +21,6 @@ import '../../features/admin/student_tute/core/tute_injection.dart';
 import '../../features/admin/students/core/read_student_injection.dart';
 import '../../features/admin/students/core/student_classes_injection.dart';
 import '../../features/admin/students/core/student_injection.dart';
-import '../../features/admin/today_attendance/core/daily_attendance_details_injection.dart';
 import '../../features/admin/today_classes/core/init_today_class_injection.dart';
 import '../../features/auth/core/auth_injection.dart' as authDI;
 import '../../features/teacher/classess/core/teacher_classes_injection.dart';
@@ -44,7 +43,6 @@ Future<void> init() async {
   await initMarkAttendanceDI();
   await initImageUploadDI();
   await initMobileDashboardDI();
-  await initDailyAttendanceDetailsDI();
   await initStudentImageDI();
   await initTuteDI();
   await initReadTuteDI();

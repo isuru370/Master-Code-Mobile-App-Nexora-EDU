@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/theme/app_colors.dart';
-import '../../../../../core/utils/printer_service.dart';
 import '../../../qr/presentation/bloc/read_student_classes/read_student_classes_bloc.dart';
 import '../../../student_grade/presentation/bloc/student_grade/student_grade_bloc.dart';
 import '../../data/models/admission_dialog_result.dart';
 import '../../data/models/students_model.dart';
 import '../bloc/students/students_bloc.dart';
 import '../widgets/admission_dialog.dart';
-import '../widgets/admission_receipt_print.dart';
+import '../widgets/admission_receipt_dialog.dart';
 import '../widgets/branch_selector_field.dart';
 
 class CreateNewStudentPage extends StatefulWidget {
@@ -32,7 +31,6 @@ class CreateNewStudentPage extends StatefulWidget {
 }
 
 class _CreateNewStudentPageState extends State<CreateNewStudentPage> {
-  final PrinterService _printerService = PrinterService();
   final _formKey = GlobalKey<FormState>();
   final _scrollController = ScrollController();
 
@@ -195,76 +193,15 @@ class _CreateNewStudentPageState extends State<CreateNewStudentPage> {
             final payment = state.response.admissionPayment;
 
             if (payment != null) {
-              // ✅ Case 1: Payment exists - Show receipt dialog
-              showDialog(
+              // Prints automatically; then continue to the class list
+              showAdmissionReceiptDialog(
                 context: context,
-                barrierDismissible: false,
-                builder: (_) {
-                  return AlertDialog(
-                    title: const Text('Admission Receipt'),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Receipt No : ${payment.receiptNumber}'),
-                        const SizedBox(height: 8),
-                        Text('Student ID : ${state.response.student.customId}'),
-                        const SizedBox(height: 8),
-                        Text('Admission : ${payment.admissionName}'),
-                        const SizedBox(height: 8),
-                        Text('Amount : Rs.${payment.amount}'),
-                        const SizedBox(height: 8),
-                        Text('Method : ${payment.paymentMethod}'),
-                        const SizedBox(height: 8),
-                        Text('Status : ${payment.status}'),
-                      ],
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          _openStudentClasses(qrCode);
-                        },
-                        child: const Text('Continue to Classes'),
-                      ),
-                      ElevatedButton.icon(
-                        onPressed: () async {
-                          try {
-                            await AdmissionReceiptPrint.printReceipt(
-                              printerService: _printerService,
-                              instituteName: 'Mihisara Education Institute',
-                              receiptNumber: payment.receiptNumber,
-                              studentName: state.response.student.initialName,
-                              studentId: state.response.student.customId
-                                  .toString(),
-                              admissionName: payment.admissionName,
-                              amount: double.parse(payment.amount),
-                              paymentMethod: payment.paymentMethod,
-                              paidAt: payment.paidAt,
-                            );
-
-                            if (!mounted) return;
-
-                            Navigator.pop(context);
-                            _openStudentClasses(qrCode);
-                          } catch (e) {
-                            if (!mounted) return;
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Print failed: $e'),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          }
-                        },
-                        icon: const Icon(Icons.print),
-                        label: const Text('Print'),
-                      ),
-                    ],
-                  );
-                },
-              );
+                response: state.response,
+                doneLabel: 'Continue to Classes',
+              ).then((_) {
+                if (!mounted) return;
+                _openStudentClasses(qrCode);
+              });
             } else {
               // ✅ Case 2: No payment - Direct navigation
               _openStudentClasses(qrCode);

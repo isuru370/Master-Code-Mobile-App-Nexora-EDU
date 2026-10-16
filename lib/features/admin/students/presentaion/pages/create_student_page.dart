@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/theme/app_colors.dart';
-import '../../../../../core/utils/printer_service.dart';
 import '../../../student_grade/presentation/bloc/student_grade/student_grade_bloc.dart';
 import '../../data/models/admission_dialog_result.dart';
 import '../../data/models/students_model.dart';
 import '../bloc/students/students_bloc.dart';
 import '../widgets/admission_dialog.dart';
-import '../widgets/admission_receipt_print.dart';
+import '../widgets/admission_receipt_dialog.dart';
 import '../widgets/branch_selector_field.dart';
 
 class CreateStudentPage extends StatefulWidget {
@@ -19,7 +18,6 @@ class CreateStudentPage extends StatefulWidget {
 }
 
 class _CreateStudentPageState extends State<CreateStudentPage> {
-  final PrinterService _printerService = PrinterService();
   final _formKey = GlobalKey<FormState>();
 
   final _temporaryQrCodeController = TextEditingController();
@@ -146,108 +144,24 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
           final payment = state.response.admissionPayment;
 
           if (payment != null) {
-            showDialog(
+            // Prints automatically; the form is cleared after "Done"
+            showAdmissionReceiptDialog(
               context: context,
-              barrierDismissible: false,
-              builder: (_) {
-                return AlertDialog(
-                  title: const Text('Admission Receipt'),
+              response: state.response,
+            ).then((_) {
+              if (!mounted) return;
 
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Receipt No : ${payment.receiptNumber}'),
+              _clearForm();
 
-                      const SizedBox(height: 8),
-
-                      Text('Student ID : ${state.response.student.customId}'),
-
-                      const SizedBox(height: 8),
-
-                      Text('Admission : ${payment.admissionName}'),
-
-                      const SizedBox(height: 8),
-
-                      Text('Amount : Rs.${payment.amount}'),
-
-                      const SizedBox(height: 8),
-
-                      Text('Method : ${payment.paymentMethod}'),
-
-                      const SizedBox(height: 8),
-
-                      Text('Status : ${payment.status}'),
-                    ],
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: AppColors.success,
+                  content: Text(
+                    'Student created successfully (ID: ${state.response.student.customId})',
                   ),
-
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-
-                        _clearForm();
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            backgroundColor: AppColors.success,
-                            content: Text(
-                              'Student created successfully (ID: ${state.response.student.customId})',
-                            ),
-                          ),
-                        );
-                      },
-                      child: const Text('Close'),
-                    ),
-
-                    ElevatedButton.icon(
-                      onPressed: () async {
-                        try {
-                          await AdmissionReceiptPrint.printReceipt(
-                            printerService: _printerService,
-
-                            instituteName: 'Minipalasa Education Center',
-
-                            receiptNumber: payment.receiptNumber,
-
-                            studentName: state.response.student.initialName,
-
-                            studentId: state.response.student.customId
-                                .toString(),
-
-                            admissionName: payment.admissionName,
-
-                            amount: double.parse(payment.amount),
-
-                            paymentMethod: payment.paymentMethod,
-
-                            paidAt: payment.paidAt,
-                          );
-
-                          if (context.mounted) {
-                            Navigator.pop(context);
-
-                            _clearForm();
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Receipt printed successfully'),
-                              ),
-                            );
-                          }
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Print failed: $e')),
-                          );
-                        }
-                      },
-                      icon: const Icon(Icons.print),
-                      label: const Text('Print'),
-                    ),
-                  ],
-                );
-              },
-            );
+                ),
+              );
+            });
           } else {
             _clearForm();
 

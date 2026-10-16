@@ -16,17 +16,6 @@ class FetchStudents extends StudentsEvent {
   List<Object> get props => [token];
 }
 
-class FetchStudentCustomIds extends StudentsEvent {
-  final String token;
-  final String? search;
-  final String? month;
-
-  const FetchStudentCustomIds({required this.token, this.search, this.month});
-
-  @override
-  List<Object?> get props => [token, search, month];
-}
-
 final class CreateStudentEvent extends StudentsEvent {
   final StudentModel student;
 
