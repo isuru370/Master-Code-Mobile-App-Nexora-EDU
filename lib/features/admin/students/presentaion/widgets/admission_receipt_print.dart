@@ -6,6 +6,10 @@ import '../../../../../../core/utils/printer_service.dart';
 class AdmissionReceiptPrint {
   const AdmissionReceiptPrint._();
 
+  /// Name printed at the top of every admission receipt.
+  /// Change it here only (both registration pages use it).
+  static const String defaultInstituteName = 'Mihisara Education Institute';
+
   static Future<void> printReceipt({
     required PrinterService printerService,
     required String instituteName,
@@ -74,9 +78,10 @@ class AdmissionReceiptPrint {
 
     // RECEIPT INFO
 
+    // Date the payment was saved on the server (falls back to now)
     final formattedDate = DateFormat(
-      'yyyy-MM-dd HH:mm:ss',
-    ).format(DateTime.parse(DateTime.now().toString()));
+      'yyyy-MM-dd HH:mm',
+    ).format(DateTime.tryParse(paidAt) ?? DateTime.now());
 
     bytes.addAll(generator.text('Receipt No : $receiptNumber'));
 

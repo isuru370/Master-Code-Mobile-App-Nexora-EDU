@@ -45,7 +45,7 @@ class StudentCardBloc extends Bloc<StudentCardEvent, StudentCardState> {
 
       emit(StudentCardLoaded(response));
     } catch (e) {
-      emit(StudentCardError(e.toString().replaceFirst('Exception: ', '')));
+      emit(StudentCardError(e.toString().replaceAll('Exception: ', '')));
     }
   }
 
@@ -60,7 +60,7 @@ class StudentCardBloc extends Bloc<StudentCardEvent, StudentCardState> {
 
       emit(ReAssignStudentCardLoaded(response));
     } catch (e) {
-      emit(StudentCardError(e.toString().replaceFirst('Exception: ', '')));
+      emit(StudentCardError(e.toString().replaceAll('Exception: ', '')));
     }
   }
 
@@ -77,7 +77,7 @@ class StudentCardBloc extends Bloc<StudentCardEvent, StudentCardState> {
 
       emit(SearchStudentForAssignmentLoaded(response));
     } catch (e) {
-      emit(StudentCardError(e.toString().replaceFirst('Exception: ', '')));
+      emit(StudentCardError(e.toString().replaceAll('Exception: ', '')));
     }
   }
 
@@ -92,7 +92,7 @@ class StudentCardBloc extends Bloc<StudentCardEvent, StudentCardState> {
 
       emit(AssignStudentCardLoaded(response));
     } catch (e) {
-      emit(StudentCardError(e.toString().replaceFirst('Exception: ', '')));
+      emit(StudentCardError(e.toString().replaceAll('Exception: ', '')));
     }
   }
 }

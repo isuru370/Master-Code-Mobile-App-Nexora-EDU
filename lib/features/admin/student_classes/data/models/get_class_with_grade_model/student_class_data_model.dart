@@ -7,6 +7,10 @@ class StudentClassDataModel {
   final String medium;
   final int gradeId;
   final String gradeName;
+
+  /// Branch the class belongs to (null from an older server)
+  final int? branchId;
+  final String? branchName;
   final int? teacherId;
   final String teacherName;
   final bool isActive;
@@ -20,6 +24,8 @@ class StudentClassDataModel {
     required this.medium,
     required this.gradeId,
     required this.gradeName,
+    this.branchId,
+    this.branchName,
     required this.teacherId,
     required this.teacherName,
     required this.isActive,
@@ -35,6 +41,8 @@ class StudentClassDataModel {
       medium: json['medium']?.toString() ?? '',
       gradeId: _toInt(json['grade_id']),
       gradeName: json['grade_name']?.toString() ?? '',
+      branchId: json['branch_id'] != null ? _toInt(json['branch_id']) : null,
+      branchName: json['branch_name']?.toString(),
       teacherId: json['teacher_id'] != null ? _toInt(json['teacher_id']) : null,
       teacherName: json['teacher_name']?.toString() ?? '',
       isActive: json['is_active'] == true,

@@ -30,7 +30,6 @@ import 'features/admin/student_image/presentaion/bloc/student_image/student_imag
 import 'features/admin/student_tute/presentation/bloc/tute/tute_bloc.dart';
 import 'features/admin/students/presentaion/bloc/student_classes/student_classes_bloc.dart';
 import 'features/admin/students/presentaion/bloc/students/students_bloc.dart';
-import 'features/admin/today_attendance/presentation/bloc/daily_attendance_details/daily_attendance_details_bloc.dart';
 import 'features/admin/today_classes/presentaion/bloc/today_classes/today_classes_bloc.dart';
 import 'features/auth/presentation/bloc/auth/auth_bloc.dart';
 import 'features/teacher/classess/presentaion/bloc/teacher_classes/teacher_classes_bloc.dart';
@@ -67,7 +66,6 @@ Future<void> main() async {
         BlocProvider(create: (_) => sl<StudentGradeBloc>()),
         BlocProvider(create: (_) => sl<ImageUploadBloc>()),
         BlocProvider(create: (_) => sl<MobileDashboardBloc>()),
-        BlocProvider(create: (_) => sl<DailyAttendanceDetailsBloc>()),
         BlocProvider(create: (_) => sl<StudentImageBloc>()),
         BlocProvider(create: (_) => sl<TuteBloc>()),
         BlocProvider(create: (_) => sl<ReadTuteBloc>()),

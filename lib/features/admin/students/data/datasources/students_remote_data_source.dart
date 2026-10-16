@@ -7,8 +7,6 @@ import '../../../../../core/constants/api_constants.dart';
 import '../../../../../core/errors/app_exceptions.dart';
 import '../../../../../core/storage/session_storage.dart';
 import '../models/create_student/create_student_response_model.dart';
-import '../models/student_custom_ids/students_custom_id_request_model.dart';
-import '../models/student_custom_ids/students_custom_id_response_model.dart';
 import '../models/students_model.dart';
 import '../models/students_model/students_response_model.dart';
 
@@ -69,42 +67,6 @@ class StudentRemoteDataSource {
     } catch (e) {
       debugPrint('STUDENTS FETCH ERROR: $e');
       rethrow; // let Bloc handle it
-    }
-  }
-
-  Future<StudentsCustomIdResponseModel> getStudentsIds(
-    StudentsCustomIdRequestModel request,
-  ) async {
-    try {
-      final token = await SessionStorage.getToken();
-      final uri = Uri.parse('${ApiConstants.apiUrl}/students/custom_ids')
-          .replace(
-            queryParameters: {
-              if (request.search != null) 'search': request.search,
-              if (request.month != null) 'month': request.month,
-            },
-          );
-
-      final response = await http.get(
-        uri,
-        headers: ApiConstants.headers(token: token),
-      );
-
-      debugPrint(
-        'GET STUDENTS CUSTOM IDS RESPONSE CODE: ${response.statusCode}',
-      );
-      debugPrint('GET STUDENTS CUSTOM IDS RESPONSE BODY: ${response.body}');
-
-      if (response.statusCode == 200) {
-        final decoded = jsonDecode(response.body);
-        return StudentsCustomIdResponseModel.fromJson(decoded);
-      } else if (response.statusCode == 401) {
-        throw UnauthorizedException('Unauthorized');
-      } else {
-        throw ServerException('Server error', response.statusCode);
-      }
-    } catch (e) {
-      rethrow;
     }
   }
 
