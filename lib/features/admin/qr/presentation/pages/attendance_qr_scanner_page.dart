@@ -5,9 +5,11 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/utils/app_datetime.dart';
+import '../../data/model/scan_attendance_new/attendance_data_model.dart';
 import '../../data/model/scan_attendance_new/scan_attendance_response_model.dart';
-import '../bloc/read_payment/read_payment_bloc.dart';
+import '../../data/model/scan_payment_new/scan_payment_request_model.dart';
 import '../bloc/scan_attendance/scan_attendance_bloc.dart';
+import '../bloc/scan_payment/scan_payment_bloc.dart';
 
 class AttendanceQrScannerPage extends StatefulWidget {
   const AttendanceQrScannerPage({super.key});
@@ -191,7 +193,59 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
 
     setState(() => _isPaymentProcessing = true);
 
-    context.read<ReadPaymentBloc>().add(ReadPaymentRequested(studentCode));
+    // Same API + model as the Payment scanner, so PaymentPage gets
+    // the ScanPaymentResponseModel it expects.
+    context.read<ScanPaymentBloc>().add(
+      ScanPaymentRequested(
+        requestModel: ScanPaymentRequestModel(code: studentCode),
+      ),
+    );
+  }
+
+  void _showSnack(String message, {Color color = AppColors.danger}) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(backgroundColor: color, content: Text(message)));
+  }
+
+  //---------------------------------------
+  // Current Month Payment
+  //---------------------------------------
+
+  /// Payment state of this month for the scanned class.
+  /// Uses `current_month_payment` from the server; older servers only send
+  /// `last_payment`, so then it is worked out from that.
+  _MonthPayment _monthPayment(AttendanceDataModel data) {
+    final now = DateTime.now();
+    final monthKey = '${now.year}-${now.month.toString().padLeft(2, '0')}';
+    final monthName = '${AppDateTime.getShortMonthName(now)} ${now.year}';
+
+    final current = data.currentMonthPayment;
+    if (current != null) {
+      return _MonthPayment(
+        status: current.status,
+        monthName: current.monthName.isEmpty ? monthName : current.monthName,
+        paidAmount: current.paidAmount,
+        balance: current.balance,
+      );
+    }
+
+    if (data.enrollment.isFreeCard) {
+      return _MonthPayment(status: 'free', monthName: monthName);
+    }
+
+    final last = data.lastPayment;
+    if (last != null &&
+        last.status.toLowerCase() == 'completed' &&
+        last.paymentMonth.startsWith(monthKey)) {
+      return _MonthPayment(
+        status: 'paid',
+        monthName: monthName,
+        paidAmount: double.tryParse(last.amount) ?? 0,
+      );
+    }
+
+    return _MonthPayment(status: 'unpaid', monthName: monthName);
   }
 
   //---------------------------------------
@@ -328,35 +382,31 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
         ),
 
         //----------------------------------
-        // Read Payment Listener
+        // Payment Listener (Collect Payment button)
         //----------------------------------
-        BlocListener<ReadPaymentBloc, ReadPaymentState>(
+        BlocListener<ScanPaymentBloc, ScanPaymentState>(
+          // Only react to requests made from this page
+          listenWhen: (previous, current) => _isPaymentProcessing,
           listener: (context, state) {
-            if (state is ReadPaymentLoading) {
-              setState(() => _isPaymentProcessing = true);
-            }
-
-            if (state is ReadPaymentLoaded) {
+            if (state is ScanPaymentLoaded) {
               setState(() => _isPaymentProcessing = false);
+
               Navigator.pushNamed(
                 context,
                 '/payment-details',
                 arguments: {
-                  'paymentState': state, // 'paymentState' use කරන්න
+                  'paymentState': state.response,
                   'mark_method': 'qr_mobile',
                 },
               ).then((_) {
-                setState(() {
-                  _isScanning = false;
-                });
+                if (!mounted) return;
+                setState(() => _isScanning = false);
               });
             }
 
-            if (state is ReadPaymentError) {
-              setState(() {
-                _isPaymentProcessing = false;
-                _errorMessage = state.message;
-              });
+            if (state is ScanPaymentError) {
+              setState(() => _isPaymentProcessing = false);
+              _showSnack(state.message.replaceAll('Exception: ', ''));
             }
           },
         ),
@@ -890,10 +940,11 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
     // Check if student has paid for current month
     final alreadyMarked = data.attendanceResult.alreadyMarked;
 
-    final isPaid = payment != null && payment.status.toUpperCase() == "PAID";
+    final monthPayment = _monthPayment(data);
+    final isPaid = monthPayment.isPaid;
 
-    // Payment month label
-    final paymentMonthLabel = payment != null
+    // Month of the last payment (e.g. 2026-10), or this month if none
+    final paymentMonthLabel = payment != null && payment.paymentMonth.isNotEmpty
         ? payment.paymentMonth
         : AppDateTime.getShortMonthName(DateTime.now());
 
@@ -1030,16 +1081,20 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
               children: [
                 // Payment Status - GREEN if PAID
                 _SummaryCard(
-                  title: "Payment",
-                  value: isPaid ? "PAID" : "UNPAID",
+                  title: "This Month",
+                  value: monthPayment.label,
                   icon: isPaid ? Icons.check_circle : Icons.payment,
-                  color: isPaid ? AppColors.success : AppColors.danger,
+                  color: isPaid
+                      ? AppColors.success
+                      : monthPayment.status == 'partial'
+                      ? AppColors.warning
+                      : AppColors.danger,
                   isPaid: isPaid,
                 ),
 
                 // Payment Month
                 _SummaryCard(
-                  title: "Month",
+                  title: "Last Paid",
                   value: paymentMonthLabel,
                   icon: Icons.calendar_month,
                   color: AppColors.info,
@@ -1088,7 +1143,15 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
           const SizedBox(height: 14),
 
           //====================================
-          // Payment Button - Always Visible
+          // This month's payment status
+          //====================================
+          _monthPaymentBanner(monthPayment),
+
+          const SizedBox(height: 10),
+
+          //====================================
+          // Collect Payment - always available
+          // (even if this month is paid: next month, balance, other class)
           //====================================
           SizedBox(
             width: double.infinity,
@@ -1104,25 +1167,21 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
                         color: Colors.white,
                       ),
                     )
-                  : Icon(
-                      isPaid ? Icons.check_circle : Icons.payments,
-                      color: Colors.white,
-                    ),
-              label: _isPaymentProcessing
-                  ? const Text("Loading...")
-                  : Text(
-                      isPaid ? "Payment Completed ✅" : "Collect Payment",
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                  : const Icon(Icons.payments, color: Colors.white),
+              label: Text(
+                _isPaymentProcessing ? "Loading..." : "Collect Payment",
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: isPaid ? AppColors.success : AppColors.primary,
+                backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
-                disabledBackgroundColor: isPaid
-                    ? AppColors.success
-                    : AppColors.primary,
+                disabledBackgroundColor: AppColors.primary.withValues(
+                  alpha: 0.6,
+                ),
+                disabledForegroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: AppColors.radiusMedium,
                 ),
@@ -1137,6 +1196,64 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
   //---------------------------------------
   // Helper Widgets
   //---------------------------------------
+
+  Widget _monthPaymentBanner(_MonthPayment m) {
+    final Color color;
+    final IconData icon;
+    final String text;
+
+    switch (m.status) {
+      case 'free':
+        color = AppColors.success;
+        icon = Icons.credit_card;
+        text = 'Free card - no fee for ${m.monthName}';
+        break;
+      case 'paid':
+        color = AppColors.success;
+        icon = Icons.check_circle;
+        text = m.paidAmount > 0
+            ? '${m.monthName} paid (Rs.${m.paidAmount.toStringAsFixed(0)})'
+            : '${m.monthName} paid';
+        break;
+      case 'partial':
+        color = AppColors.warning;
+        icon = Icons.timelapse;
+        text =
+            '${m.monthName}: paid Rs.${m.paidAmount.toStringAsFixed(0)}, '
+            'balance Rs.${m.balance.toStringAsFixed(0)}';
+        break;
+      default:
+        color = AppColors.danger;
+        icon = Icons.error_outline;
+        text = '${m.monthName} not paid';
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: color, size: 18),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(
+                color: color,
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _studentImage(String imageUrl) {
     return CircleAvatar(
@@ -1228,5 +1345,39 @@ class _SummaryCard extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+//============================================================
+// This month's payment (for the scanned class)
+//============================================================
+
+class _MonthPayment {
+  /// free | paid | partial | unpaid
+  final String status;
+  final String monthName;
+  final double paidAmount;
+  final double balance;
+
+  const _MonthPayment({
+    required this.status,
+    required this.monthName,
+    this.paidAmount = 0,
+    this.balance = 0,
+  });
+
+  bool get isPaid => status == 'paid' || status == 'free';
+
+  String get label {
+    switch (status) {
+      case 'free':
+        return 'FREE';
+      case 'paid':
+        return 'PAID';
+      case 'partial':
+        return 'PARTIAL';
+      default:
+        return 'UNPAID';
+    }
   }
 }
