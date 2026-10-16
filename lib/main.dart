@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' show kReleaseMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -8,6 +9,7 @@ import 'package:timezone/timezone.dart' as tz;
 import 'app.dart';
 import 'core/di/injection_container.dart' as di;
 import 'core/di/injection_container.dart';
+import 'core/network/app_http_client.dart';
 import 'features/admin/admission/presentaion/bloc/admission/admission_bloc.dart';
 import 'features/admin/attendance/presentaion/bloc/attendance/attendance_bloc.dart';
 import 'features/admin/class_schedule/presentaion/bloc/class_category/class_category_bloc.dart';
@@ -39,7 +41,12 @@ import 'features/teacher/students/presentaion/bloc/teacher_students/teacher_stud
 import 'features/teacher/timetable/presentaion/bloc/teacher_timetable/teacher_timetable_bloc.dart';
 import 'simple_bloc_observer.dart';
 
-Future<void> main() async {
+/// The whole app runs inside http.runWithClient, so every http.get / post /
+/// put / patch / delete and MultipartRequest in the datasources uses
+/// AppHttpClient (timeout + Accept header + session-expired handling).
+Future<void> main() => http.runWithClient(_startApp, () => AppHttpClient());
+
+Future<void> _startApp() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Release builds: no debugPrint output. The datasources print API
