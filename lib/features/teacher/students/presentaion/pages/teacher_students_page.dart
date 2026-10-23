@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../core/constants/api_constants.dart';
 import '../../../../../core/theme/app_colors.dart';
@@ -638,10 +640,7 @@ class _TeacherStudentsPageState extends State<TeacherStudentsPage> {
       color: AppColors.surface,
       borderRadius: AppColors.radiusMedium,
       child: InkWell(
-        onTap: () {
-          // TODO:
-          // Navigate to student details
-        },
+        onTap: () => _showStudentDetails(student, fullName),
         borderRadius: AppColors.radiusMedium,
         child: Container(
           padding: const EdgeInsets.all(14),
@@ -773,6 +772,103 @@ class _TeacherStudentsPageState extends State<TeacherStudentsPage> {
   // ============================================================
   // STUDENT AVATAR
   // ============================================================
+
+  /// Student details: name, ID, phone (call / copy) and status.
+  void _showStudentDetails(TeacherStudentModel student, String fullName) {
+    final mobile = student.mobile?.trim() ?? '';
+    final customId = student.customId?.trim() ?? '';
+
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+      ),
+      builder: (sheetContext) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(color: AppColors.border, borderRadius: BorderRadius.circular(4)),
+              ),
+              const SizedBox(height: 18),
+              _buildStudentAvatar(student, fullName),
+              const SizedBox(height: 12),
+              Text(
+                fullName,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                customId.isEmpty ? 'No ID' : customId,
+                style: const TextStyle(fontSize: 13, color: AppColors.textMuted),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: student.isActive ? AppColors.successLight : AppColors.dangerLight,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  student.isActive ? 'Active' : 'Inactive',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: student.isActive ? AppColors.success : AppColors.danger,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 18),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.phone_outlined, color: AppColors.primary),
+                title: Text(mobile.isEmpty ? 'No phone number' : mobile),
+                subtitle: const Text('Guardian / student phone'),
+                trailing: mobile.isEmpty
+                    ? null
+                    : IconButton(
+                        tooltip: 'Copy',
+                        icon: const Icon(Icons.copy_rounded, size: 20),
+                        onPressed: () {
+                          Clipboard.setData(ClipboardData(text: mobile));
+                          Navigator.pop(sheetContext);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Phone number copied.')),
+                          );
+                        },
+                      ),
+              ),
+              if (mobile.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: FilledButton.icon(
+                    onPressed: () async {
+                      final ok = await launchUrl(Uri(scheme: 'tel', path: mobile.replaceAll(' ', '')));
+                      if (!ok && mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Could not open the phone app.')),
+                        );
+                      }
+                    },
+                    icon: const Icon(Icons.call_rounded),
+                    label: const Text('Call'),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget _buildStudentAvatar(TeacherStudentModel student, String fullName) {
     final imagePath = student.imgUrl;

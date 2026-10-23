@@ -12,6 +12,7 @@ import '../../../domain/usecase/assign_student_card_usecase.dart';
 import '../../../domain/usecase/re_assign_student_card_usecase.dart';
 import '../../../domain/usecase/scan_student_card_usecase.dart';
 import '../../../domain/usecase/search_student_assignment_usecase.dart';
+import 'package:nexorait_education_app/core/errors/error_message.dart';
 
 part 'student_card_event.dart';
 part 'student_card_state.dart';
@@ -45,7 +46,7 @@ class StudentCardBloc extends Bloc<StudentCardEvent, StudentCardState> {
 
       emit(StudentCardLoaded(response));
     } catch (e) {
-      emit(StudentCardError(e.toString().replaceAll('Exception: ', '')));
+      emit(StudentCardError(friendlyError(e).replaceAll('Exception: ', '')));
     }
   }
 
@@ -60,7 +61,7 @@ class StudentCardBloc extends Bloc<StudentCardEvent, StudentCardState> {
 
       emit(ReAssignStudentCardLoaded(response));
     } catch (e) {
-      emit(StudentCardError(e.toString().replaceAll('Exception: ', '')));
+      emit(StudentCardError(friendlyError(e).replaceAll('Exception: ', '')));
     }
   }
 
@@ -77,7 +78,7 @@ class StudentCardBloc extends Bloc<StudentCardEvent, StudentCardState> {
 
       emit(SearchStudentForAssignmentLoaded(response));
     } catch (e) {
-      emit(StudentCardError(e.toString().replaceAll('Exception: ', '')));
+      emit(StudentCardError(friendlyError(e).replaceAll('Exception: ', '')));
     }
   }
 
@@ -92,7 +93,7 @@ class StudentCardBloc extends Bloc<StudentCardEvent, StudentCardState> {
 
       emit(AssignStudentCardLoaded(response));
     } catch (e) {
-      emit(StudentCardError(e.toString().replaceAll('Exception: ', '')));
+      emit(StudentCardError(friendlyError(e).replaceAll('Exception: ', '')));
     }
   }
 }

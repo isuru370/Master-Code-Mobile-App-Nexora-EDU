@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data/model/scan_payment_new/scan_payment_request_model.dart';
 import '../../../data/model/scan_payment_new/scan_payment_response_model.dart';
 import '../../../domain/usecases/scan_payment_usecase.dart';
+import 'package:nexorait_education_app/core/errors/error_message.dart';
 
 
 
@@ -40,7 +41,7 @@ class ScanPaymentBloc
     } catch (e) {
       emit(
         ScanPaymentError(
-          message: e.toString().replaceFirst(
+          message: friendlyError(e).replaceFirst(
                 'Exception: ',
                 '',
               ),

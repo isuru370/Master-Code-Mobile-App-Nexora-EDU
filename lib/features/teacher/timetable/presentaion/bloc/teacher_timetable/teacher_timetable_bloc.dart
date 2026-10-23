@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/model/teacher_timetable_model.dart';
 import '../../../domain/usecase/get_teacher_timetable.dart';
+import 'package:nexorait_education_app/core/errors/error_message.dart';
 
 
 part 'teacher_timetable_event.dart';
@@ -37,7 +38,7 @@ class TeacherTimetableBloc
     } catch (e) {
       emit(
         TeacherTimetableError(
-          message: e.toString().replaceFirst(
+          message: friendlyError(e).replaceFirst(
                 'Exception: ',
                 '',
               ),

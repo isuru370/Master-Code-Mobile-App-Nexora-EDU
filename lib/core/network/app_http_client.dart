@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
@@ -58,7 +59,42 @@ class AppHttpClient extends http.BaseClient {
       unawaited(SessionExpiredHandler.handle());
     }
 
+    // An error page that is not JSON (502 from the proxy, maintenance page,
+    // PHP fatal error, upload too large ...) would reach the datasources as
+    // "FormatException: Unexpected character <!DOCTYPE html>". Replace it
+    // with the JSON every datasource already understands.
+    final contentType = response.headers['content-type'] ?? '';
+    if (response.statusCode >= 400 && !contentType.contains('json')) {
+      await response.stream.drain<void>();
+
+      final body = utf8.encode(jsonEncode({
+        'success': false,
+        'status': false,
+        'message': _errorPageMessage(response.statusCode),
+        'data': null,
+      }));
+
+      return http.StreamedResponse(
+        Stream.value(body),
+        response.statusCode,
+        contentLength: body.length,
+        request: response.request,
+        headers: {...response.headers, 'content-type': 'application/json'},
+        reasonPhrase: response.reasonPhrase,
+      );
+    }
+
     return response;
+  }
+
+  static String _errorPageMessage(int status) {
+    return switch (status) {
+      413 => 'The file is too large to upload. Use a smaller photo.',
+      404 => 'This feature was not found on the server ($status). The server or the app may need an update.',
+      502 || 503 || 504 => 'The server is not available right now ($status). Please try again in a few minutes.',
+      >= 500 => 'Server error ($status). Please try again, or contact the office if it keeps happening.',
+      _ => 'Request failed ($status). Please try again.',
+    };
   }
 
   /// 401 from these is not "session expired":

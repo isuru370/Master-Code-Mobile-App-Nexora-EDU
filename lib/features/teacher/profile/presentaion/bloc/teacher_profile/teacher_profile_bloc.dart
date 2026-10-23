@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nexorait_education_app/core/errors/error_message.dart';
 
 import '../../../data/model/teacher_profile_model.dart';
 import '../../../domain/usecase/change_teacher_password.dart';
@@ -87,8 +88,5 @@ class TeacherProfileBloc
     }
   }
 
-  String _clean(Object e) {
-    final text = e.toString().replaceFirst(RegExp(r'^\w*Exception:\s*'), '').trim();
-    return text.isEmpty ? 'Something went wrong. Please try again.' : text;
-  }
+  String _clean(Object e) => friendlyError(e);
 }
