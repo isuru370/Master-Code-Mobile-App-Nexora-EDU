@@ -26,6 +26,28 @@ class ScanAttendanceSuccess extends ScanAttendanceState {
   List<Object?> get props => [response];
 }
 
+/// More than one class is open for this student now; nothing was marked.
+/// Show [classes] and send ScanAttendanceRequested again with the picked
+/// scheduleId.
+class ScanAttendanceChooseClass extends ScanAttendanceState {
+  final String code;
+  final String markMethod;
+  final String message;
+  final String studentName;
+  final List<AttendanceClassChoiceModel> classes;
+
+  const ScanAttendanceChooseClass({
+    required this.code,
+    required this.markMethod,
+    required this.message,
+    required this.studentName,
+    required this.classes,
+  });
+
+  @override
+  List<Object?> get props => [code, markMethod, message, studentName, classes];
+}
+
 class ScanAttendanceFailure extends ScanAttendanceState {
   final String message;
 
