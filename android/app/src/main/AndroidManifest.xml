@@ -66,6 +66,11 @@
             <action android:name="android.intent.action.VIEW" />
             <data android:scheme="sms" />
         </intent>
+        <!-- Open WhatsApp links (course attendance report to the teacher) -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
         <!-- If your app checks for call support -->
         <intent>
             <action android:name="android.intent.action.VIEW" />

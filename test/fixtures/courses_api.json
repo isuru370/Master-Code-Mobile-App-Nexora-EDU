@@ -1,0 +1,370 @@
+{
+    "student": {
+        "success": true,
+        "message": "Student loaded.",
+        "data": {
+            "student": {
+                "id": 1,
+                "custom_id": "S1",
+                "initial_name": "A. Silva",
+                "mobile": null,
+                "guardian_mobile": "0771234567",
+                "img_url": ""
+            },
+            "enrollments": [],
+            "available_courses": [
+                {
+                    "id": 1,
+                    "code": "CMB-C26001",
+                    "name": "Diploma in IT",
+                    "branch": "Colombo",
+                    "full_fee": 12000,
+                    "one_time_fee": 10000,
+                    "installment_count": 6,
+                    "installment_amount": 2000,
+                    "start_date": "2026-11-01",
+                    "end_date": "2027-04-30",
+                    "status": "ongoing",
+                    "schedule": "Sat 08:00 AM - 12:00 PM · Sun 08:00 AM - 12:00 PM",
+                    "days": [
+                        {
+                            "day": "saturday",
+                            "start_time": "08:00",
+                            "end_time": "12:00",
+                            "hall": null
+                        },
+                        {
+                            "day": "sunday",
+                            "start_time": "08:00",
+                            "end_time": "12:00",
+                            "hall": null
+                        }
+                    ]
+                }
+            ],
+            "payment_methods": [
+                "cash",
+                "card",
+                "bank_transfer",
+                "online",
+                "cheque",
+                "other"
+            ]
+        }
+    },
+    "pay": {
+        "success": true,
+        "message": "Payment saved. Receipt REC-000001.",
+        "data": {
+            "receipt": {
+                "id": 1,
+                "institute_name": "Nexora EDU",
+                "branch": "Colombo",
+                "title": "COURSE PAYMENT",
+                "receipt_number": "REC-000001",
+                "paid_at": "2026-11-01 08:30:00",
+                "status": "completed",
+                "student_id": "S1",
+                "student_name": "A. Silva",
+                "course_code": "CMB-C26001",
+                "course_name": "Diploma in IT",
+                "payment_method": "cash",
+                "amount": 1500,
+                "special_fee_reason": "Sibling",
+                "course_fee": 9000,
+                "total_paid": 1500,
+                "balance": 7500,
+                "next_due_date": "2026-12-01",
+                "next_due_amount": 1500,
+                "taken_by": "Cashier"
+            },
+            "enrollment": {
+                "id": 2,
+                "status": "active",
+                "course": {
+                    "id": 1,
+                    "code": "CMB-C26001",
+                    "name": "Diploma in IT"
+                },
+                "payment_plan": "installment",
+                "enrolled_at": "2026-11-01",
+                "fees": {
+                    "total_fee": 9000,
+                    "standard_fee": 12000,
+                    "special_fee": true,
+                    "fee_reason": "Sibling",
+                    "paid": 1500,
+                    "balance": 7500,
+                    "overdue": 0,
+                    "next_installment": {
+                        "id": 8,
+                        "installment_no": 2,
+                        "amount": 1500,
+                        "paid": 0,
+                        "remaining": 1500,
+                        "due_date": "2026-12-01",
+                        "status": "due"
+                    },
+                    "installments": [
+                        {
+                            "id": 7,
+                            "installment_no": 1,
+                            "amount": 1500,
+                            "paid": 1500,
+                            "remaining": 0,
+                            "due_date": "2026-11-01",
+                            "status": "paid"
+                        },
+                        {
+                            "id": 8,
+                            "installment_no": 2,
+                            "amount": 1500,
+                            "paid": 0,
+                            "remaining": 1500,
+                            "due_date": "2026-12-01",
+                            "status": "due"
+                        },
+                        {
+                            "id": 9,
+                            "installment_no": 3,
+                            "amount": 1500,
+                            "paid": 0,
+                            "remaining": 1500,
+                            "due_date": "2027-01-01",
+                            "status": "due"
+                        },
+                        {
+                            "id": 10,
+                            "installment_no": 4,
+                            "amount": 1500,
+                            "paid": 0,
+                            "remaining": 1500,
+                            "due_date": "2027-02-01",
+                            "status": "due"
+                        },
+                        {
+                            "id": 11,
+                            "installment_no": 5,
+                            "amount": 1500,
+                            "paid": 0,
+                            "remaining": 1500,
+                            "due_date": "2027-03-01",
+                            "status": "due"
+                        },
+                        {
+                            "id": 12,
+                            "installment_no": 6,
+                            "amount": 1500,
+                            "paid": 0,
+                            "remaining": 1500,
+                            "due_date": "2027-04-01",
+                            "status": "due"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "sessions": {
+        "success": true,
+        "message": "Class days loaded.",
+        "data": {
+            "date": "2026-11-01",
+            "sessions": [
+                {
+                    "id": 1,
+                    "course_id": 1,
+                    "course_name": "Diploma in IT",
+                    "course_code": "CMB-C26001",
+                    "date": "2026-11-01",
+                    "start_time": "08:00",
+                    "end_time": "12:00",
+                    "hall": null,
+                    "status": "scheduled",
+                    "is_extra": false,
+                    "can_mark": true,
+                    "present_count": 0,
+                    "students_count": 2
+                }
+            ]
+        }
+    },
+    "mark": {
+        "success": true,
+        "message": "Attendance marked.",
+        "data": {
+            "already_marked": false,
+            "attended_at": "2026-11-01 08:30:00",
+            "student": {
+                "id": 1,
+                "custom_id": "S1",
+                "initial_name": "A. Silva",
+                "mobile": null,
+                "guardian_mobile": "0771234567",
+                "img_url": ""
+            },
+            "session": {
+                "id": 1,
+                "course_id": 1,
+                "course_name": "Diploma in IT",
+                "course_code": "CMB-C26001",
+                "date": "2026-11-01",
+                "start_time": "08:00",
+                "end_time": "12:00",
+                "hall": null,
+                "status": "ongoing",
+                "is_extra": false,
+                "can_mark": true,
+                "present_count": 1
+            },
+            "fees": {
+                "total_fee": 9000,
+                "standard_fee": 12000,
+                "special_fee": true,
+                "fee_reason": "Sibling",
+                "paid": 1500,
+                "balance": 7500,
+                "overdue": 0,
+                "next_installment": {
+                    "id": 8,
+                    "installment_no": 2,
+                    "amount": 1500,
+                    "paid": 0,
+                    "remaining": 1500,
+                    "due_date": "2026-12-01",
+                    "status": "due"
+                },
+                "installments": [
+                    {
+                        "id": 7,
+                        "installment_no": 1,
+                        "amount": 1500,
+                        "paid": 1500,
+                        "remaining": 0,
+                        "due_date": "2026-11-01",
+                        "status": "paid"
+                    },
+                    {
+                        "id": 8,
+                        "installment_no": 2,
+                        "amount": 1500,
+                        "paid": 0,
+                        "remaining": 1500,
+                        "due_date": "2026-12-01",
+                        "status": "due"
+                    },
+                    {
+                        "id": 9,
+                        "installment_no": 3,
+                        "amount": 1500,
+                        "paid": 0,
+                        "remaining": 1500,
+                        "due_date": "2027-01-01",
+                        "status": "due"
+                    },
+                    {
+                        "id": 10,
+                        "installment_no": 4,
+                        "amount": 1500,
+                        "paid": 0,
+                        "remaining": 1500,
+                        "due_date": "2027-02-01",
+                        "status": "due"
+                    },
+                    {
+                        "id": 11,
+                        "installment_no": 5,
+                        "amount": 1500,
+                        "paid": 0,
+                        "remaining": 1500,
+                        "due_date": "2027-03-01",
+                        "status": "due"
+                    },
+                    {
+                        "id": 12,
+                        "installment_no": 6,
+                        "amount": 1500,
+                        "paid": 0,
+                        "remaining": 1500,
+                        "due_date": "2027-04-01",
+                        "status": "due"
+                    }
+                ]
+            },
+            "attendance": {
+                "attended": 1,
+                "held": 1,
+                "percentage": 100
+            }
+        }
+    },
+    "report": {
+        "success": true,
+        "message": "Class day report loaded.",
+        "data": {
+            "session": {
+                "id": 1,
+                "course_id": 1,
+                "course_name": "Diploma in IT",
+                "course_code": "CMB-C26001",
+                "date": "2026-11-01",
+                "start_time": "08:00",
+                "end_time": "12:00",
+                "hall": null,
+                "status": "ongoing",
+                "is_extra": false,
+                "can_mark": true,
+                "present_count": 1
+            },
+            "summary": {
+                "students": 2,
+                "present": 1,
+                "absent": 1,
+                "percentage": 50
+            },
+            "present": [
+                {
+                    "student_id": 1,
+                    "custom_id": "S1",
+                    "initial_name": "A. Silva",
+                    "mobile": null,
+                    "guardian_mobile": "0771234567",
+                    "attended_at": "08:30 AM"
+                }
+            ],
+            "absent": [
+                {
+                    "student_id": 2,
+                    "custom_id": "S2",
+                    "initial_name": "B. Perera",
+                    "mobile": null,
+                    "guardian_mobile": "0771234567",
+                    "attended_at": null
+                }
+            ],
+            "share_text": "*Diploma in IT* (CMB-C26001)\nSun, 01 Nov 2026 · 08:00 AM - 12:00 PM\n\nPresent: 1 \/ 2\nAbsent: 1\n\n*Absent*\n1. S2 B. Perera\n\n*Present*\n1. S1 A. Silva\n\n- Nexora EDU",
+            "teachers": [
+                {
+                    "id": 1,
+                    "name": "Nimal Perera",
+                    "mobile": "0770000000",
+                    "whatsapp_url": "https:\/\/wa.me\/94770000000?text=%2ADiploma%20in%20IT%2A%20%28CMB-C26001%29%0ASun%2C%2001%20Nov%202026%20%C2%B7%2008%3A00%20AM%20-%2012%3A00%20PM%0A%0APresent%3A%201%20%2F%202%0AAbsent%3A%201%0A%0A%2AAbsent%2A%0A1.%20S2%20B.%20Perera%0A%0A%2APresent%2A%0A1.%20S1%20A.%20Silva%0A%0A-%20Nexora%20EDU"
+                },
+                {
+                    "id": 2,
+                    "name": "Sunil Silva",
+                    "mobile": "0770000001",
+                    "whatsapp_url": "https:\/\/wa.me\/94770000001?text=%2ADiploma%20in%20IT%2A%20%28CMB-C26001%29%0ASun%2C%2001%20Nov%202026%20%C2%B7%2008%3A00%20AM%20-%2012%3A00%20PM%0A%0APresent%3A%201%20%2F%202%0AAbsent%3A%201%0A%0A%2AAbsent%2A%0A1.%20S2%20B.%20Perera%0A%0A%2APresent%2A%0A1.%20S1%20A.%20Silva%0A%0A-%20Nexora%20EDU"
+                }
+            ]
+        }
+    },
+    "err422": {
+        "message": "The given data was invalid.",
+        "errors": {
+            "code": [
+                "No student found for \"NOPE\"."
+            ]
+        }
+    }
+}

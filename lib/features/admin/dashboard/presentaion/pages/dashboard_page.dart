@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:nexorait_education_app/core/enums/scan_type.dart';
 
 import '../../../../../core/enums/scan_student_card.dart';
+import '../../../../../core/features/app_features.dart';
 import '../../../../../core/navigation/role_router.dart';
 import '../../../../../core/storage/session_storage.dart';
 import '../../../../../core/theme/app_colors.dart';
@@ -33,6 +34,9 @@ class _DashboardPageState extends State<DashboardPage> {
   List<BranchModel> _branches = const [];
   int? _selectedBranchId;
   List<String> _features = const [];
+
+  /// Institute has the Courses section (GET /api/features)
+  bool _hasCourses = AppFeatures.courses;
   bool _loggingOut = false;
 
   /// Can this role use the feature? (empty list = old backend -> show all)
@@ -71,6 +75,7 @@ class _DashboardPageState extends State<DashboardPage> {
     super.initState();
 
     _loadSession();
+    _loadAppFeatures();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
@@ -104,6 +109,14 @@ class _DashboardPageState extends State<DashboardPage> {
     if (!connected) {
       _showPrinterSuggestionDialog();
     }
+  }
+
+  Future<void> _loadAppFeatures() async {
+    await AppFeatures.loadSaved();
+    if (mounted) setState(() => _hasCourses = AppFeatures.courses);
+
+    await AppFeatures.refresh();
+    if (mounted) setState(() => _hasCourses = AppFeatures.courses);
   }
 
   Future<void> _loadSession() async {
@@ -836,6 +849,24 @@ class _DashboardPageState extends State<DashboardPage> {
                       Navigator.pushNamed(context, '/admission-payment');
                     },
                   ),
+                  if (_hasCourses) ...[
+                    const Divider(height: 24, thickness: 1),
+                    _sectionHeader('COURSES', Icons.school_rounded),
+                    _drawerTile(
+                      icon: Icons.how_to_reg_rounded,
+                      title: 'Course Attendance',
+                      onTap: () {
+                        Navigator.pushNamed(context, '/course-attendance');
+                      },
+                    ),
+                    _drawerTile(
+                      icon: Icons.account_balance_wallet_rounded,
+                      title: 'Course Payment',
+                      onTap: () {
+                        Navigator.pushNamed(context, '/course-payment');
+                      },
+                    ),
+                  ],
                   const Divider(height: 24, thickness: 1),
                   _sectionHeader('OTHER', Icons.more_horiz_rounded),
                   if (_can('student_tute'))
@@ -1010,6 +1041,20 @@ class _DashboardPageState extends State<DashboardPage> {
             arguments: {'type': ScanType.tute},
           ),
         ),
+      if (_hasCourses) ...[
+        _QuickActionCard(
+          icon: Icons.school_rounded,
+          label: 'Course Attendance',
+          color: AppColors.primaryDark,
+          onTap: () => Navigator.pushNamed(context, '/course-attendance'),
+        ),
+        _QuickActionCard(
+          icon: Icons.account_balance_wallet_rounded,
+          label: 'Course Payment',
+          color: AppColors.success,
+          onTap: () => Navigator.pushNamed(context, '/course-payment'),
+        ),
+      ],
       if (_can('admission'))
         _QuickActionCard(
           icon: Icons.how_to_reg_rounded,

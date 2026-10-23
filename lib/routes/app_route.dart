@@ -11,6 +11,8 @@ import '../features/admin/attendance/presentaion/pages/attendance_page.dart';
 import '../features/admin/attendance/presentaion/pages/attendance_page_new.dart';
 import '../features/admin/attendance/presentaion/pages/attendance_report_page.dart';
 import '../features/admin/attendance/presentaion/pages/attendance_schedule_page.dart';
+import '../features/admin/courses/presentation/pages/course_attendance_page.dart';
+import '../features/admin/courses/presentation/pages/course_payment_page.dart';
 import '../features/admin/dashboard/presentaion/pages/dashboard_page.dart';
 import '../features/admin/image_upload/presentation/pages/camera_screen_page.dart';
 import '../features/admin/image_upload/presentation/pages/student_image_capture_page.dart';
@@ -58,6 +60,12 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (_) => TeacherDashboardPage(),
         );
+
+      // Courses (only shown when the institute has the "courses" feature)
+      case '/course-attendance':
+        return MaterialPageRoute(builder: (_) => const CourseAttendancePage());
+      case '/course-payment':
+        return MaterialPageRoute(builder: (_) => const CoursePaymentPage());
 
       case '/print_test_screen':
         return MaterialPageRoute(builder: (_) => PrintTestPage());
