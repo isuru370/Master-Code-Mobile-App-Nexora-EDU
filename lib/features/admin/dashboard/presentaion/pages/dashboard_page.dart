@@ -619,30 +619,11 @@ class _DashboardPageState extends State<DashboardPage> {
             icon: const Icon(Icons.refresh_rounded),
           ),
           IconButton(
+            tooltip: 'Printer',
             onPressed: () {
               Navigator.pushNamed(context, '/print_test_screen');
             },
-            icon: Icon(Icons.print_rounded),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: Stack(
-              children: [
-                const Icon(Icons.notifications_rounded),
-                Positioned(
-                  right: 0,
-                  top: 0,
-                  child: Container(
-                    width: 10,
-                    height: 10,
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            icon: const Icon(Icons.print_rounded),
           ),
           const SizedBox(width: 8),
         ],

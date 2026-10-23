@@ -24,8 +24,11 @@ class TeacherDashboardPage extends StatefulWidget {
 class _TeacherDashboardPageState extends State<TeacherDashboardPage> {
   int _currentIndex = 0;
 
+  // Bottom tabs: 0 Home, 1 Classes, 2 Timetable, 3 Students, 4 Profile
+  void _openTab(int index) => setState(() => _currentIndex = index);
+
   late final List<Widget> _pages = [
-    const _TeacherHomePage(),
+    _TeacherHomePage(onOpenTab: _openTab),
     const TeacherClassesPage(),
     const TeacherTimetablePage(),
     const TeacherStudentsPage(),
@@ -54,7 +57,10 @@ class _TeacherDashboardPageState extends State<TeacherDashboardPage> {
 // ============================================================================
 
 class _TeacherHomePage extends StatefulWidget {
-  const _TeacherHomePage();
+  /// Switches the bottom tab (1 Classes, 2 Timetable, 3 Students, 4 Profile).
+  final ValueChanged<int> onOpenTab;
+
+  const _TeacherHomePage({required this.onOpenTab});
 
   @override
   State<_TeacherHomePage> createState() => _TeacherHomePageState();
@@ -148,10 +154,7 @@ class _TeacherHomePageState extends State<_TeacherHomePage> {
             _buildSectionHeader(
               title: "Today's Classes",
               actionText: "See All",
-              onActionTap: () {
-                // Bottom navigation -> Classes
-                // Can be connected later through parent callback.
-              },
+              onActionTap: () => widget.onOpenTab(1),
             ),
 
             const SizedBox(height: 14),
@@ -168,11 +171,7 @@ class _TeacherHomePageState extends State<_TeacherHomePage> {
 
             const SizedBox(height: 28),
 
-            _buildSectionHeader(
-              title: "Attendance Overview",
-              actionText: "View",
-              onActionTap: () {},
-            ),
+            _buildSectionHeader(title: "Attendance Overview"),
 
             const SizedBox(height: 14),
 
@@ -1253,6 +1252,7 @@ class _TeacherHomePageState extends State<_TeacherHomePage> {
           child: _quickAction(
             icon: Icons.menu_book_rounded,
             title: 'My Classes',
+            onTap: () => widget.onOpenTab(1),
           ),
         ),
 
@@ -1262,29 +1262,42 @@ class _TeacherHomePageState extends State<_TeacherHomePage> {
           child: _quickAction(
             icon: Icons.calendar_month_rounded,
             title: 'Timetable',
+            onTap: () => widget.onOpenTab(2),
           ),
-        ),
-
-        const SizedBox(width: 10),
-
-        Expanded(
-          child: _quickAction(icon: Icons.groups_rounded, title: 'Students'),
         ),
 
         const SizedBox(width: 10),
 
         Expanded(
           child: _quickAction(
-            icon: Icons.fact_check_outlined,
-            title: 'Attendance',
+            icon: Icons.groups_rounded,
+            title: 'Students',
+            onTap: () => widget.onOpenTab(3),
+          ),
+        ),
+
+        const SizedBox(width: 10),
+
+        Expanded(
+          child: _quickAction(
+            icon: Icons.person_outline_rounded,
+            title: 'Profile',
+            onTap: () => widget.onOpenTab(4),
           ),
         ),
       ],
     );
   }
 
-  Widget _quickAction({required IconData icon, required String title}) {
-    return Container(
+  Widget _quickAction({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: AppColors.radiusMedium,
+      child: Container(
       padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
       decoration: BoxDecoration(
         color: AppColors.surface,
@@ -1318,6 +1331,7 @@ class _TeacherHomePageState extends State<_TeacherHomePage> {
             ),
           ),
         ],
+      ),
       ),
     );
   }

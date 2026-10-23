@@ -22,7 +22,7 @@ class NexoraMobileApp extends StatelessWidget {
         MonthYearPickerLocalizations.delegate,
       ],
       supportedLocales: const [Locale('en')],
-      title: 'Education Mobile App',
+      title: 'NexoraEdu',
       // GLOBAL THEME
       theme: AppTheme.lightTheme,
       initialRoute: '/',
