@@ -54,6 +54,13 @@ android {
         release {
             // Real release key when android/key.properties exists,
             // otherwise the debug key so `flutter run --release` still works.
+            if (!keystorePropertiesFile.exists()) {
+                logger.warn(
+                    "WARNING: android/key.properties not found - this RELEASE build is signed " +
+                        "with the DEBUG key. Do not upload it to Play Store or give it to users: " +
+                        "a later build signed with the real key cannot update it."
+                )
+            }
             signingConfig = if (keystorePropertiesFile.exists()) {
                 signingConfigs.getByName("release")
             } else {

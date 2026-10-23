@@ -2,7 +2,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/model/teacher_profile_model.dart';
+import '../../../domain/usecase/change_teacher_password.dart';
 import '../../../domain/usecase/get_teacher_profile.dart';
+import '../../../domain/usecase/update_teacher_profile.dart';
 
 part 'teacher_profile_event.dart';
 part 'teacher_profile_state.dart';
@@ -18,102 +20,75 @@ class TeacherProfileBloc
     required this.updateTeacherProfile,
     required this.changeTeacherPassword,
   }) : super(TeacherProfileInitial()) {
-    on<FetchTeacherProfile>(_onFetchTeacherProfile);
-    on<UpdateTeacherProfile>(_onUpdateTeacherProfile);
-    on<ChangeTeacherPassword>(_onChangeTeacherPassword);
+    on<FetchTeacherProfile>(_onFetch);
+    on<TeacherProfileUpdateRequested>(_onUpdate);
+    on<TeacherPasswordChangeRequested>(_onChangePassword);
   }
 
-  Future<void> _onFetchTeacherProfile(
+  /// The profile currently on screen, whatever the state.
+  TeacherProfileModel? get _current => switch (state) {
+        TeacherProfileLoaded(:final profile) => profile,
+        TeacherProfileUpdating(:final profile) => profile,
+        TeacherProfileUpdated(:final profile) => profile,
+        TeacherPasswordChanging(:final profile) => profile,
+        TeacherPasswordChanged(:final profile) => profile,
+        TeacherProfileError(:final profile) => profile,
+        _ => null,
+      };
+
+  Future<void> _onFetch(
     FetchTeacherProfile event,
     Emitter<TeacherProfileState> emit,
   ) async {
     emit(TeacherProfileLoading());
 
     try {
-      final profile = await getTeacherProfile();
-
-      emit(TeacherProfileLoaded(profile: profile));
+      emit(TeacherProfileLoaded(profile: await getTeacherProfile()));
     } catch (e) {
-      emit(TeacherProfileError(message: _cleanErrorMessage(e)));
+      emit(TeacherProfileError(message: _clean(e)));
     }
   }
 
-  Future<void> _onUpdateTeacherProfile(
-    UpdateTeacherProfile event,
+  Future<void> _onUpdate(
+    TeacherProfileUpdateRequested event,
     Emitter<TeacherProfileState> emit,
   ) async {
-    TeacherProfileModel? currentProfile;
+    final current = _current;
+    if (current == null) return;
 
-    final currentState = state;
-
-    if (currentState is TeacherProfileLoaded) {
-      currentProfile = currentState.profile;
-    } else if (currentState is TeacherProfileUpdating) {
-      currentProfile = currentState.profile;
-    } else if (currentState is TeacherProfileUpdated) {
-      currentProfile = currentState.profile;
-    }
-
-    if (currentProfile != null) {
-      emit(TeacherProfileUpdating(profile: currentProfile));
-    } else {
-      emit(TeacherProfileLoading());
-    }
+    emit(TeacherProfileUpdating(profile: current));
 
     try {
-      // final updatedProfile = await updateTeacherProfile(
-      //   data: event.data,
-      // );
-
-      // emit(
-      //   TeacherProfileUpdated(
-      //     profile: updatedProfile,
-      //   ),
-      // );
+      final updated = await updateTeacherProfile(data: event.data);
+      emit(TeacherProfileUpdated(profile: updated));
     } catch (e) {
-      emit(TeacherProfileError(message: _cleanErrorMessage(e)));
+      emit(TeacherProfileError(message: _clean(e), profile: current));
     }
   }
 
-  Future<void> _onChangeTeacherPassword(
-    ChangeTeacherPassword event,
+  Future<void> _onChangePassword(
+    TeacherPasswordChangeRequested event,
     Emitter<TeacherProfileState> emit,
   ) async {
-    TeacherProfileModel? currentProfile;
+    final current = _current;
 
-    final currentState = state;
-
-    if (currentState is TeacherProfileLoaded) {
-      currentProfile = currentState.profile;
-    } else if (currentState is TeacherProfileUpdated) {
-      currentProfile = currentState.profile;
-    } else if (currentState is TeacherProfileUpdating) {
-      currentProfile = currentState.profile;
-    }
-
-    emit(TeacherPasswordChanging(profile: currentProfile));
+    emit(TeacherPasswordChanging(profile: current));
 
     try {
-      // await changeTeacherPassword(
-      //   currentPassword: event.currentPassword,
-      //   newPassword: event.newPassword,
-      //   newPasswordConfirmation:
-      //       event.newPasswordConfirmation,
-      // );
+      await changeTeacherPassword(
+        currentPassword: event.currentPassword,
+        newPassword: event.newPassword,
+        newPasswordConfirmation: event.newPasswordConfirmation,
+      );
 
-      emit(TeacherPasswordChanged(profile: currentProfile));
+      emit(TeacherPasswordChanged(profile: current));
     } catch (e) {
-      emit(TeacherProfileError(message: _cleanErrorMessage(e)));
+      emit(TeacherProfileError(message: _clean(e), profile: current));
     }
   }
 
-  String _cleanErrorMessage(Object error) {
-    final message = error.toString();
-
-    if (message.startsWith('Exception: ')) {
-      return message.substring('Exception: '.length);
-    }
-
-    return message;
+  String _clean(Object e) {
+    final text = e.toString().replaceFirst(RegExp(r'^\w*Exception:\s*'), '').trim();
+    return text.isEmpty ? 'Something went wrong. Please try again.' : text;
   }
 }

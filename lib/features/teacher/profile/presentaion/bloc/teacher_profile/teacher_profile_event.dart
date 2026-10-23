@@ -7,39 +7,33 @@ sealed class TeacherProfileEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-/// Fetch teacher profile
+/// Load the logged-in teacher's profile from the server.
 final class FetchTeacherProfile extends TeacherProfileEvent {
   const FetchTeacherProfile();
 }
 
-/// Update teacher profile
-final class UpdateTeacherProfile extends TeacherProfileEvent {
+/// Save changed profile fields (PUT /v1/teacher/profile).
+final class TeacherProfileUpdateRequested extends TeacherProfileEvent {
   final Map<String, dynamic> data;
 
-  const UpdateTeacherProfile({
-    required this.data,
-  });
+  const TeacherProfileUpdateRequested(this.data);
 
   @override
   List<Object?> get props => [data];
 }
 
-/// Change teacher password
-final class ChangeTeacherPassword extends TeacherProfileEvent {
+/// Change the teacher's login password.
+final class TeacherPasswordChangeRequested extends TeacherProfileEvent {
   final String currentPassword;
   final String newPassword;
   final String newPasswordConfirmation;
 
-  const ChangeTeacherPassword({
+  const TeacherPasswordChangeRequested({
     required this.currentPassword,
     required this.newPassword,
     required this.newPasswordConfirmation,
   });
 
   @override
-  List<Object?> get props => [
-        currentPassword,
-        newPassword,
-        newPasswordConfirmation,
-      ];
+  List<Object?> get props => [currentPassword, newPassword, newPasswordConfirmation];
 }

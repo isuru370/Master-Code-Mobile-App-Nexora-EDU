@@ -45,5 +45,13 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>The camera is used to scan student QR cards and take student photos.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Choose a student photo from the gallery.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Bluetooth is used to print receipts on the thermal printer.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Bluetooth is used to print receipts on the thermal printer.</string>
 </dict>
 </plist>

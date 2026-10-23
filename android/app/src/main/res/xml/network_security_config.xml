@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Android 9+ blocks plain http:// in release builds by default.
-
-    The app talks to the Laravel server on the local network over
-    http:// (e.g. http://10.17.162.230:8000), so cleartext is allowed.
-
-    When the app only uses the HTTPS server
-    (https://mihisaraeducation.nexorait.lk), change
-    cleartextTrafficPermitted to "false".
+    Release builds: HTTPS only. Student details, payments and the login
+    token must never travel as plain http:// over shop / office Wi-Fi.
+    Debug builds allow http:// (src/debug/res/xml/network_security_config.xml).
 -->
 <network-security-config>
-    <base-config cleartextTrafficPermitted="true">
+    <base-config cleartextTrafficPermitted="false">
         <trust-anchors>
             <certificates src="system" />
         </trust-anchors>

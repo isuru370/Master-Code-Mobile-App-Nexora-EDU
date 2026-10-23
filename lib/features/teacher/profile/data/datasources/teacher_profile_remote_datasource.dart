@@ -205,9 +205,7 @@ class TeacherProfileRemoteDataSourceImpl
         'new_password_confirmation': newPasswordConfirmation,
       };
 
-      debugPrint(
-        'CHANGE TEACHER PASSWORD REQUEST: $body',
-      );
+      // The body holds passwords - never log it.
 
       final response = await http.post(
         uri,
@@ -235,9 +233,16 @@ class TeacherProfileRemoteDataSourceImpl
         return;
       }
 
-      final message = decoded is Map<String, dynamic>
-          ? decoded['message']?.toString()
-          : 'Failed to change password.';
+      // 422: show the first validation message ("The current password is incorrect." ...)
+      final errors = decoded is Map<String, dynamic> ? decoded['errors'] : null;
+      final firstError = errors is Map && errors.isNotEmpty && errors.values.first is List
+          ? (errors.values.first as List).first?.toString()
+          : null;
+
+      final message = firstError ??
+          (decoded is Map<String, dynamic>
+              ? decoded['message']?.toString()
+              : 'Failed to change password.');
 
       throw Exception(message);
     } on FormatException {
