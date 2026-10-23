@@ -9,6 +9,7 @@ import '../../data/model/scan_attendance_new/attendance_data_model.dart';
 import '../../data/model/scan_attendance_new/scan_attendance_response_model.dart';
 import '../../data/model/scan_payment_new/scan_payment_request_model.dart';
 import '../bloc/scan_attendance/scan_attendance_bloc.dart';
+import '../widgets/attendance_class_choice_sheet.dart';
 import '../bloc/scan_payment/scan_payment_bloc.dart';
 
 class AttendanceQrScannerPage extends StatefulWidget {
@@ -181,6 +182,40 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
     });
 
     context.read<ScanAttendanceBloc>().add(ScanAttendanceRequested(code: code));
+  }
+
+  //---------------------------------------
+  // Two classes open at once -> ask which one
+  //---------------------------------------
+
+  /// E.g. A 4:30-6:00 PM and B 6:00-8:00 PM, scanned at 5:30 PM. Nothing is
+  /// marked until the user picks the class.
+  Future<void> _chooseClass(ScanAttendanceChooseClass state) async {
+    final scheduleId = await showAttendanceClassChoiceSheet(
+      context,
+      message: state.message,
+      studentName: state.studentName,
+      classes: state.classes,
+    );
+
+    if (!mounted) return;
+
+    if (scheduleId == null) {
+      // Cancelled - ready for the next student
+      setState(() {
+        _isScanning = false;
+        _isMarkingAttendance = false;
+      });
+      return;
+    }
+
+    context.read<ScanAttendanceBloc>().add(
+          ScanAttendanceRequested(
+            code: state.code,
+            markMethod: state.markMethod,
+            scheduleId: scheduleId,
+          ),
+        );
   }
 
   //---------------------------------------
@@ -369,6 +404,10 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
               });
 
               _showBottomSheet();
+            }
+
+            if (state is ScanAttendanceChooseClass) {
+              _chooseClass(state);
             }
 
             if (state is ScanAttendanceFailure) {
