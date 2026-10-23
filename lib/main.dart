@@ -7,6 +7,7 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 import 'app.dart';
+import 'core/constants/api_constants.dart';
 import 'core/di/injection_container.dart' as di;
 import 'core/di/injection_container.dart';
 import 'core/network/app_http_client.dart';
@@ -37,6 +38,7 @@ import 'features/admin/today_classes/presentaion/bloc/today_classes/today_classe
 import 'features/auth/presentation/bloc/auth/auth_bloc.dart';
 import 'features/teacher/classess/presentaion/bloc/teacher_classes/teacher_classes_bloc.dart';
 import 'features/teacher/dashboard/presentaion/bloc/teacher_dashboard/teacher_dashboard_bloc.dart';
+import 'features/teacher/profile/presentaion/bloc/teacher_profile/teacher_profile_bloc.dart';
 import 'features/teacher/students/presentaion/bloc/teacher_students/teacher_students_bloc.dart';
 import 'features/teacher/timetable/presentaion/bloc/teacher_timetable/teacher_timetable_bloc.dart';
 import 'simple_bloc_observer.dart';
@@ -54,6 +56,13 @@ Future<void> _startApp() async {
   // and those must not end up in the phone's logcat.
   if (kReleaseMode) {
     debugPrint = (String? message, {int? wrapWidth}) {};
+  }
+
+  // A release build must say which institute server it uses:
+  //   flutter build apk --release --dart-define=API_BASE_URL=https://<institute>.nexorait.lk
+  if (kReleaseMode && !ApiConstants.isBaseUrlConfigured) {
+    runApp(const _MissingServerApp());
+    return;
   }
 
   await initializeDateFormatting('en', null);
@@ -97,6 +106,7 @@ Future<void> _startApp() async {
 
         // Teacher Bloc
         BlocProvider(create: (_) => sl<TeacherDashboardBloc>()),
+        BlocProvider(create: (_) => sl<TeacherProfileBloc>()),
         BlocProvider(create: (_) => sl<TeacherClassesBloc>()),
         BlocProvider(create: (_) => sl<TeacherTimetableBloc>()),
         BlocProvider(create: (_) => sl<TeacherStudentsBloc>()),
@@ -104,4 +114,30 @@ Future<void> _startApp() async {
       child: const NexoraMobileApp(),
     ),
   );
+}
+
+/// Shown instead of the app when a release build was made without
+/// --dart-define=API_BASE_URL (so it is never shipped pointing at a test server).
+class _MissingServerApp extends StatelessWidget {
+  const _MissingServerApp();
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: Center(
+          child: Padding(
+            padding: EdgeInsets.all(24),
+            child: Text(
+              'This build has no server address.\n\n'
+              'Build it again with:\n'
+              '--dart-define=API_BASE_URL=https://<institute>.nexorait.lk',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

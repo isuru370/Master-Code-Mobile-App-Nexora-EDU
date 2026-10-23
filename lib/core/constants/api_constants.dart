@@ -11,6 +11,11 @@ class ApiConstants {
   );
   static const String apiUrl = '$baseUrl/api';
 
+  /// True when the build was given --dart-define=API_BASE_URL=...
+  /// A release build without it would talk to the developer's laptop IP,
+  /// so main() refuses to start such a build (see _startApp).
+  static const bool isBaseUrlConfigured = bool.hasEnvironment('API_BASE_URL');
+
   static const String login = '$apiUrl/login';
   static const String logout = '$apiUrl/logout';
   static const String me = '$apiUrl/me';

@@ -25,6 +25,7 @@ import '../../features/admin/today_classes/core/init_today_class_injection.dart'
 import '../../features/auth/core/auth_injection.dart' as auth_di;
 import '../../features/teacher/classess/core/teacher_classes_injection.dart';
 import '../../features/teacher/dashboard/core/teacher_dashboard_injection.dart';
+import '../../features/teacher/profile/core/teacher_profile_injection.dart';
 import '../../features/teacher/students/core/teacher_student_injection.dart';
 import '../../features/teacher/timetable/core/teacher_timetable_injection.dart';
 
@@ -60,5 +61,6 @@ Future<void> init() async {
   await initTeacherClassesDI();
   await initTeacherTimetableDI();
   await initTeacherStudentsDI();
+  await initTeacherProfileDI();
   
 }

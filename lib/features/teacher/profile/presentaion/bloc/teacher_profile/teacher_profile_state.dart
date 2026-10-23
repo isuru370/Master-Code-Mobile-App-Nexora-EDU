@@ -69,10 +69,14 @@ final class TeacherPasswordChanged extends TeacherProfileState {
 final class TeacherProfileError extends TeacherProfileState {
   final String message;
 
+  /// The profile shown before the error (null when loading failed).
+  final TeacherProfileModel? profile;
+
   const TeacherProfileError({
     required this.message,
+    this.profile,
   });
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, profile];
 }
