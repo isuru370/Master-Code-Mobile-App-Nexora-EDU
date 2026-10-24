@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../features/app_features.dart';
+
 import '../../features/auth/data/models/branch_model.dart';
 import '../../features/auth/data/models/login_response_model.dart';
 import '../../features/auth/data/models/session_teacher_model.dart';
@@ -252,6 +254,7 @@ class SessionStorage {
     await prefs.remove(_branchesKey);
     await prefs.remove(_teacherKey);
     await prefs.remove(_selectedBranchKey);
+    await AppFeatures.clear();
   }
 
   /// Remove remembered email manually (optional)
