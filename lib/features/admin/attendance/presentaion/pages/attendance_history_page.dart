@@ -46,19 +46,19 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
   Color _statusColor(String status) {
     switch (status.toLowerCase()) {
       case 'present':
-        return Colors.green;
+        return AppColors.success;
 
       case 'absent':
-        return Colors.red;
+        return AppColors.danger;
 
       case 'today':
-        return Colors.orange;
+        return AppColors.warning;
 
       case 'upcoming':
-        return Colors.blue;
+        return AppColors.primary;
 
       default:
-        return Colors.grey;
+        return AppColors.textSecondary;
     }
   }
 
@@ -87,14 +87,8 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
       backgroundColor: AppColors.background,
 
       appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
-
         title: const Text(
           'Attendance History',
-
           style: TextStyle(fontWeight: FontWeight.w700),
         ),
       ),
@@ -124,7 +118,9 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                   decoration: BoxDecoration(
                     color: Colors.white,
 
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(12),
+
+                    border: Border.all(color: AppColors.border),
 
                     boxShadow: AppColors.softShadow,
                   ),
@@ -136,7 +132,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                       Icon(
                         Icons.error_outline_rounded,
                         size: 80,
-                        color: Colors.red.shade400,
+                        color: AppColors.danger,
                       ),
 
                       const SizedBox(height: 16),
@@ -157,7 +153,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
 
                         textAlign: TextAlign.center,
 
-                        style: TextStyle(color: Colors.grey.shade600),
+                        style: TextStyle(color: AppColors.textSecondary),
                       ),
                     ],
                   ),
@@ -192,7 +188,9 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                     decoration: BoxDecoration(
                       color: Colors.white,
 
-                      borderRadius: BorderRadius.circular(30),
+                      borderRadius: BorderRadius.circular(12),
+
+                      border: Border.all(color: AppColors.border),
 
                       boxShadow: AppColors.softShadow,
                     ),
@@ -204,7 +202,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                         Icon(
                           Icons.history_toggle_off_rounded,
                           size: 90,
-                          color: Colors.grey.shade400,
+                          color: AppColors.textMuted,
                         ),
 
                         const SizedBox(height: 18),
@@ -215,7 +213,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w800,
-                            color: Colors.grey.shade800,
+                            color: AppColors.darkLight,
                           ),
                         ),
 
@@ -227,7 +225,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                           textAlign: TextAlign.center,
 
                           style: TextStyle(
-                            color: Colors.grey.shade600,
+                            color: AppColors.textSecondary,
                             height: 1.4,
                           ),
                         ),
@@ -251,7 +249,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                   decoration: BoxDecoration(
                     gradient: AppColors.heroGradient,
 
-                    borderRadius: BorderRadius.circular(32),
+                    borderRadius: BorderRadius.circular(12),
 
                     boxShadow: AppColors.largeShadow,
                   ),
@@ -269,7 +267,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                             decoration: BoxDecoration(
                               color: Colors.white.withValues(alpha: .14),
 
-                              borderRadius: BorderRadius.circular(18),
+                              borderRadius: BorderRadius.circular(12),
                             ),
 
                             child: const Icon(
@@ -338,21 +336,21 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                             'Present',
                             summary.presentCount.toString(),
                             Icons.check_circle_rounded,
-                            Colors.greenAccent,
+                            AppColors.success,
                           ),
 
                           _heroStatCard(
                             'Absent',
                             summary.absentCount.toString(),
                             Icons.cancel_rounded,
-                            Colors.redAccent,
+                            AppColors.danger,
                           ),
 
                           _heroStatCard(
                             'Upcoming',
                             summary.upcomingCount.toString(),
                             Icons.schedule_rounded,
-                            Colors.orangeAccent,
+                            AppColors.warning,
                           ),
                         ],
                       ),
@@ -380,7 +378,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                         decoration: BoxDecoration(
                           color: Colors.white,
 
-                          borderRadius: BorderRadius.circular(30),
+                          borderRadius: BorderRadius.circular(12),
 
                           border: Border.all(color: AppColors.border),
 
@@ -408,7 +406,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                                     decoration: BoxDecoration(
                                       color: statusColor.withValues(alpha: .12),
 
-                                      borderRadius: BorderRadius.circular(18),
+                                      borderRadius: BorderRadius.circular(12),
                                     ),
 
                                     child: Icon(
@@ -443,7 +441,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                                           _formatDate(item.classDate),
 
                                           style: TextStyle(
-                                            color: Colors.grey.shade600,
+                                            color: AppColors.textSecondary,
                                             fontWeight: FontWeight.w600,
                                           ),
                                         ),
@@ -464,7 +462,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                                               icon:
                                                   Icons.event_available_rounded,
                                               text: item.scheduleStatus,
-                                              color: Colors.purple,
+                                              color: AppColors.violet,
                                             ),
                                           ],
                                         ),
@@ -512,7 +510,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                                 decoration: BoxDecoration(
                                   color: const Color(0xfff8fafc),
 
-                                  borderRadius: BorderRadius.circular(22),
+                                  borderRadius: BorderRadius.circular(12),
 
                                   border: Border.all(color: AppColors.border),
                                 ),
@@ -559,7 +557,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: .12),
 
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(12),
 
         border: Border.all(color: Colors.white.withValues(alpha: .12)),
       ),
@@ -573,7 +571,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: .10),
 
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(12),
             ),
 
             child: Icon(icon, color: iconColor, size: 22),
@@ -667,7 +665,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
               title,
 
               style: TextStyle(
-                color: Colors.grey.shade600,
+                color: AppColors.textSecondary,
                 fontWeight: FontWeight.w600,
               ),
             ),

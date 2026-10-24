@@ -41,7 +41,7 @@ class _StudentImagePageState extends State<StudentImagePage> {
       builder: (context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(12),
           ),
 
           title: const Text('Update Student Image'),
@@ -58,7 +58,7 @@ class _StudentImagePageState extends State<StudentImagePage> {
               prefixIcon: const Icon(Icons.image_rounded),
 
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(12),
               ),
             ),
           ),
@@ -128,10 +128,6 @@ class _StudentImagePageState extends State<StudentImagePage> {
         return Scaffold(
           backgroundColor: AppColors.background,
           appBar: AppBar(
-            elevation: 0,
-            centerTitle: true,
-            backgroundColor: AppColors.primary,
-            foregroundColor: Colors.white,
             title: const Text(
               'Student Images',
               style: TextStyle(fontWeight: FontWeight.w700),
@@ -157,15 +153,15 @@ class _StudentImagePageState extends State<StudentImagePage> {
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(18),
+                          borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(18),
+                          borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(18),
+                          borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
                             color: AppColors.primary,
                             width: 1.4,
@@ -220,7 +216,8 @@ class _StudentImagePageState extends State<StudentImagePage> {
                                   padding: const EdgeInsets.all(16),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius: BorderRadius.circular(24),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(color: AppColors.border),
                                     boxShadow: AppColors.softShadow,
                                   ),
                                   child: Row(
@@ -297,7 +294,7 @@ class _StudentImagePageState extends State<StudentImagePage> {
                                             Text(
                                               student.customId,
                                               style: const TextStyle(
-                                                color: Colors.grey,
+                                                color: AppColors.textSecondary,
                                                 fontWeight: FontWeight.w600,
                                               ),
                                             ),
@@ -305,7 +302,7 @@ class _StudentImagePageState extends State<StudentImagePage> {
                                             Text(
                                               student.guardianMobile,
                                               style: const TextStyle(
-                                                color: Colors.grey,
+                                                color: AppColors.textSecondary,
                                               ),
                                             ),
                                           ],

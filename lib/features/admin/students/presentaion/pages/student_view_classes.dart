@@ -25,10 +25,6 @@ class StudentViewClasses extends StatelessWidget {
             backgroundColor: AppColors.background,
 
             appBar: AppBar(
-              elevation: 0,
-              centerTitle: true,
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
               title: const Text('Student Classes'),
             ),
 
@@ -43,11 +39,6 @@ class StudentViewClasses extends StatelessWidget {
             backgroundColor: AppColors.background,
 
             appBar: AppBar(
-              elevation: 0,
-              centerTitle: true,
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
-
               title: const Text(
                 'Student Classes',
                 style: TextStyle(fontWeight: FontWeight.w700),
@@ -63,11 +54,11 @@ class StudentViewClasses extends StatelessWidget {
                   padding: const EdgeInsets.all(20),
 
                   decoration: const BoxDecoration(
-                    gradient: AppColors.primaryGradient,
+                    gradient: AppColors.heroGradient,
 
                     borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(32),
-                      bottomRight: Radius.circular(32),
+                      bottomLeft: Radius.circular(12),
+                      bottomRight: Radius.circular(12),
                     ),
                   ),
 
@@ -161,7 +152,8 @@ class StudentViewClasses extends StatelessWidget {
 
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(28),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: AppColors.border),
                                 boxShadow: AppColors.softShadow,
                               ),
 
@@ -219,7 +211,7 @@ class StudentViewClasses extends StatelessWidget {
                                                 '${item.gradeName} • ${item.teacherName}',
 
                                                 style: TextStyle(
-                                                  color: Colors.grey.shade700,
+                                                  color: AppColors.darkLight,
                                                   fontWeight: FontWeight.w500,
                                                 ),
                                               ),
@@ -230,7 +222,7 @@ class StudentViewClasses extends StatelessWidget {
                                                 item.categoryName,
 
                                                 style: TextStyle(
-                                                  color: Colors.grey.shade600,
+                                                  color: AppColors.textSecondary,
                                                 ),
                                               ),
                                             ],
@@ -293,7 +285,7 @@ class StudentViewClasses extends StatelessWidget {
                                       'Registered Date : ${item.registeredDate != null ? item.registeredDate!.toIso8601String().split("T").first : "-"}',
 
                                       style: TextStyle(
-                                        color: Colors.grey.shade700,
+                                        color: AppColors.darkLight,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
@@ -392,8 +384,6 @@ class StudentViewClasses extends StatelessWidget {
           backgroundColor: AppColors.background,
 
           appBar: AppBar(
-            backgroundColor: AppColors.primary,
-            foregroundColor: Colors.white,
             title: const Text('Student Classes'),
           ),
 
@@ -414,7 +404,7 @@ class StudentViewClasses extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: .12),
 
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(12),
 
         border: Border.all(color: Colors.white.withValues(alpha: .18)),
       ),
@@ -477,7 +467,7 @@ class StudentViewClasses extends StatelessWidget {
 
       decoration: BoxDecoration(
         color: color.withValues(alpha: .08),
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(12),
       ),
 
       child: Column(
@@ -488,7 +478,7 @@ class StudentViewClasses extends StatelessWidget {
             title,
 
             style: TextStyle(
-              color: Colors.grey.shade700,
+              color: AppColors.darkLight,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -524,7 +514,7 @@ class StudentViewClasses extends StatelessWidget {
           backgroundColor: color,
 
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
 

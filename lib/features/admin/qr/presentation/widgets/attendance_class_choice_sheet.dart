@@ -17,7 +17,7 @@ Future<int?> showAttendanceClassChoiceSheet(
     isScrollControlled: true,
     backgroundColor: AppColors.surface,
     shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+      borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
     ),
     builder: (sheetContext) => SafeArea(
       child: Padding(
@@ -136,7 +136,7 @@ class _ClassChoiceTile extends StatelessWidget {
               const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(20)),
+                decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(12)),
                 child: Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: color)),
               ),
             ],

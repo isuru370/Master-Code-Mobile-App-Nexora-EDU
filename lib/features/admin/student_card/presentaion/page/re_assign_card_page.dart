@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/model/re_assign/re_assign_request_model.dart';
 import '../bloc/student_card/student_card_bloc.dart';
+import '../../../../../core/theme/app_colors.dart';
 
 class ReAssignCardPage extends StatefulWidget {
   final String oldQrCode;
@@ -21,25 +22,25 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
     {
       'value': 'lost',
       'label': 'Lost',
-      'color': Colors.red,
+      'color': AppColors.danger,
       'icon': Icons.search_off,
     },
     {
       'value': 'damaged',
       'label': 'Damaged',
-      'color': Colors.orange,
+      'color': AppColors.warning,
       'icon': Icons.broken_image_outlined,
     },
     {
       'value': 'worn_out',
       'label': 'Worn Out',
-      'color': Colors.deepOrange,
+      'color': AppColors.warning,
       'icon': Icons.auto_fix_off,
     },
     {
       'value': 'other',
       'label': 'Other',
-      'color': Colors.grey,
+      'color': AppColors.textSecondary,
       'icon': Icons.more_horiz,
     },
   ];
@@ -84,7 +85,7 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.red,
+        backgroundColor: AppColors.danger,
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -107,7 +108,7 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.response.message),
-              backgroundColor: Colors.green,
+              backgroundColor: AppColors.success,
               behavior: SnackBarBehavior.floating,
             ),
           );
@@ -119,7 +120,7 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
-              backgroundColor: Colors.red,
+              backgroundColor: AppColors.danger,
               behavior: SnackBarBehavior.floating,
             ),
           );
@@ -130,20 +131,19 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
           final isLoading = state is StudentCardLoading;
 
           return Scaffold(
-            backgroundColor: Colors.grey[50],
+            backgroundColor: AppColors.surfaceSecondary,
             appBar: AppBar(
               title: const Text(
                 'Re-Assign Card',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              elevation: 0,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: isLoading ? null : () => Navigator.pop(context),
               ),
               bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(1),
-                child: Container(height: 1, color: Colors.grey[200]),
+                child: Container(height: 1, color: AppColors.divider),
               ),
             ),
             body: SingleChildScrollView(
@@ -161,12 +161,12 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
-                        colors: [Colors.blue.shade700, Colors.blue.shade500],
+                        colors: [AppColors.primary, AppColors.primary],
                       ),
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.blue.shade200,
+                          color: AppColors.primaryLight,
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -231,12 +231,13 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(color: AppColors.border),
                                   ),
                                   child: Text(
                                     widget.oldQrCode,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
-                                      color: Colors.blue.shade700,
+                                      color: AppColors.primary,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14,
                                     ),
@@ -266,13 +267,8 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.shade100,
-                          blurRadius: 10,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
+                      border: Border.all(color: AppColors.border),
+                      boxShadow: AppColors.softShadow,
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -283,17 +279,17 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
                         decoration: InputDecoration(
                           labelText: 'New QR Code',
                           labelStyle: TextStyle(
-                            color: Colors.grey.shade600,
+                            color: AppColors.textSecondary,
                             fontWeight: FontWeight.w500,
                           ),
                           prefixIcon: const Icon(
                             Icons.qr_code_2,
-                            color: Colors.blue,
+                            color: AppColors.primary,
                           ),
                           border: InputBorder.none,
                           contentPadding: const EdgeInsets.all(16),
                           hintText: 'Enter new available QR code',
-                          hintStyle: TextStyle(color: Colors.grey.shade400),
+                          hintStyle: TextStyle(color: AppColors.textMuted),
                         ),
                       ),
                     ),
@@ -303,7 +299,7 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
 
                   Text(
                     'Enter the QR code of an available card.',
-                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                    style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
                   ),
 
                   const SizedBox(height: 20),
@@ -322,13 +318,8 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.shade100,
-                          blurRadius: 10,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
+                      border: Border.all(color: AppColors.border),
+                      boxShadow: AppColors.softShadow,
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -337,12 +328,12 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
                         decoration: InputDecoration(
                           labelText: 'Reason',
                           labelStyle: TextStyle(
-                            color: Colors.grey.shade600,
+                            color: AppColors.textSecondary,
                             fontWeight: FontWeight.w500,
                           ),
                           prefixIcon: Icon(
                             Icons.label_important_outline,
-                            color: Colors.blue.shade600,
+                            color: AppColors.primary,
                           ),
                           border: InputBorder.none,
                           contentPadding: const EdgeInsets.all(16),
@@ -382,7 +373,7 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
                               },
                         icon: Icon(
                           Icons.arrow_drop_down,
-                          color: Colors.grey.shade600,
+                          color: AppColors.textSecondary,
                           size: 30,
                         ),
                       ),
@@ -405,13 +396,8 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.shade100,
-                          blurRadius: 10,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
+                      border: Border.all(color: AppColors.border),
+                      boxShadow: AppColors.softShadow,
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -422,17 +408,17 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
                         decoration: InputDecoration(
                           labelText: 'Remarks',
                           labelStyle: TextStyle(
-                            color: Colors.grey.shade600,
+                            color: AppColors.textSecondary,
                             fontWeight: FontWeight.w500,
                           ),
                           prefixIcon: const Icon(
                             Icons.comment_outlined,
-                            color: Colors.blue,
+                            color: AppColors.primary,
                           ),
                           border: InputBorder.none,
                           contentPadding: const EdgeInsets.all(16),
                           hintText: 'Add any remarks or notes...',
-                          hintStyle: TextStyle(color: Colors.grey.shade400),
+                          hintStyle: TextStyle(color: AppColors.textMuted),
                         ),
                       ),
                     ),
@@ -447,21 +433,21 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.blue.shade50,
+                      color: AppColors.primaryLight,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.blue.shade100),
+                      border: Border.all(color: AppColors.primaryLight),
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.info_outline, color: Colors.blue.shade700),
+                        Icon(Icons.info_outline, color: AppColors.primary),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
                             'The current card will be deactivated and the new card will be assigned to this student. '
                             'Reason: ${_getReasonLabel()}.',
                             style: TextStyle(
-                              color: Colors.blue.shade800,
+                              color: AppColors.primary,
                               fontSize: 13,
                               height: 1.4,
                             ),
@@ -482,9 +468,9 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
                     child: ElevatedButton(
                       onPressed: isLoading ? null : _submitReAssign,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue.shade700,
+                        backgroundColor: AppColors.primary,
                         foregroundColor: Colors.white,
-                        disabledBackgroundColor: Colors.blue.shade200,
+                        disabledBackgroundColor: AppColors.primaryLight,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -525,7 +511,7 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
                           ? null
                           : () => Navigator.pop(context),
                       style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: Colors.grey.shade300),
+                        side: BorderSide(color: AppColors.border),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -533,7 +519,7 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
                       child: Text(
                         'CANCEL',
                         style: TextStyle(
-                          color: Colors.grey.shade700,
+                          color: AppColors.darkLight,
                           fontWeight: FontWeight.w600,
                           letterSpacing: 1.2,
                         ),

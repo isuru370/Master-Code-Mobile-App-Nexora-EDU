@@ -34,9 +34,6 @@ class RegisterDetailsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Student Details'),
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
-        elevation: 0,
         actions: [
           IconButton(
             icon: const Icon(Icons.share_outlined),
@@ -144,15 +141,15 @@ class RegisterDetailsPage extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: Colors.grey.shade50,
+                              color: AppColors.surfaceSecondary,
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.grey.shade300),
+                              border: Border.all(color: AppColors.border),
                             ),
                             child: const Center(
                               child: Text(
                                 'No active card assigned',
                                 style: TextStyle(
-                                  color: Colors.grey,
+                                  color: AppColors.textSecondary,
                                   fontSize: 14,
                                 ),
                               ),
@@ -200,14 +197,14 @@ class RegisterDetailsPage extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 20),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.orange.shade50,
+        color: AppColors.warningLight,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.orange),
+        border: Border.all(color: AppColors.warning),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.warning_amber_rounded, color: Colors.orange),
+          const Icon(Icons.warning_amber_rounded, color: AppColors.warning),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -217,7 +214,7 @@ class RegisterDetailsPage extends StatelessWidget {
                   message,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.orange,
+                    color: AppColors.warning,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -254,7 +251,7 @@ class RegisterDetailsPage extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         itemCount: cards.length,
         separatorBuilder: (context, index) =>
-            Divider(height: 1, color: Colors.grey.shade200),
+            Divider(height: 1, color: AppColors.divider),
         itemBuilder: (context, index) {
           final card = cards[index];
           final isCurrent = currentCard != null && card.id == currentCard.id;
@@ -268,7 +265,7 @@ class RegisterDetailsPage extends StatelessWidget {
                   width: 8,
                   height: 8,
                   decoration: BoxDecoration(
-                    color: isCurrent ? Colors.green : Colors.red,
+                    color: isCurrent ? AppColors.success : AppColors.danger,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -297,16 +294,16 @@ class RegisterDetailsPage extends StatelessWidget {
                                 vertical: 2,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.green.withValues(alpha: 0.1),
+                                color: AppColors.success.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: Colors.green),
+                                border: Border.all(color: AppColors.success),
                               ),
                               child: const Text(
                                 'ACTIVE',
                                 style: TextStyle(
                                   fontSize: 9,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.green,
+                                  color: AppColors.success,
                                 ),
                               ),
                             )
@@ -317,16 +314,16 @@ class RegisterDetailsPage extends StatelessWidget {
                                 vertical: 2,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.red.withValues(alpha: 0.1),
+                                color: AppColors.danger.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: Colors.red),
+                                border: Border.all(color: AppColors.danger),
                               ),
                               child: Text(
                                 card.status.toUpperCase(),
                                 style: const TextStyle(
                                   fontSize: 9,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.red,
+                                  color: AppColors.danger,
                                 ),
                               ),
                             ),
@@ -354,7 +351,7 @@ class RegisterDetailsPage extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    backgroundColor: Colors.green,
+                    backgroundColor: AppColors.success,
                     labelStyle: TextStyle(color: Colors.white),
                     padding: EdgeInsets.symmetric(horizontal: 4),
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -368,7 +365,7 @@ class RegisterDetailsPage extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    backgroundColor: Colors.grey,
+                    backgroundColor: AppColors.textSecondary,
                     labelStyle: TextStyle(color: Colors.white),
                     padding: EdgeInsets.symmetric(horizontal: 4),
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -392,8 +389,8 @@ class RegisterDetailsPage extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: AppColors.heroGradient,
         borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(32),
-          bottomRight: Radius.circular(32),
+          bottomLeft: Radius.circular(12),
+          bottomRight: Radius.circular(12),
         ),
       ),
       child: Column(
@@ -433,7 +430,7 @@ class RegisterDetailsPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
               student.grade,
@@ -450,14 +447,9 @@ class RegisterDetailsPage extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 16,
-                  offset: const Offset(0, 8),
-                ),
-              ],
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.border),
+              boxShadow: AppColors.softShadow,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -504,8 +496,8 @@ class RegisterDetailsPage extends StatelessWidget {
                             fontSize: 11,
                             color:
                                 currentCard.status.toLowerCase() == 'inactive'
-                                ? Colors.red
-                                : Colors.green,
+                                ? AppColors.danger
+                                : AppColors.success,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -634,7 +626,7 @@ class RegisterDetailsPage extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.dangerLight,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.danger.withValues(alpha: 0.3), width: 1),
       ),
       child: Row(
@@ -697,7 +689,7 @@ class RegisterDetailsPage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         title: const Text('Re Assign Card'),
         content: Text(
           'Do you want to reassign this student card?\n\n'

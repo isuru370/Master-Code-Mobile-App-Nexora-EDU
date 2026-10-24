@@ -122,7 +122,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
     showDialog(
       context: context,
       builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
@@ -150,7 +150,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
               Text(
                 'Please connect your Bluetooth printer to print receipts.',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey.shade600),
+                style: TextStyle(color: AppColors.textSecondary),
               ),
               const SizedBox(height: 24),
               Row(
@@ -167,7 +167,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                       onPressed: () {
@@ -255,10 +255,6 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
           return Scaffold(
             backgroundColor: AppColors.background,
             appBar: AppBar(
-              elevation: 0,
-              centerTitle: true,
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
               title: const Text('Admission Payments'),
             ),
             body: const Center(child: CircularProgressIndicator()),
@@ -276,10 +272,6 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
             child: Scaffold(
               backgroundColor: AppColors.background,
               appBar: AppBar(
-                elevation: 0,
-                centerTitle: true,
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
                 title: const Text(
                   'Admission Payments',
                   style: TextStyle(fontWeight: FontWeight.w700),
@@ -289,13 +281,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
                   child: Container(
                     margin: const EdgeInsets.symmetric(horizontal: 20),
                     child: TabBar(
-                      indicator: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(30),
-                      ),
                       indicatorSize: TabBarIndicatorSize.tab,
-                      labelColor: Colors.white,
-                      unselectedLabelColor: Colors.white70,
                       labelStyle: const TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 14,
@@ -319,10 +305,10 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(20),
                     decoration: const BoxDecoration(
-                      gradient: AppColors.primaryGradient,
+                      gradient: AppColors.heroGradient,
                       borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(32),
-                        bottomRight: Radius.circular(32),
+                        bottomLeft: Radius.circular(12),
+                        bottomRight: Radius.circular(12),
                       ),
                     ),
                     child: Row(
@@ -372,10 +358,6 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
           return Scaffold(
             backgroundColor: AppColors.background,
             appBar: AppBar(
-              elevation: 0,
-              centerTitle: true,
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
               title: const Text('Admission Payments'),
             ),
             body: Center(
@@ -393,7 +375,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     child: const Text('Retry'),
@@ -407,8 +389,6 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
         return Scaffold(
           backgroundColor: AppColors.background,
           appBar: AppBar(
-            backgroundColor: AppColors.primary,
-            foregroundColor: Colors.white,
             title: const Text('Admission Payments'),
           ),
           body: const Center(child: Text('No Data Found')),
@@ -426,7 +406,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
       ),
       child: Column(
@@ -464,12 +444,12 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
             Icon(
               Icons.check_circle_outline,
               size: 64,
-              color: Colors.grey.shade400,
+              color: AppColors.textMuted,
             ),
             const SizedBox(height: 16),
             Text(
               'No Paid Admissions',
-              style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
             ),
           ],
         ),
@@ -491,7 +471,8 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
       margin: const EdgeInsets.only(bottom: 18),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
         boxShadow: AppColors.softShadow,
       ),
       child: Padding(
@@ -507,7 +488,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
                     color: AppColors.success.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(
                     Icons.check_circle_rounded,
@@ -530,14 +511,14 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
                       Text(
                         payment.studentCode,
                         style: TextStyle(
-                          color: Colors.grey.shade700,
+                          color: AppColors.darkLight,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         payment.admissionName,
-                        style: TextStyle(color: Colors.grey.shade600),
+                        style: TextStyle(color: AppColors.textSecondary),
                       ),
                     ],
                   ),
@@ -616,7 +597,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
             Text(
               'Paid Date : ${payment.formattedPaidAt}',
               style: TextStyle(
-                color: Colors.grey.shade700,
+                color: AppColors.darkLight,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -637,14 +618,14 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
                   ? Icons.pending_actions_outlined
                   : Icons.search_off_rounded,
               size: 64,
-              color: Colors.grey.shade400,
+              color: AppColors.textMuted,
             ),
             const SizedBox(height: 16),
             Text(
               _searchQuery.isEmpty
                   ? 'No Unpaid Admissions'
                   : 'No results found for "$_searchQuery"',
-              style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
             ),
             if (_searchQuery.isNotEmpty) ...[
               const SizedBox(height: 12),
@@ -668,23 +649,24 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.border),
               boxShadow: AppColors.softShadow,
             ),
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Search by name, ID, grade or phone...',
-                hintStyle: TextStyle(color: Colors.grey.shade400),
+                hintStyle: TextStyle(color: AppColors.textMuted),
                 prefixIcon: Icon(
                   Icons.search_rounded,
-                  color: Colors.grey.shade500,
+                  color: AppColors.textSecondary,
                 ),
                 suffixIcon: _searchQuery.isNotEmpty
                     ? IconButton(
                         icon: Icon(
                           Icons.close_rounded,
-                          color: Colors.grey.shade500,
+                          color: AppColors.textSecondary,
                         ),
                         onPressed: () {
                           _searchController.clear();
@@ -692,7 +674,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
                       )
                     : null,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
@@ -715,7 +697,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
               child: Text(
                 '${_filteredUnpaidStudents.length} student${_filteredUnpaidStudents.length != 1 ? 's' : ''} found',
                 style: TextStyle(
-                  color: Colors.grey.shade600,
+                  color: AppColors.textSecondary,
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ),
@@ -743,7 +725,8 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
       margin: const EdgeInsets.only(bottom: 18),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
         boxShadow: AppColors.softShadow,
       ),
       child: Padding(
@@ -759,7 +742,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
                     color: AppColors.danger.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(
                     Icons.person_rounded,
@@ -785,14 +768,14 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
                       Text(
                         student.customId,
                         style: TextStyle(
-                          color: Colors.grey.shade700,
+                          color: AppColors.darkLight,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         'Grade ${student.grade}',
-                        style: TextStyle(color: Colors.grey.shade600),
+                        style: TextStyle(color: AppColors.textSecondary),
                       ),
                     ],
                   ),
@@ -805,7 +788,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: AppColors.primary.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(22),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 children: [
@@ -838,7 +821,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
                   elevation: 0,
                   backgroundColor: AppColors.primary,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 onPressed: () => _showAdmissionDialog(student),
@@ -916,7 +899,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -924,7 +907,7 @@ class _AdmissionPaymentPageState extends State<AdmissionPaymentPage> {
           Text(
             title,
             style: TextStyle(
-              color: Colors.grey.shade700,
+              color: AppColors.darkLight,
               fontWeight: FontWeight.w600,
               fontSize: 12,
             ),

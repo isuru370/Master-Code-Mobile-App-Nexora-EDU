@@ -42,11 +42,8 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.surfaceSecondary,
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
         title: const Text(
           'Attendance Schedules',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
@@ -72,7 +69,7 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
                     height: 20,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
                     ),
                   )
                 : const Icon(Icons.refresh),
@@ -97,7 +94,7 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
                       SizedBox(height: 16),
                       Text(
                         'Loading attendance schedules...',
-                        style: TextStyle(color: Colors.grey),
+                        style: TextStyle(color: AppColors.textSecondary),
                       ),
                     ],
                   ),
@@ -112,7 +109,7 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
                       Icon(
                         Icons.error_outline,
                         size: 80,
-                        color: Colors.red[300],
+                        color: AppColors.dangerLight,
                       ),
                       const SizedBox(height: 16),
                       Text(
@@ -120,13 +117,13 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
-                          color: Colors.grey[800],
+                          color: AppColors.darkLight,
                         ),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         state.message,
-                        style: TextStyle(color: Colors.grey[600]),
+                        style: TextStyle(color: AppColors.textSecondary),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 24),
@@ -169,14 +166,14 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
                         Icon(
                           Icons.calendar_today_outlined,
                           size: 80,
-                          color: Colors.grey[400],
+                          color: AppColors.textMuted,
                         ),
                         const SizedBox(height: 16),
                         Text(
                           'No schedules found',
                           style: TextStyle(
                             fontSize: 16,
-                            color: Colors.grey[600],
+                            color: AppColors.textSecondary,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -185,7 +182,7 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
                           'No attendance schedules available for this category',
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.grey[500],
+                            color: AppColors.textSecondary,
                           ),
                         ),
                       ],
@@ -257,7 +254,7 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [AppColors.primary, Color(0xff1D4ED8)],
+          colors: [AppColors.dark, AppColors.dark, Color(0xFF172554)],
         ),
         boxShadow: [
           BoxShadow(
@@ -279,7 +276,7 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
                 ),
                 child: Row(
@@ -288,7 +285,7 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(
                         Icons.class_,
@@ -393,10 +390,10 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
     final isOngoing = status.toLowerCase() == 'ongoing';
 
     Color getStatusColor() {
-      if (isCompletedStatus) return Colors.green;
-      if (isUpcoming) return Colors.blue;
-      if (isOngoing) return Colors.orange;
-      return Colors.grey;
+      if (isCompletedStatus) return AppColors.success;
+      if (isUpcoming) return AppColors.primary;
+      if (isOngoing) return AppColors.warning;
+      return AppColors.textSecondary;
     }
 
     String getStatusText() {
@@ -415,18 +412,13 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
+        boxShadow: AppColors.softShadow,
       ),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(12),
         child: InkWell(
           onTap: _isGeneratingPdf
               ? null
@@ -452,7 +444,7 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
                     }
                   }
                 },
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(12),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -498,7 +490,7 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
                             item.day ?? '',
                             style: TextStyle(
                               fontSize: 13,
-                              color: Colors.grey[600],
+                              color: AppColors.textSecondary,
                             ),
                           ),
                         ],
@@ -529,18 +521,18 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
                 ),
                 const SizedBox(height: 12),
                 // Divider
-                Divider(color: Colors.grey[200], height: 1),
+                Divider(color: AppColors.divider, height: 1),
                 const SizedBox(height: 12),
                 // Time Information
                 Row(
                   children: [
-                    const Icon(Icons.access_time, size: 16, color: Colors.grey),
+                    const Icon(Icons.access_time, size: 16, color: AppColors.textSecondary),
                     const SizedBox(width: 6),
                     Text(
                       '${item.startTime ?? ''} - ${item.endTime ?? ''}',
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.grey[700],
+                        color: AppColors.darkLight,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -552,8 +544,8 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
                       ),
                       decoration: BoxDecoration(
                         color: isCompleted
-                            ? Colors.green.withValues(alpha: 0.1)
-                            : Colors.orange.withValues(alpha: 0.1),
+                            ? AppColors.success.withValues(alpha: 0.1)
+                            : AppColors.warning.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
@@ -562,7 +554,7 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
                           Icon(
                             isCompleted ? Icons.check : Icons.pending,
                             size: 14,
-                            color: isCompleted ? Colors.green : Colors.orange,
+                            color: isCompleted ? AppColors.success : AppColors.warning,
                           ),
                           const SizedBox(width: 4),
                           Text(
@@ -570,7 +562,7 @@ class _AttendanceSchedulePageState extends State<AttendanceSchedulePage> {
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-                              color: isCompleted ? Colors.green : Colors.orange,
+                              color: isCompleted ? AppColors.success : AppColors.warning,
                             ),
                           ),
                         ],

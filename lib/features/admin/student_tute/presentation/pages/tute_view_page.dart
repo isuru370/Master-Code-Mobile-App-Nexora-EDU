@@ -51,16 +51,8 @@ class _TuteViewPageState extends State<TuteViewPage> {
         backgroundColor: AppColors.background,
 
         appBar: AppBar(
-          elevation: 0,
-          centerTitle: true,
-
-          backgroundColor: AppColors.primary,
-
-          foregroundColor: Colors.white,
-
           title: const Text(
             'Tute History',
-
             style: TextStyle(fontWeight: FontWeight.w700),
           ),
         ),
@@ -115,7 +107,7 @@ class _TuteViewPageState extends State<TuteViewPage> {
                     decoration: BoxDecoration(
                       gradient: AppColors.heroGradient,
 
-                      borderRadius: BorderRadius.circular(32),
+                      borderRadius: BorderRadius.circular(12),
 
                       boxShadow: AppColors.largeShadow,
                     ),
@@ -133,7 +125,7 @@ class _TuteViewPageState extends State<TuteViewPage> {
                               decoration: BoxDecoration(
                                 color: Colors.white.withValues(alpha: .14),
 
-                                borderRadius: BorderRadius.circular(18),
+                                borderRadius: BorderRadius.circular(12),
                               ),
 
                               child: const Icon(
@@ -190,7 +182,7 @@ class _TuteViewPageState extends State<TuteViewPage> {
 
                                 icon: Icons.check_circle_rounded,
 
-                                color: Colors.greenAccent,
+                                color: AppColors.success,
                               ),
                             ),
 
@@ -204,7 +196,7 @@ class _TuteViewPageState extends State<TuteViewPage> {
 
                                 icon: Icons.schedule_rounded,
 
-                                color: Colors.orangeAccent,
+                                color: AppColors.warning,
                               ),
                             ),
                           ],
@@ -263,13 +255,13 @@ class _TuteViewPageState extends State<TuteViewPage> {
           ).format(DateTime.parse(tute.createdAt!))
         : '-';
 
-    final statusColor = tute.isIssued ? Colors.green : Colors.orange;
+    final statusColor = tute.isIssued ? AppColors.success : AppColors.warning;
 
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
 
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(12),
 
         border: Border.all(color: AppColors.border),
 
@@ -297,7 +289,7 @@ class _TuteViewPageState extends State<TuteViewPage> {
                   decoration: BoxDecoration(
                     color: statusColor.withValues(alpha: .12),
 
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(12),
                   ),
 
                   child: Icon(
@@ -333,7 +325,7 @@ class _TuteViewPageState extends State<TuteViewPage> {
                         'Created: $createdAtText',
 
                         style: TextStyle(
-                          color: Colors.grey.shade600,
+                          color: AppColors.textSecondary,
 
                           fontWeight: FontWeight.w600,
                         ),
@@ -394,7 +386,7 @@ class _TuteViewPageState extends State<TuteViewPage> {
               decoration: BoxDecoration(
                 color: const Color(0xfff8fafc),
 
-                borderRadius: BorderRadius.circular(22),
+                borderRadius: BorderRadius.circular(12),
 
                 border: Border.all(color: AppColors.border),
               ),
@@ -432,7 +424,7 @@ class _TuteViewPageState extends State<TuteViewPage> {
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: .12),
 
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(12),
 
         border: Border.all(color: Colors.white.withValues(alpha: .12)),
       ),
@@ -446,7 +438,7 @@ class _TuteViewPageState extends State<TuteViewPage> {
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: .10),
 
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(12),
             ),
 
             child: Icon(icon, color: color, size: 22),
@@ -549,7 +541,7 @@ class _TuteViewPageState extends State<TuteViewPage> {
               title,
 
               style: TextStyle(
-                color: Colors.grey.shade600,
+                color: AppColors.textSecondary,
 
                 fontWeight: FontWeight.w600,
               ),
@@ -591,7 +583,9 @@ class _TuteViewPageState extends State<TuteViewPage> {
           decoration: BoxDecoration(
             color: Colors.white,
 
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(12),
+
+            border: Border.all(color: AppColors.border),
 
             boxShadow: AppColors.softShadow,
           ),
@@ -603,7 +597,7 @@ class _TuteViewPageState extends State<TuteViewPage> {
               Icon(
                 Icons.menu_book_rounded,
                 size: 90,
-                color: Colors.grey.shade400,
+                color: AppColors.textMuted,
               ),
 
               const SizedBox(height: 18),
@@ -614,7 +608,7 @@ class _TuteViewPageState extends State<TuteViewPage> {
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
-                  color: Colors.grey.shade800,
+                  color: AppColors.darkLight,
                 ),
               ),
 
@@ -625,7 +619,7 @@ class _TuteViewPageState extends State<TuteViewPage> {
 
                 textAlign: TextAlign.center,
 
-                style: TextStyle(color: Colors.grey.shade600, height: 1.4),
+                style: TextStyle(color: AppColors.textSecondary, height: 1.4),
               ),
             ],
           ),
@@ -649,7 +643,9 @@ class _TuteViewPageState extends State<TuteViewPage> {
           decoration: BoxDecoration(
             color: Colors.white,
 
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(12),
+
+            border: Border.all(color: AppColors.border),
 
             boxShadow: AppColors.softShadow,
           ),
@@ -663,7 +659,7 @@ class _TuteViewPageState extends State<TuteViewPage> {
 
                 size: 80,
 
-                color: Colors.red.shade400,
+                color: AppColors.danger,
               ),
 
               const SizedBox(height: 16),
@@ -681,7 +677,7 @@ class _TuteViewPageState extends State<TuteViewPage> {
 
                 textAlign: TextAlign.center,
 
-                style: TextStyle(color: Colors.grey.shade600),
+                style: TextStyle(color: AppColors.textSecondary),
               ),
             ],
           ),

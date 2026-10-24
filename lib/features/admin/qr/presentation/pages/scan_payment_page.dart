@@ -5,6 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../data/model/scan_payment_new/scan_payment_request_model.dart';
 import '../bloc/scan_payment/scan_payment_bloc.dart';
+import '../../../../../core/theme/app_colors.dart';
 
 class ScanPaymentPage extends StatefulWidget {
   const ScanPaymentPage({super.key});
@@ -330,7 +331,6 @@ class _ScanPaymentPageState extends State<ScanPaymentPage> {
         // ======================================================
         appBar: AppBar(
           title: const Text('Payment Scanner'),
-          centerTitle: true,
           actions: [
             IconButton(
               icon: Icon(
@@ -448,7 +448,7 @@ class _ScanPaymentPageState extends State<ScanPaymentPage> {
               child: Container(
                 decoration: const BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
                   boxShadow: [
                     BoxShadow(
                       blurRadius: 12,
@@ -475,7 +475,7 @@ class _ScanPaymentPageState extends State<ScanPaymentPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.camera_alt, size: 60, color: Colors.grey),
+          Icon(Icons.camera_alt, size: 60, color: AppColors.textSecondary),
           SizedBox(height: 16),
           Text(
             'Camera Permission Required',
@@ -506,7 +506,7 @@ class _ScanPaymentPageState extends State<ScanPaymentPage> {
           height: 220,
           decoration: BoxDecoration(
             border: Border.all(color: Colors.white, width: 3),
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
       ),
@@ -524,7 +524,7 @@ class _ScanPaymentPageState extends State<ScanPaymentPage> {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
           color: Colors.black.withValues(alpha: 0.7),
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: const Row(
           mainAxisSize: MainAxisSize.min,
@@ -553,8 +553,8 @@ class _ScanPaymentPageState extends State<ScanPaymentPage> {
         margin: const EdgeInsets.symmetric(horizontal: 30),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.red.withValues(alpha: 0.85),
-          borderRadius: BorderRadius.circular(30),
+          color: AppColors.danger.withValues(alpha: 0.85),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Text(
           _errorMessage!,
@@ -568,8 +568,8 @@ class _ScanPaymentPageState extends State<ScanPaymentPage> {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.blue.withValues(alpha: 0.8),
-          borderRadius: BorderRadius.circular(30),
+          color: AppColors.primary.withValues(alpha: 0.8),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: const Row(
           mainAxisSize: MainAxisSize.min,
@@ -589,7 +589,7 @@ class _ScanPaymentPageState extends State<ScanPaymentPage> {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.black.withValues(alpha: 0.6),
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: const Text(
         'Scan Student QR Code',
@@ -617,7 +617,7 @@ class _ScanPaymentPageState extends State<ScanPaymentPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.qr_code_scanner, size: 50, color: Colors.blue),
+          Icon(Icons.qr_code_scanner, size: 50, color: AppColors.primary),
           SizedBox(height: 12),
           Text(
             'Scan Student QR Card',
@@ -626,7 +626,7 @@ class _ScanPaymentPageState extends State<ScanPaymentPage> {
           SizedBox(height: 4),
           Text(
             'Point camera at the student QR code',
-            style: TextStyle(fontSize: 14, color: Colors.grey),
+            style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
           ),
         ],
       ),
@@ -649,7 +649,7 @@ class _ScanPaymentPageState extends State<ScanPaymentPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.person_add, size: 50, color: Colors.blue),
+          const Icon(Icons.person_add, size: 50, color: AppColors.primary),
 
           const SizedBox(height: 16),
 
@@ -662,7 +662,7 @@ class _ScanPaymentPageState extends State<ScanPaymentPage> {
 
           const Text(
             'Type the student code',
-            style: TextStyle(fontSize: 14, color: Colors.grey),
+            style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
 
@@ -677,19 +677,19 @@ class _ScanPaymentPageState extends State<ScanPaymentPage> {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               margin: const EdgeInsets.only(bottom: 14),
               decoration: BoxDecoration(
-                color: Colors.red.withValues(alpha: 0.08),
+                color: AppColors.danger.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.red.withValues(alpha: 0.25)),
+                border: Border.all(color: AppColors.danger.withValues(alpha: 0.25)),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.error_outline, color: Colors.red, size: 20),
+                  const Icon(Icons.error_outline, color: AppColors.danger, size: 20),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       _errorMessage!,
-                      style: const TextStyle(color: Colors.red, fontSize: 13),
+                      style: const TextStyle(color: AppColors.danger, fontSize: 13),
                     ),
                   ),
                 ],
@@ -715,7 +715,7 @@ class _ScanPaymentPageState extends State<ScanPaymentPage> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: Colors.blue, width: 2),
+                borderSide: const BorderSide(color: AppColors.primary, width: 2),
               ),
             ),
           ),
@@ -774,14 +774,14 @@ class _ScanPaymentPageState extends State<ScanPaymentPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, color: Colors.red, size: 50),
+            const Icon(Icons.error_outline, color: AppColors.danger, size: 50),
 
             const SizedBox(height: 12),
 
             Text(
               _errorMessage ?? 'Something went wrong.',
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 14, color: Colors.red),
+              style: const TextStyle(fontSize: 14, color: AppColors.danger),
             ),
 
             const SizedBox(height: 16),

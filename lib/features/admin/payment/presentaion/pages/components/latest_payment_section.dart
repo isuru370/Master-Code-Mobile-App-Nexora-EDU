@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../qr/data/model/read_payment/read_last_payment_model.dart';
+import '../../../../../../core/theme/app_colors.dart';
 
 class LatestPaymentSection extends StatelessWidget {
   final ReadLastPaymentModel latestPayment;
@@ -26,11 +27,11 @@ class LatestPaymentSection extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: isPaid
-            ? Colors.green.withValues(alpha: 0.08)
-            : Colors.red.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(14),
+            ? AppColors.success.withValues(alpha: 0.08)
+            : AppColors.danger.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isPaid ? Colors.green.shade300 : Colors.red.shade300,
+          color: isPaid ? AppColors.successLight : AppColors.dangerLight,
         ),
       ),
       child: Column(
@@ -51,7 +52,7 @@ class LatestPaymentSection extends StatelessWidget {
                   vertical: 5,
                 ),
                 decoration: BoxDecoration(
-                  color: isPaid ? Colors.green.shade100 : Colors.red.shade100,
+                  color: isPaid ? AppColors.successLight : AppColors.dangerLight,
                   borderRadius: BorderRadius.circular(999),
                 ),
                 child: Text(
@@ -59,7 +60,7 @@ class LatestPaymentSection extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 11,
-                    color: isPaid ? Colors.green.shade800 : Colors.red.shade800,
+                    color: isPaid ? AppColors.successText : AppColors.dangerText,
                   ),
                 ),
               ),

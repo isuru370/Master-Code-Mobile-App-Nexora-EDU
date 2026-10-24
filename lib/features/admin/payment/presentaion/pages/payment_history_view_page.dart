@@ -51,11 +51,6 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
       backgroundColor: AppColors.background,
 
       appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
-
         title: const Text(
           'Payment History',
           style: TextStyle(fontWeight: FontWeight.w700),
@@ -86,7 +81,8 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
 
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(28),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.border),
                     boxShadow: AppColors.softShadow,
                   ),
 
@@ -97,7 +93,7 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
                       Icon(
                         Icons.error_outline_rounded,
                         size: 80,
-                        color: Colors.red.shade400,
+                        color: AppColors.danger,
                       ),
 
                       const SizedBox(height: 16),
@@ -118,7 +114,7 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
 
                         textAlign: TextAlign.center,
 
-                        style: TextStyle(color: Colors.grey.shade600),
+                        style: TextStyle(color: AppColors.textSecondary),
                       ),
                     ],
                   ),
@@ -163,7 +159,8 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
 
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(30),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppColors.border),
                       boxShadow: AppColors.softShadow,
                     ),
 
@@ -174,7 +171,7 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
                         Icon(
                           Icons.history_toggle_off_rounded,
                           size: 90,
-                          color: Colors.grey.shade400,
+                          color: AppColors.textMuted,
                         ),
 
                         const SizedBox(height: 18),
@@ -185,7 +182,7 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w800,
-                            color: Colors.grey.shade800,
+                            color: AppColors.darkLight,
                           ),
                         ),
 
@@ -197,7 +194,7 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
                           textAlign: TextAlign.center,
 
                           style: TextStyle(
-                            color: Colors.grey.shade600,
+                            color: AppColors.textSecondary,
                             height: 1.4,
                           ),
                         ),
@@ -221,7 +218,7 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
                   decoration: BoxDecoration(
                     gradient: AppColors.heroGradient,
 
-                    borderRadius: BorderRadius.circular(32),
+                    borderRadius: BorderRadius.circular(12),
 
                     boxShadow: AppColors.largeShadow,
                   ),
@@ -239,7 +236,7 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
                             decoration: BoxDecoration(
                               color: Colors.white.withValues(alpha: .14),
 
-                              borderRadius: BorderRadius.circular(18),
+                              borderRadius: BorderRadius.circular(12),
                             ),
 
                             child: const Icon(
@@ -327,7 +324,7 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
                         decoration: BoxDecoration(
                           color: Colors.white,
 
-                          borderRadius: BorderRadius.circular(30),
+                          borderRadius: BorderRadius.circular(12),
 
                           border: Border.all(color: AppColors.border),
 
@@ -372,13 +369,13 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
                                   _miniBadge(
                                     Icons.payments_rounded,
                                     'LKR ${month.totalAmount.toStringAsFixed(2)}',
-                                    Colors.green,
+                                    AppColors.success,
                                   ),
 
                                   _miniBadge(
                                     Icons.discount_rounded,
                                     'LKR ${month.totalDiscountAmount.toStringAsFixed(2)}',
-                                    Colors.orange,
+                                    AppColors.warning,
                                   ),
 
                                   _miniBadge(
@@ -399,7 +396,7 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
                                 decoration: BoxDecoration(
                                   color: const Color(0xfff8fafc),
 
-                                  borderRadius: BorderRadius.circular(22),
+                                  borderRadius: BorderRadius.circular(12),
 
                                   border: Border.all(color: AppColors.border),
                                 ),
@@ -452,7 +449,7 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
                                                 _formatDate(payment.paidAt),
 
                                                 style: TextStyle(
-                                                  color: Colors.grey.shade600,
+                                                  color: AppColors.textSecondary,
                                                   fontWeight: FontWeight.w500,
                                                 ),
                                               ),
@@ -466,7 +463,7 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w800,
                                             fontSize: 17,
-                                            color: Colors.green,
+                                            color: AppColors.success,
                                           ),
                                         ),
                                       ],
@@ -508,6 +505,8 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
                                           borderRadius: BorderRadius.circular(
                                             16,
                                           ),
+
+                                          border: Border.all(color: AppColors.border),
                                         ),
 
                                         child: Column(
@@ -519,7 +518,7 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
                                               'Payment Note',
 
                                               style: TextStyle(
-                                                color: Colors.grey.shade700,
+                                                color: AppColors.darkLight,
                                                 fontWeight: FontWeight.w700,
                                               ),
                                             ),
@@ -530,7 +529,7 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
                                               payment.note,
 
                                               style: TextStyle(
-                                                color: Colors.grey.shade700,
+                                                color: AppColors.darkLight,
                                                 height: 1.4,
                                               ),
                                             ),
@@ -569,7 +568,7 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: .12),
 
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(12),
 
         border: Border.all(color: Colors.white.withValues(alpha: .12)),
       ),
@@ -647,7 +646,9 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
       decoration: BoxDecoration(
         color: Colors.white,
 
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
+
+        border: Border.all(color: AppColors.border),
       ),
 
       child: Column(
@@ -658,7 +659,7 @@ class _PaymentHistoryViewPageState extends State<PaymentHistoryViewPage> {
             title,
 
             style: TextStyle(
-              color: Colors.grey.shade600,
+              color: AppColors.textSecondary,
               fontWeight: FontWeight.w600,
               fontSize: 12,
             ),

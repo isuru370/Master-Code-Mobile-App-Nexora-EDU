@@ -215,7 +215,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
       builder: (context) {
         return Dialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Padding(
             padding: const EdgeInsets.all(24),
@@ -248,7 +248,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                 Text(
                   'Please connect your Bluetooth printer to print receipts.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.grey.shade600),
+                  style: TextStyle(color: AppColors.textSecondary),
                 ),
 
                 const SizedBox(height: 24),
@@ -271,7 +271,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                         onPressed: () {
@@ -309,16 +309,10 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
       backgroundColor: AppColors.background,
 
       appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
-
         title: const Text(
           'Today Payments',
           style: TextStyle(fontWeight: FontWeight.w700),
         ),
-
         actions: [
           IconButton(
             onPressed: _checkPrinterStatus,
@@ -342,15 +336,15 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                   margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.orange.shade50,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.orange.shade200),
+                    color: AppColors.warningLight,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.warningLight),
                   ),
                   child: Row(
                     children: [
                       Icon(
                         Icons.print_disabled_rounded,
-                        color: Colors.orange.shade700,
+                        color: AppColors.warningText,
                       ),
 
                       const SizedBox(width: 12),
@@ -359,7 +353,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                         child: Text(
                           'Printer not connected. Receipts will not be printed.',
                           style: TextStyle(
-                            color: Colors.orange.shade800,
+                            color: AppColors.warningText,
                             fontSize: 12,
                           ),
                         ),
@@ -397,7 +391,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                 padding: const EdgeInsets.all(22),
                 decoration: BoxDecoration(
                   gradient: AppColors.heroGradient,
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(12),
                   boxShadow: AppColors.largeShadow,
                 ),
                 child: Row(
@@ -407,7 +401,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                       width: 60,
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: .15),
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(
                         Icons.payments_rounded,
@@ -466,7 +460,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                             vertical: 10,
                           ),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                       ),
@@ -508,7 +502,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                             children: [
                               const Icon(
                                 Icons.error_outline_rounded,
-                                color: Colors.red,
+                                color: AppColors.danger,
                                 size: 70,
                               ),
 
@@ -518,7 +512,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                                 state.message,
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
-                                  color: Colors.red,
+                                  color: AppColors.danger,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -551,7 +545,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                               Icon(
                                 Icons.payments_outlined,
                                 size: 90,
-                                color: Colors.grey.shade400,
+                                color: AppColors.textMuted,
                               ),
 
                               const SizedBox(height: 14),
@@ -561,7 +555,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.w800,
-                                  color: Colors.grey.shade700,
+                                  color: AppColors.darkLight,
                                 ),
                               ),
 
@@ -569,7 +563,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
 
                               Text(
                                 'There are no payments for this date.',
-                                style: TextStyle(color: Colors.grey.shade500),
+                                style: TextStyle(color: AppColors.textSecondary),
                               ),
                             ],
                           ),
@@ -628,7 +622,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
 
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
         boxShadow: AppColors.softShadow,
       ),
@@ -645,7 +639,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
               _toggleExpanded(item.paymentId);
             },
 
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(12),
 
             child: Padding(
               padding: const EdgeInsets.all(18),
@@ -699,7 +693,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                             Text(
                               student.qrCode,
                               style: TextStyle(
-                                color: Colors.grey.shade600,
+                                color: AppColors.textSecondary,
                                 fontSize: 12,
                               ),
                             ),
@@ -709,7 +703,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                             Text(
                               student.guardianMobile,
                               style: TextStyle(
-                                color: Colors.grey.shade600,
+                                color: AppColors.textSecondary,
                                 fontSize: 12,
                               ),
                             ),
@@ -729,7 +723,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                             'LKR ${item.amount.toStringAsFixed(2)}',
                             style: const TextStyle(
                               fontSize: 18,
-                              color: Colors.green,
+                              color: AppColors.success,
                               fontWeight: FontWeight.w800,
                             ),
                           ),
@@ -823,7 +817,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                         isExpanded
                             ? Icons.keyboard_arrow_up_rounded
                             : Icons.keyboard_arrow_down_rounded,
-                        color: Colors.grey.shade600,
+                        color: AppColors.textSecondary,
                         size: 24,
                       ),
                     ],
@@ -841,7 +835,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
 
                     decoration: BoxDecoration(
                       color: AppColors.primary.withValues(alpha: 0.05),
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(12),
                     ),
 
                     child: Row(
@@ -863,7 +857,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                               Text(
                                 '${item.grade.name} • ${item.teacher.name}',
                                 style: TextStyle(
-                                  color: Colors.grey.shade600,
+                                  color: AppColors.textSecondary,
                                   fontSize: 12,
                                 ),
                               ),
@@ -930,7 +924,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
 
                     decoration: BoxDecoration(
                       color: const Color(0xfff8fafc),
-                      borderRadius: BorderRadius.circular(22),
+                      borderRadius: BorderRadius.circular(12),
                     ),
 
                     child: Column(
@@ -988,7 +982,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
 
                     decoration: BoxDecoration(
                       color: const Color(0xfff8fafc),
-                      borderRadius: BorderRadius.circular(22),
+                      borderRadius: BorderRadius.circular(12),
                     ),
 
                     child: Column(
@@ -1020,7 +1014,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
 
                     decoration: BoxDecoration(
                       color: const Color(0xfff8fafc),
-                      borderRadius: BorderRadius.circular(22),
+                      borderRadius: BorderRadius.circular(12),
                     ),
 
                     child: Column(
@@ -1120,7 +1114,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
             child: Text(
               title,
               style: TextStyle(
-                color: Colors.grey.shade700,
+                color: AppColors.darkLight,
                 fontWeight: FontWeight.w600,
               ),
             ),

@@ -25,10 +25,6 @@ class _TodayClassesPageState extends State<TodayClassesPage> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
         title: const Text(
           'Today Classes',
           style: TextStyle(fontWeight: FontWeight.w700),
@@ -78,7 +74,7 @@ class _TodayClassesPageState extends State<TodayClassesPage> {
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
         gradient: AppColors.heroGradient,
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: AppColors.largeShadow,
       ),
       child: Row(
@@ -88,7 +84,7 @@ class _TodayClassesPageState extends State<TodayClassesPage> {
             height: 62,
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: .14),
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(
               Icons.today_rounded,
@@ -147,7 +143,7 @@ class _TodayClassesPageState extends State<TodayClassesPage> {
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
         boxShadow: AppColors.softShadow,
       ),
@@ -167,7 +163,7 @@ class _TodayClassesPageState extends State<TodayClassesPage> {
                   height: 54,
                   decoration: BoxDecoration(
                     color: AppColors.primary.withValues(alpha: .10),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(
                     Icons.class_rounded,
@@ -195,7 +191,7 @@ class _TodayClassesPageState extends State<TodayClassesPage> {
                       Text(
                         studentClass.teacher?.fullName ?? '-',
                         style: TextStyle(
-                          color: Colors.grey.shade600,
+                          color: AppColors.textSecondary,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -237,19 +233,19 @@ class _TodayClassesPageState extends State<TodayClassesPage> {
                 _chip(
                   icon: Icons.school_rounded,
                   text: studentClass.grade?.gradeName ?? '-',
-                  color: Colors.purple,
+                  color: AppColors.violet,
                 ),
 
                 _chip(
                   icon: Icons.subject_rounded,
                   text: studentClass.subject?.subjectName ?? '-',
-                  color: Colors.orange,
+                  color: AppColors.warning,
                 ),
 
                 _chip(
                   icon: Icons.category_rounded,
                   text: categoryFee.category?.categoryName ?? '-',
-                  color: Colors.blue,
+                  color: AppColors.primary,
                 ),
               ],
             ),
@@ -307,12 +303,12 @@ class _TodayClassesPageState extends State<TodayClassesPage> {
                         style: TextStyle(fontWeight: FontWeight.w700),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.indigo,
+                        backgroundColor: AppColors.primary,
                         foregroundColor: Colors.white,
                         elevation: 0,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                     ),
@@ -365,7 +361,7 @@ class _TodayClassesPageState extends State<TodayClassesPage> {
             child: Text(
               title,
               style: TextStyle(
-                color: Colors.grey.shade700,
+                color: AppColors.darkLight,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -404,7 +400,8 @@ class _TodayClassesPageState extends State<TodayClassesPage> {
           padding: const EdgeInsets.all(28),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.border),
             boxShadow: AppColors.softShadow,
           ),
           child: Column(
@@ -413,7 +410,7 @@ class _TodayClassesPageState extends State<TodayClassesPage> {
               Icon(
                 Icons.calendar_month_rounded,
                 size: 86,
-                color: Colors.grey.shade400,
+                color: AppColors.textMuted,
               ),
               const SizedBox(height: 16),
               Text(
@@ -421,14 +418,14 @@ class _TodayClassesPageState extends State<TodayClassesPage> {
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
-                  color: Colors.grey.shade800,
+                  color: AppColors.darkLight,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 'There are no classes scheduled for today.',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey.shade600, height: 1.4),
+                style: TextStyle(color: AppColors.textSecondary, height: 1.4),
               ),
             ],
           ),
@@ -445,7 +442,8 @@ class _TodayClassesPageState extends State<TodayClassesPage> {
           padding: const EdgeInsets.all(28),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.border),
             boxShadow: AppColors.softShadow,
           ),
           child: Column(
@@ -454,7 +452,7 @@ class _TodayClassesPageState extends State<TodayClassesPage> {
               Icon(
                 Icons.error_outline_rounded,
                 size: 80,
-                color: Colors.red.shade400,
+                color: AppColors.danger,
               ),
               const SizedBox(height: 16),
               const Text(
@@ -465,7 +463,7 @@ class _TodayClassesPageState extends State<TodayClassesPage> {
               Text(
                 message,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey.shade600),
+                style: TextStyle(color: AppColors.textSecondary),
               ),
             ],
           ),
@@ -480,7 +478,7 @@ class _TodayClassesPageState extends State<TodayClassesPage> {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppColors.background,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
       child: Column(

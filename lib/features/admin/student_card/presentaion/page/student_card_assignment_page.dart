@@ -7,6 +7,7 @@ import '../../data/model/assignment/assignment_current_card_model.dart';
 import '../../data/model/assignment/assignment_search_student_response_model.dart';
 import '../../data/model/re_assign/re_assign_request_model.dart';
 import '../bloc/student_card/student_card_bloc.dart';
+import '../../../../../core/theme/app_colors.dart';
 
 class StudentCardAssignmentPage extends StatefulWidget {
   final AssignmentSearchStudentResponseModel response;
@@ -33,25 +34,25 @@ class _StudentCardAssignmentPageState extends State<StudentCardAssignmentPage> {
     {
       'value': 'lost',
       'label': 'Lost',
-      'color': Colors.red,
+      'color': AppColors.danger,
       'icon': Icons.search_off,
     },
     {
       'value': 'damaged',
       'label': 'Damaged',
-      'color': Colors.orange,
+      'color': AppColors.warning,
       'icon': Icons.broken_image_outlined,
     },
     {
       'value': 'worn_out',
       'label': 'Worn Out',
-      'color': Colors.deepOrange,
+      'color': AppColors.warning,
       'icon': Icons.auto_fix_off,
     },
     {
       'value': 'other',
       'label': 'Other',
-      'color': Colors.grey,
+      'color': AppColors.textSecondary,
       'icon': Icons.more_horiz,
     },
   ];
@@ -90,7 +91,7 @@ class _StudentCardAssignmentPageState extends State<StudentCardAssignmentPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Failed to start camera'),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.danger,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -123,7 +124,7 @@ class _StudentCardAssignmentPageState extends State<StudentCardAssignmentPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('QR Code scanned: ${value.trim().toUpperCase()}'),
-        backgroundColor: Colors.green,
+        backgroundColor: AppColors.success,
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
       ),
@@ -178,7 +179,7 @@ class _StudentCardAssignmentPageState extends State<StudentCardAssignmentPage> {
           content: Text(
             'New card QR cannot be the same as the current card QR.',
           ),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.danger,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -216,7 +217,7 @@ class _StudentCardAssignmentPageState extends State<StudentCardAssignmentPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.response.message),
-              backgroundColor: Colors.green,
+              backgroundColor: AppColors.success,
               behavior: SnackBarBehavior.floating,
             ),
           );
@@ -233,7 +234,7 @@ class _StudentCardAssignmentPageState extends State<StudentCardAssignmentPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.response.message),
-              backgroundColor: Colors.green,
+              backgroundColor: AppColors.success,
               behavior: SnackBarBehavior.floating,
             ),
           );
@@ -250,7 +251,7 @@ class _StudentCardAssignmentPageState extends State<StudentCardAssignmentPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
-              backgroundColor: Colors.red,
+              backgroundColor: AppColors.danger,
               behavior: SnackBarBehavior.floating,
             ),
           );
@@ -267,7 +268,6 @@ class _StudentCardAssignmentPageState extends State<StudentCardAssignmentPage> {
                   'Student Card Assignment',
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
-                elevation: 0,
                 centerTitle: false,
               ),
               body: _buildBody(
@@ -292,7 +292,7 @@ class _StudentCardAssignmentPageState extends State<StudentCardAssignmentPage> {
                   child: Card(
                     elevation: 8,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
                     child: Padding(
                       padding: EdgeInsets.all(24.0),
@@ -327,7 +327,7 @@ class _StudentCardAssignmentPageState extends State<StudentCardAssignmentPage> {
                   child: Card(
                     elevation: 8,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.9,
@@ -335,7 +335,7 @@ class _StudentCardAssignmentPageState extends State<StudentCardAssignmentPage> {
                       child: Stack(
                         children: [
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(12),
                             child: MobileScanner(
                               controller: _scannerController,
                               onDetect: (capture) {
@@ -399,7 +399,7 @@ class _StudentCardAssignmentPageState extends State<StudentCardAssignmentPage> {
                                     icon: const Icon(Icons.close),
                                     label: const Text('Cancel Scan'),
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.red,
+                                      backgroundColor: AppColors.danger,
                                       foregroundColor: Colors.white,
                                     ),
                                   ),
@@ -477,7 +477,7 @@ class _StudentCardAssignmentPageState extends State<StudentCardAssignmentPage> {
   }) {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -698,7 +698,7 @@ class _StudentCardAssignmentPageState extends State<StudentCardAssignmentPage> {
                   ),
                   decoration: BoxDecoration(
                     color: _getStatusColor(currentCard.status),
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     currentCard.status.toUpperCase(),
@@ -719,7 +719,7 @@ class _StudentCardAssignmentPageState extends State<StudentCardAssignmentPage> {
   Widget _searchCardWidget() {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -807,7 +807,7 @@ class _StudentCardAssignmentPageState extends State<StudentCardAssignmentPage> {
   Widget _buildReplacementReason() {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -882,7 +882,7 @@ class _StudentCardAssignmentPageState extends State<StudentCardAssignmentPage> {
   Widget _buildRemarks() {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -953,22 +953,22 @@ class _StudentCardAssignmentPageState extends State<StudentCardAssignmentPage> {
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'active':
-        return Colors.green;
+        return AppColors.success;
 
       case 'inactive':
-        return Colors.orange;
+        return AppColors.warning;
 
       case 'assigned':
-        return Colors.blue;
+        return AppColors.primary;
 
       case 'expired':
-        return Colors.red;
+        return AppColors.danger;
 
       case 'lost':
-        return Colors.grey;
+        return AppColors.textSecondary;
 
       default:
-        return Colors.grey;
+        return AppColors.textSecondary;
     }
   }
 }

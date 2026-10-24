@@ -216,7 +216,7 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('End time must be after start time'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.danger,
           ),
         );
         return;
@@ -236,7 +236,7 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Please select a hall'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.danger,
           ),
         );
         return;
@@ -289,11 +289,8 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.surfaceSecondary,
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
         title: Text(
           'Update Schedule - ${widget.className}',
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
@@ -313,7 +310,7 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.response.message),
-                backgroundColor: Colors.green,
+                backgroundColor: AppColors.success,
                 duration: const Duration(seconds: 2),
               ),
             );
@@ -347,7 +344,7 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(errorMessage),
-                backgroundColor: Colors.red,
+                backgroundColor: AppColors.danger,
                 duration: const Duration(seconds: 3),
               ),
             );
@@ -411,7 +408,7 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
           end: Alignment.bottomRight,
           colors: [AppColors.primary, Color(0xff1D4ED8)],
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         children: [
@@ -421,7 +418,7 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
                   Icons.edit_calendar,
@@ -518,15 +515,15 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'scheduled':
-        return Colors.blue;
+        return AppColors.primary;
       case 'ongoing':
-        return Colors.green;
+        return AppColors.success;
       case 'completed':
-        return Colors.purple;
+        return AppColors.violet;
       case 'cancelled':
-        return Colors.red;
+        return AppColors.danger;
       default:
-        return Colors.grey;
+        return AppColors.textSecondary;
     }
   }
 
@@ -540,7 +537,7 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
             return Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey[300]!),
+                border: Border.all(color: AppColors.border),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Center(
@@ -558,18 +555,18 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
               return Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.orange[50],
-                  border: Border.all(color: Colors.orange[300]!),
+                  color: AppColors.warningLight,
+                  border: Border.all(color: AppColors.warningLight),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Row(
                   children: [
-                    Icon(Icons.warning, color: Colors.orange),
+                    Icon(Icons.warning, color: AppColors.warning),
                     SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         'No halls available. Please add a hall first.',
-                        style: TextStyle(color: Colors.orange),
+                        style: TextStyle(color: AppColors.warning),
                       ),
                     ),
                   ],
@@ -588,7 +585,7 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey[300]!),
+                  borderSide: BorderSide(color: AppColors.border),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -628,18 +625,18 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
             return Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.red[50],
-                border: Border.all(color: Colors.red[300]!),
+                color: AppColors.dangerLight,
+                border: Border.all(color: AppColors.dangerLight),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.error, color: Colors.red),
+                  const Icon(Icons.error, color: AppColors.danger),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       state.message,
-                      style: const TextStyle(color: Colors.red),
+                      style: const TextStyle(color: AppColors.danger),
                     ),
                   ),
                 ],
@@ -666,7 +663,7 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey[300]!),
+            borderSide: BorderSide(color: AppColors.border),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
@@ -701,7 +698,7 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey[300]!),
+            borderSide: BorderSide(color: AppColors.border),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
@@ -736,7 +733,7 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey[300]!),
+            borderSide: BorderSide(color: AppColors.border),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
@@ -804,14 +801,14 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey[300]!),
+            borderSide: BorderSide(color: AppColors.border),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: const BorderSide(color: AppColors.primary),
           ),
           filled: true,
-          fillColor: Colors.grey[50],
+          fillColor: AppColors.surfaceSecondary,
           contentPadding: const EdgeInsets.all(12),
         ),
       ),
@@ -883,14 +880,14 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
       children: [
         Row(
           children: [
-            Icon(icon, size: 16, color: Colors.grey[600]),
+            Icon(icon, size: 16, color: AppColors.textSecondary),
             const SizedBox(width: 8),
             Text(
               label,
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
-                color: Colors.grey[700],
+                color: AppColors.darkLight,
               ),
             ),
           ],

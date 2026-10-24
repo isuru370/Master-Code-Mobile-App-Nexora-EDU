@@ -38,11 +38,8 @@ class _ClassCategoryPageState extends State<ClassCategoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.surfaceSecondary,
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
         title: Text(
           widget.className,
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
@@ -81,7 +78,7 @@ class _ClassCategoryPageState extends State<ClassCategoryPage> {
                         SizedBox(height: 16),
                         Text(
                           'Loading categories...',
-                          style: TextStyle(color: Colors.grey),
+                          style: TextStyle(color: AppColors.textSecondary),
                         ),
                       ],
                     ),
@@ -99,14 +96,14 @@ class _ClassCategoryPageState extends State<ClassCategoryPage> {
                           Icon(
                             Icons.category_outlined,
                             size: 80,
-                            color: Colors.grey[400],
+                            color: AppColors.textMuted,
                           ),
                           const SizedBox(height: 16),
                           Text(
                             'No categories found',
                             style: TextStyle(
                               fontSize: 16,
-                              color: Colors.grey[600],
+                              color: AppColors.textSecondary,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -115,7 +112,7 @@ class _ClassCategoryPageState extends State<ClassCategoryPage> {
                             'No categories available for this class',
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.grey[500],
+                              color: AppColors.textSecondary,
                             ),
                           ),
                         ],
@@ -141,7 +138,7 @@ class _ClassCategoryPageState extends State<ClassCategoryPage> {
                         Icon(
                           Icons.error_outline,
                           size: 80,
-                          color: Colors.red[300],
+                          color: AppColors.dangerLight,
                         ),
                         const SizedBox(height: 16),
                         Text(
@@ -149,13 +146,13 @@ class _ClassCategoryPageState extends State<ClassCategoryPage> {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
-                            color: Colors.grey[800],
+                            color: AppColors.darkLight,
                           ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           state.message,
-                          style: TextStyle(color: Colors.grey[600]),
+                          style: TextStyle(color: AppColors.textSecondary),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 24),
@@ -204,7 +201,7 @@ class _ClassCategoryPageState extends State<ClassCategoryPage> {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [AppColors.primary, Color(0xff1D4ED8)],
+          colors: [AppColors.dark, AppColors.dark, Color(0xFF172554)],
         ),
         boxShadow: [
           BoxShadow(
@@ -225,7 +222,7 @@ class _ClassCategoryPageState extends State<ClassCategoryPage> {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
                 ),
                 child: Row(
@@ -234,7 +231,7 @@ class _ClassCategoryPageState extends State<ClassCategoryPage> {
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(
                         Icons.class_,
@@ -335,18 +332,13 @@ class _ClassCategoryPageState extends State<ClassCategoryPage> {
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
+        boxShadow: AppColors.softShadow,
       ),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -363,7 +355,7 @@ class _ClassCategoryPageState extends State<ClassCategoryPage> {
                         end: Alignment.bottomRight,
                         colors: [AppColors.primary, Color(0xff1D4ED8)],
                       ),
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(
                       Icons.category,
@@ -393,9 +385,9 @@ class _ClassCategoryPageState extends State<ClassCategoryPage> {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.green[50],
+                            color: AppColors.successLight,
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.green[200]!),
+                            border: Border.all(color: AppColors.successLight),
                           ),
                           child: const Row(
                             mainAxisSize: MainAxisSize.min,
@@ -403,7 +395,7 @@ class _ClassCategoryPageState extends State<ClassCategoryPage> {
                               Icon(
                                 Icons.access_time,
                                 size: 12,
-                                color: Colors.green,
+                                color: AppColors.success,
                               ),
                               SizedBox(width: 4),
                               Text(
@@ -411,7 +403,7 @@ class _ClassCategoryPageState extends State<ClassCategoryPage> {
                                 style: TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.green,
+                                  color: AppColors.success,
                                 ),
                               ),
                             ],
@@ -431,7 +423,7 @@ class _ClassCategoryPageState extends State<ClassCategoryPage> {
                     'Course Fee:',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey[600],
+                      color: AppColors.textSecondary,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -458,7 +450,7 @@ class _ClassCategoryPageState extends State<ClassCategoryPage> {
               ),
               const SizedBox(height: 12),
               // Divider
-              Divider(color: Colors.grey[200], height: 1),
+              Divider(color: AppColors.divider, height: 1),
               const SizedBox(height: 12),
               // Two buttons - Attendance and Schedule
               Row(

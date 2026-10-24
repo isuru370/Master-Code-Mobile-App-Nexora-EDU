@@ -141,15 +141,15 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'scheduled':
-        return Colors.blue;
+        return AppColors.primary;
       case 'ongoing':
-        return Colors.green;
+        return AppColors.success;
       case 'completed':
-        return Colors.purple;
+        return AppColors.violet;
       case 'cancelled':
-        return Colors.red;
+        return AppColors.danger;
       default:
-        return Colors.grey;
+        return AppColors.textSecondary;
     }
   }
 
@@ -225,11 +225,8 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.surfaceSecondary,
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
         title: Text(
           widget.className,
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
@@ -257,7 +254,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                   SizedBox(height: 16),
                   Text(
                     'Loading schedules...',
-                    style: TextStyle(color: Colors.grey),
+                    style: TextStyle(color: AppColors.textSecondary),
                   ),
                 ],
               ),
@@ -275,21 +272,21 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                     Icon(
                       Icons.schedule_outlined,
                       size: 80,
-                      color: Colors.grey[400],
+                      color: AppColors.textMuted,
                     ),
                     const SizedBox(height: 16),
                     Text(
                       'No schedules found',
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.grey[600],
+                        color: AppColors.textSecondary,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       'No schedules available for this class',
-                      style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+                      style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
                     ),
                   ],
                 ),
@@ -307,21 +304,21 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                     Icon(
                       Icons.calendar_month_outlined,
                       size: 80,
-                      color: Colors.grey[400],
+                      color: AppColors.textMuted,
                     ),
                     const SizedBox(height: 16),
                     Text(
                       'No schedules for ${_getMonthNameFromType(_selectedMonthType)}',
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.grey[600],
+                        color: AppColors.textSecondary,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       'Try selecting a different month',
-                      style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+                      style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
                     ),
                   ],
                 ),
@@ -380,20 +377,20 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.error_outline, size: 80, color: Colors.red[300]),
+                  Icon(Icons.error_outline, size: 80, color: AppColors.dangerLight),
                   const SizedBox(height: 16),
                   Text(
                     'Error loading schedules',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
-                      color: Colors.grey[800],
+                      color: AppColors.darkLight,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     state.message,
-                    style: TextStyle(color: Colors.grey[600]),
+                    style: TextStyle(color: AppColors.textSecondary),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
@@ -441,7 +438,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Schedule added successfully!'),
-                backgroundColor: Colors.green,
+                backgroundColor: AppColors.success,
                 duration: Duration(seconds: 2),
               ),
             );
@@ -451,7 +448,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
         label: const Text('Add New Day'),
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
@@ -460,8 +457,8 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(30),
+        color: AppColors.surfaceSecondary,
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [
@@ -488,7 +485,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
             color: isSelected ? AppColors.primary : Colors.transparent,
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
             children: [
@@ -496,7 +493,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                 label,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: isSelected ? Colors.white : Colors.grey[600],
+                  color: isSelected ? Colors.white : AppColors.textSecondary,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                   fontSize: 14,
                 ),
@@ -528,7 +525,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
     return Container(
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
             color: AppColors.primary.withValues(alpha: 0.3),
@@ -538,7 +535,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(12),
         child: Stack(
           children: [
             Container(
@@ -547,7 +544,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [AppColors.primary, Color(0xff1D4ED8)],
+                  colors: [AppColors.dark, AppColors.dark, Color(0xFF172554)],
                 ),
               ),
             ),
@@ -583,7 +580,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(
                       Icons.schedule,
@@ -620,7 +617,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                               vertical: 3,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.green.withValues(alpha: 0.3),
+                              color: AppColors.success.withValues(alpha: 0.3),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
@@ -680,16 +677,16 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
               margin: const EdgeInsets.only(right: 12),
               decoration: BoxDecoration(
                 color: isSelected ? AppColors.primary : Colors.white,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withValues(alpha: 0.1),
+                    color: AppColors.textSecondary.withValues(alpha: 0.1),
                     blurRadius: 5,
                     offset: const Offset(0, 2),
                   ),
                 ],
                 border: Border.all(
-                  color: isSelected ? AppColors.primary : Colors.grey[200]!,
+                  color: isSelected ? AppColors.primary : AppColors.divider,
                 ),
               ),
               child: Column(
@@ -700,7 +697,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: isSelected ? Colors.white : Colors.grey[600],
+                      color: isSelected ? Colors.white : AppColors.textSecondary,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -709,7 +706,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: isSelected ? Colors.white : Colors.grey[800],
+                      color: isSelected ? Colors.white : AppColors.darkLight,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -755,14 +752,14 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
             selectedColor: AppColors.primary.withValues(alpha: 0.1),
             checkmarkColor: AppColors.primary,
             labelStyle: TextStyle(
-              color: isSelected ? AppColors.primary : Colors.grey[700],
+              color: isSelected ? AppColors.primary : AppColors.darkLight,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               fontSize: 12,
             ),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(12),
               side: BorderSide(
-                color: isSelected ? AppColors.primary : Colors.grey[300]!,
+                color: isSelected ? AppColors.primary : AppColors.border,
               ),
             ),
           );
@@ -776,20 +773,20 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.schedule_outlined, size: 80, color: Colors.grey[400]),
+          Icon(Icons.schedule_outlined, size: 80, color: AppColors.textMuted),
           const SizedBox(height: 16),
           Text(
             'No schedules found',
             style: TextStyle(
               fontSize: 16,
-              color: Colors.grey[600],
+              color: AppColors.textSecondary,
               fontWeight: FontWeight.w500,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'No class schedules available for this date',
-            style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+            style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
           ),
         ],
       ),
@@ -810,20 +807,20 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: isLocked ? Colors.grey[50] : Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        color: isLocked ? AppColors.surfaceSecondary : Colors.white,
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
+            color: AppColors.textSecondary.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
-        border: isLocked ? Border.all(color: Colors.grey[200]!) : null,
+        border: isLocked ? Border.all(color: AppColors.divider) : null,
       ),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -838,7 +835,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                           ? const LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
-                              colors: [Colors.orange, Colors.deepOrange],
+                              colors: [AppColors.warning, AppColors.warning],
                             )
                           : LinearGradient(
                               begin: Alignment.topLeft,
@@ -848,7 +845,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                                 const Color(0xff1D4ED8),
                               ],
                             ),
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
                       isToday ? Icons.today : Icons.calendar_month,
@@ -867,7 +864,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: isToday
-                                ? Colors.orange
+                                ? AppColors.warning
                                 : const Color(0xff1F2937),
                           ),
                         ),
@@ -876,7 +873,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                           '${AppDateTime.getDayOfWeek(scheduleDate)} • ${item.startTime} - ${item.endTime}',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey[600],
+                            color: AppColors.textSecondary,
                           ),
                         ),
                       ],
@@ -911,7 +908,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                 ],
               ),
               const SizedBox(height: 16),
-              Divider(color: Colors.grey[200], height: 1),
+              Divider(color: AppColors.divider, height: 1),
               const SizedBox(height: 12),
               _buildInfoRow(
                 Icons.category_outlined,
@@ -939,9 +936,9 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                   child: Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.red.withValues(alpha: 0.05),
+                      color: AppColors.danger.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.red.withValues(alpha: 0.2)),
+                      border: Border.all(color: AppColors.danger.withValues(alpha: 0.2)),
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -949,7 +946,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                         const Icon(
                           Icons.info_outline,
                           size: 16,
-                          color: Colors.red,
+                          color: AppColors.danger,
                         ),
                         const SizedBox(width: 8),
                         Expanded(
@@ -961,7 +958,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.red,
+                                  color: AppColors.danger,
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -1003,7 +1000,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text('Schedule updated successfully!'),
-                                backgroundColor: Colors.green,
+                                backgroundColor: AppColors.success,
                                 duration: Duration(seconds: 2),
                               ),
                             );
@@ -1012,12 +1009,12 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                         icon: const Icon(Icons.edit, size: 18),
                         label: const Text('Edit'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.blue,
+                          foregroundColor: AppColors.primary,
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          side: BorderSide(color: Colors.blue.withValues(alpha: 0.5)),
+                          side: BorderSide(color: AppColors.primary.withValues(alpha: 0.5)),
                         ),
                       ),
                     ),
@@ -1030,12 +1027,12 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                         icon: const Icon(Icons.cancel, size: 18),
                         label: const Text('Cancel'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.red,
+                          foregroundColor: AppColors.danger,
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          side: BorderSide(color: Colors.red.withValues(alpha: 0.5)),
+                          side: BorderSide(color: AppColors.danger.withValues(alpha: 0.5)),
                         ),
                       ),
                     ),
@@ -1045,7 +1042,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.grey[100],
+                    color: AppColors.surfaceSecondary,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -1054,14 +1051,14 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                       Icon(
                         Icons.lock_outline,
                         size: 16,
-                        color: Colors.grey[500],
+                        color: AppColors.textSecondary,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         'Past sessions cannot be modified',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey[600],
+                          color: AppColors.textSecondary,
                           fontStyle: FontStyle.italic,
                         ),
                       ),
@@ -1101,13 +1098,13 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
   Widget _buildInfoRow(IconData icon, String label, String value) {
     return Row(
       children: [
-        Icon(icon, size: 16, color: Colors.grey[500]),
+        Icon(icon, size: 16, color: AppColors.textSecondary),
         const SizedBox(width: 8),
         Text(
           '$label:',
           style: TextStyle(
             fontSize: 13,
-            color: Colors.grey[600],
+            color: AppColors.textSecondary,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -1140,7 +1137,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
           builder: (context, setDialogState) {
             return AlertDialog(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(12),
               ),
               title: const Text(
                 'Cancel Schedule',
@@ -1159,15 +1156,15 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.red.withValues(alpha: 0.1),
+                        color: AppColors.danger.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+                        border: Border.all(color: AppColors.danger.withValues(alpha: 0.3)),
                       ),
                       child: const Row(
                         children: [
                           Icon(
                             Icons.warning_amber_rounded,
-                            color: Colors.red,
+                            color: AppColors.danger,
                             size: 20,
                           ),
                           SizedBox(width: 8),
@@ -1176,7 +1173,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                               'This action cannot be undone',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Colors.red,
+                                color: AppColors.danger,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -1207,15 +1204,15 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                           hintText: 'Enter reason for cancellation...',
                           hintStyle: TextStyle(
                             fontSize: 13,
-                            color: Colors.grey[400],
+                            color: AppColors.textMuted,
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.grey[300]!),
+                            borderSide: BorderSide(color: AppColors.border),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.grey[300]!),
+                            borderSide: BorderSide(color: AppColors.border),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -1224,7 +1221,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                             ),
                           ),
                           filled: true,
-                          fillColor: Colors.grey[50],
+                          fillColor: AppColors.surfaceSecondary,
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: 12,
                             vertical: 10,
@@ -1243,7 +1240,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                     Navigator.pop(dialogContext);
                   },
                   style: TextButton.styleFrom(
-                    foregroundColor: Colors.grey[600],
+                    foregroundColor: AppColors.textSecondary,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 10,
@@ -1274,7 +1271,7 @@ class _ClassSchedulePageState extends State<ClassSchedulePage> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
+                    backgroundColor: AppColors.danger,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,

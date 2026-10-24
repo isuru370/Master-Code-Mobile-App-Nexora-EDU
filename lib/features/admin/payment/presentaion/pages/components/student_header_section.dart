@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../qr/data/model/read_payment/read_student_payment_model.dart';
+import '../../../../../../core/theme/app_colors.dart';
 
 class StudentHeader extends StatelessWidget {
   final ReadStudentPaymentModel student;
@@ -17,7 +18,7 @@ class StudentHeader extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
             blurRadius: 12,
@@ -30,7 +31,7 @@ class StudentHeader extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 32,
-            backgroundColor: Colors.grey.shade200,
+            backgroundColor: AppColors.divider,
             backgroundImage: imageUrl.isNotEmpty
                 ? NetworkImage(imageUrl)
                 : null,
@@ -68,7 +69,7 @@ class StudentHeader extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: isTemporary ? Colors.amber.shade100 : Colors.blue.shade100,
+        color: isTemporary ? AppColors.warningLight : AppColors.primaryLight,
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
@@ -76,7 +77,7 @@ class StudentHeader extends StatelessWidget {
         style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w700,
-          color: isTemporary ? Colors.amber.shade900 : Colors.blue.shade900,
+          color: isTemporary ? AppColors.warningText : AppColors.primary,
         ),
       ),
     );

@@ -108,7 +108,7 @@ class _AdmissionReceiptDialogState extends State<_AdmissionReceiptDialog> {
     final student = widget.response.student;
 
     return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       title: Row(
         children: [
           const Icon(Icons.receipt_long_rounded, color: AppColors.success),
@@ -190,7 +190,7 @@ class _AdmissionReceiptDialogState extends State<_AdmissionReceiptDialog> {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [

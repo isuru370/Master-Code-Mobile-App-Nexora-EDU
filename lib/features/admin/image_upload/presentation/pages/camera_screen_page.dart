@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../../core/utils/image_picker_service.dart';
 import '../../data/models/image_upload/image_upload_request_model.dart';
 import '../bloc/image_upload/image_upload_bloc.dart';
+import '../../../../../core/theme/app_colors.dart';
 
 class CameraScreenPage extends StatefulWidget {
   final String studentId;
@@ -82,7 +83,6 @@ class _CameraScreenPageState extends State<CameraScreenPage> {
         return Scaffold(
           appBar: AppBar(
             title: Text("Student : ${widget.studentId}"),
-            centerTitle: true,
           ),
           body: SafeArea(
             child: Padding(
@@ -104,8 +104,8 @@ class _CameraScreenPageState extends State<CameraScreenPage> {
                       height: 220,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.border),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withValues(alpha: 0.08),
@@ -115,7 +115,7 @@ class _CameraScreenPageState extends State<CameraScreenPage> {
                         ],
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(12),
                         child: _image == null
                             ? const Center(child: CircularProgressIndicator())
                             : Image.file(_image!, fit: BoxFit.cover),

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../admission/presentaion/bloc/admission/admission_bloc.dart';
 import '../../data/models/admission_dialog_result.dart';
+import '../../../../../core/theme/app_colors.dart';
 
 class AdmissionDialog extends StatefulWidget {
   const AdmissionDialog({super.key});
@@ -56,7 +57,7 @@ class _AdmissionDialogState extends State<AdmissionDialog> {
                     ),
                     subtitle: Text('Rs. ${admission.amount}'),
                     trailing: selectedAdmissionId == admission.id
-                        ? const Icon(Icons.check_circle, color: Colors.green)
+                        ? const Icon(Icons.check_circle, color: AppColors.success)
                         : null,
                     onTap: () {
                       setState(() {
