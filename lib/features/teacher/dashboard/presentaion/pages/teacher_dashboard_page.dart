@@ -311,7 +311,7 @@ class _TeacherHomePageState extends State<_TeacherHomePage> {
                 height: 72,
                 decoration: BoxDecoration(
                   color: AppColors.dangerLight,
-                  borderRadius: BorderRadius.circular(22),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
                   Icons.cloud_off_rounded,
@@ -363,7 +363,7 @@ class _TeacherHomePageState extends State<_TeacherHomePage> {
                     vertical: 13,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(13),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
@@ -401,7 +401,7 @@ class _TeacherHomePageState extends State<_TeacherHomePage> {
           height: 52,
           decoration: BoxDecoration(
             color: AppColors.surface,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(color: AppColors.border),
             boxShadow: AppColors.softShadow,
           ),
@@ -481,7 +481,7 @@ class _TeacherHomePageState extends State<_TeacherHomePage> {
       height: 45,
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
         boxShadow: AppColors.softShadow,
       ),
@@ -580,7 +580,7 @@ class _TeacherHomePageState extends State<_TeacherHomePage> {
                 ),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Text(
                   'TEACHER PORTAL',
@@ -882,7 +882,7 @@ class _TeacherHomePageState extends State<_TeacherHomePage> {
             height: 54,
             decoration: BoxDecoration(
               color: AppColors.primaryLight,
-              borderRadius: BorderRadius.circular(17),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(
               Icons.event_available_rounded,
@@ -970,7 +970,7 @@ class _TeacherHomePageState extends State<_TeacherHomePage> {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                 decoration: BoxDecoration(
                   color: statusInfo.background,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
                   children: [
@@ -1001,7 +1001,7 @@ class _TeacherHomePageState extends State<_TeacherHomePage> {
                 height: 46,
                 decoration: BoxDecoration(
                   color: AppColors.primaryLight,
-                  borderRadius: BorderRadius.circular(13),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(icon, size: 23, color: AppColors.primary),
               ),
@@ -1366,7 +1366,7 @@ class _TeacherHomePageState extends State<_TeacherHomePage> {
                 height: 45,
                 decoration: BoxDecoration(
                   color: AppColors.successLight,
-                  borderRadius: BorderRadius.circular(13),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
                   Icons.fact_check_outlined,

@@ -276,7 +276,7 @@ class _TeacherProfilePageState extends State<TeacherProfilePage> {
         width: double.infinity,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          gradient: AppColors.primaryGradient,
+          gradient: AppColors.heroGradient,
           borderRadius: AppColors.radiusLarge,
           boxShadow: AppColors.mediumShadow,
         ),
@@ -285,7 +285,7 @@ class _TeacherProfilePageState extends State<TeacherProfilePage> {
             Container(
               width: 72,
               height: 72,
-              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(22)),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.border)),
               child: Center(
                 child: Text(
                   _initials(profile),
@@ -314,7 +314,7 @@ class _TeacherProfilePageState extends State<TeacherProfilePage> {
                     padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.14),
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
