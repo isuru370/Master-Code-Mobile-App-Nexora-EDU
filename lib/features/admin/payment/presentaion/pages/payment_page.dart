@@ -66,7 +66,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                backgroundColor: Colors.orange,
+                backgroundColor: AppColors.warning,
                 content: Text('Receipt print failed: $e'),
               ),
             );
@@ -81,7 +81,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              backgroundColor: Colors.green,
+              backgroundColor: AppColors.success,
               content: Text('Payments saved successfully'),
             ),
           );
@@ -97,7 +97,7 @@ class _PaymentPageState extends State<PaymentPage> {
           });
 
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(backgroundColor: Colors.red, content: Text(state.message)),
+            SnackBar(backgroundColor: AppColors.danger, content: Text(state.message)),
           );
         }
       },
@@ -109,11 +109,6 @@ class _PaymentPageState extends State<PaymentPage> {
             'Student Payments',
             style: TextStyle(fontWeight: FontWeight.w700),
           ),
-          centerTitle: true,
-          elevation: 0,
-          backgroundColor: AppColors.primary,
-          foregroundColor: Colors.white,
-          iconTheme: const IconThemeData(color: Colors.white),
         ),
 
         body: SafeArea(
@@ -127,7 +122,7 @@ class _PaymentPageState extends State<PaymentPage> {
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   gradient: AppColors.heroGradient,
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(12),
                   boxShadow: AppColors.largeShadow,
                 ),
                 child: Row(
@@ -204,7 +199,7 @@ class _PaymentPageState extends State<PaymentPage> {
                             Icon(
                               Icons.payments_outlined,
                               size: 80,
-                              color: Colors.grey.shade400,
+                              color: AppColors.textMuted,
                             ),
 
                             const SizedBox(height: 14),
@@ -214,7 +209,7 @@ class _PaymentPageState extends State<PaymentPage> {
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
-                                color: Colors.grey.shade700,
+                                color: AppColors.darkLight,
                               ),
                             ),
 
@@ -222,7 +217,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
                             Text(
                               'This student has no active class enrollments.',
-                              style: TextStyle(color: Colors.grey.shade500),
+                              style: TextStyle(color: AppColors.textSecondary),
                             ),
                           ],
                         ),
@@ -244,7 +239,7 @@ class _PaymentPageState extends State<PaymentPage> {
                             duration: const Duration(milliseconds: 250),
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(18),
+                              borderRadius: BorderRadius.circular(12),
                               border: Border.all(
                                 color: isSelected
                                     ? AppColors.primary
@@ -254,7 +249,7 @@ class _PaymentPageState extends State<PaymentPage> {
                               boxShadow: AppColors.softShadow,
                             ),
                             child: InkWell(
-                              borderRadius: BorderRadius.circular(28),
+                              borderRadius: BorderRadius.circular(12),
                               onTap: payment.isFreeCard
                                   ? null
                                   : () {
@@ -348,13 +343,13 @@ class _PaymentPageState extends State<PaymentPage> {
                                         _premiumBadge(
                                           icon: Icons.category_rounded,
                                           text: payment.categoryName,
-                                          color: Colors.orange,
+                                          color: AppColors.warning,
                                         ),
 
                                         _premiumBadge(
                                           icon: Icons.school_rounded,
                                           text: 'Grade ${payment.grade}',
-                                          color: Colors.purple,
+                                          color: AppColors.violet,
                                         ),
 
                                         _premiumBadge(
@@ -362,13 +357,13 @@ class _PaymentPageState extends State<PaymentPage> {
                                           text: payment.isFreeCard
                                               ? 'Free Card'
                                               : 'LKR ${_formatAmount(payment.finalFee)}',
-                                          color: Colors.blue,
+                                          color: AppColors.primary,
                                         ),
 
                                         _premiumBadge(
                                           icon: Icons.person_rounded,
                                           text: payment.teacherInitials,
-                                          color: Colors.green,
+                                          color: AppColors.success,
                                         ),
                                       ],
                                     ),
@@ -488,7 +483,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                               Text(
                                                 'No payments made yet.',
                                                 style: TextStyle(
-                                                  color: Colors.grey.shade600,
+                                                  color: AppColors.textSecondary,
                                                   fontSize: 12,
                                                 ),
                                               ),
@@ -538,7 +533,7 @@ class _PaymentPageState extends State<PaymentPage> {
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
@@ -627,7 +622,7 @@ class _PaymentPageState extends State<PaymentPage> {
           builder: (context, setDialogState) {
             return AlertDialog(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(12),
               ),
               titlePadding: EdgeInsets.zero,
               contentPadding: const EdgeInsets.fromLTRB(20, 16, 20, 10),
@@ -639,7 +634,7 @@ class _PaymentPageState extends State<PaymentPage> {
                 decoration: BoxDecoration(
                   gradient: AppColors.primaryGradient,
                   borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(24),
+                    top: Radius.circular(12),
                   ),
                 ),
                 child: const Text(
@@ -713,7 +708,7 @@ class _PaymentPageState extends State<PaymentPage> {
                         decoration: InputDecoration(
                           labelText: 'Payment Month',
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                         child: Row(
@@ -728,7 +723,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
                             const Icon(
                               Icons.arrow_drop_down,
-                              color: Colors.grey,
+                              color: AppColors.textSecondary,
                             ),
                           ],
                         ),
@@ -744,15 +739,15 @@ class _PaymentPageState extends State<PaymentPage> {
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: Colors.blue.shade50,
+                          color: AppColors.primaryLight,
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.blue.shade200),
+                          border: Border.all(color: AppColors.primaryLight),
                         ),
                         child: Row(
                           children: [
                             Icon(
                               Icons.info_outline,
-                              color: Colors.blue.shade700,
+                              color: AppColors.primary,
                               size: 18,
                             ),
 
@@ -763,7 +758,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                 'Default month is based on last payment date. You can change it if needed.',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: Colors.blue.shade700,
+                                  color: AppColors.primary,
                                 ),
                               ),
                             ),
@@ -774,15 +769,15 @@ class _PaymentPageState extends State<PaymentPage> {
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: Colors.orange.shade50,
+                          color: AppColors.warningLight,
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.orange.shade200),
+                          border: Border.all(color: AppColors.warningLight),
                         ),
                         child: Row(
                           children: [
                             Icon(
                               Icons.info_outline,
-                              color: Colors.orange.shade700,
+                              color: AppColors.warningText,
                               size: 18,
                             ),
 
@@ -793,7 +788,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                 'Multiple classes selected. Default month is current month. You can change it if needed.',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: Colors.orange.shade700,
+                                  color: AppColors.warningText,
                                 ),
                               ),
                             ),
@@ -824,7 +819,7 @@ class _PaymentPageState extends State<PaymentPage> {
                             Icon(
                               Icons.circle,
                               size: 6,
-                              color: Colors.grey.shade400,
+                              color: AppColors.textMuted,
                             ),
 
                             const SizedBox(width: 6),
@@ -834,7 +829,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                 '${payment.className} - ${payment.subject}',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: Colors.grey.shade700,
+                                  color: AppColors.darkLight,
                                 ),
                               ),
                             ),
@@ -859,8 +854,8 @@ class _PaymentPageState extends State<PaymentPage> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(14),
+                        color: AppColors.surfaceSecondary,
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
                         children: [
@@ -912,7 +907,7 @@ class _PaymentPageState extends State<PaymentPage> {
                     foregroundColor: Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   child: const Text('Pay Now'),
@@ -951,7 +946,7 @@ class _PaymentPageState extends State<PaymentPage> {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 9,
-                    color: Colors.grey.shade600,
+                    color: AppColors.textSecondary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -1126,11 +1121,11 @@ Widget _paymentStatusBadge(String status) {
   if (normalized == 'paid' ||
       normalized == 'completed' ||
       normalized == 'fully_paid') {
-    color = Colors.green;
+    color = AppColors.success;
   } else if (normalized == 'partial' || normalized == 'partially_paid') {
-    color = Colors.orange;
+    color = AppColors.warning;
   } else {
-    color = Colors.red;
+    color = AppColors.danger;
   }
 
   return Container(

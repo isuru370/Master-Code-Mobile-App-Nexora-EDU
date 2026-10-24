@@ -200,7 +200,6 @@ class _ScanStudentCardPageState extends State<ScanStudentCardPage>
       return Scaffold(
         appBar: AppBar(
           title: const Text('Camera Permission'),
-          backgroundColor: AppTheme.lightTheme.primaryColor,
         ),
         body: Center(
           child: Padding(
@@ -286,9 +285,7 @@ class _ScanStudentCardPageState extends State<ScanStudentCardPage>
       ],
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: AppTheme.lightTheme.primaryColor,
           title: Text(_getTitle()),
-          centerTitle: true,
         ),
         body: Stack(
           children: [
@@ -328,7 +325,7 @@ class _ScanStudentCardPageState extends State<ScanStudentCardPage>
                 child: Card(
                   elevation: 4,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),

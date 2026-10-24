@@ -22,19 +22,14 @@ class StudentAttendanceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => _showStudentDetailsPopup(context),
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(12),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withValues(alpha: 0.08),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.border),
+          boxShadow: AppColors.softShadow,
         ),
         child: Padding(
           padding: const EdgeInsets.all(14),
@@ -87,28 +82,28 @@ class StudentAttendanceCard extends StatelessWidget {
                             Icon(
                               Icons.school,
                               size: 14,
-                              color: Colors.grey[600],
+                              color: AppColors.textSecondary,
                             ),
                             const SizedBox(width: 4),
                             Text(
                               'Grade ${student.student.grade}',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Colors.grey[600],
+                                color: AppColors.textSecondary,
                               ),
                             ),
                             const SizedBox(width: 10),
                             Icon(
                               Icons.badge,
                               size: 14,
-                              color: Colors.grey[600],
+                              color: AppColors.textSecondary,
                             ),
                             const SizedBox(width: 4),
                             Text(
                               student.student.studentCode,
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Colors.grey[600],
+                                color: AppColors.textSecondary,
                               ),
                             ),
                           ],
@@ -119,7 +114,7 @@ class StudentAttendanceCard extends StatelessWidget {
                             const Icon(
                               Icons.phone,
                               size: 14,
-                              color: Colors.green,
+                              color: AppColors.success,
                             ),
                             const SizedBox(width: 4),
                             Text(
@@ -140,14 +135,14 @@ class StudentAttendanceCard extends StatelessWidget {
                               const Icon(
                                 Icons.access_time,
                                 size: 14,
-                                color: Colors.orange,
+                                color: AppColors.warning,
                               ),
                               const SizedBox(width: 4),
                               Text(
                                 _formatTime(student.attendance.attendedAt!),
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: Colors.grey[600],
+                                  color: AppColors.textSecondary,
                                 ),
                               ),
                             ],
@@ -160,7 +155,7 @@ class StudentAttendanceCard extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               // Divider
-              Divider(color: Colors.grey[200], height: 1),
+              Divider(color: AppColors.divider, height: 1),
               const SizedBox(height: 8),
               // Bottom Badges Row
               Wrap(
@@ -178,9 +173,9 @@ class StudentAttendanceCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Colors.blue.withValues(alpha: 0.05),
+                    color: AppColors.primary.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.blue.withValues(alpha: 0.1)),
+                    border: Border.all(color: AppColors.primary.withValues(alpha: 0.1)),
                   ),
                   child: Row(
                     children: [
@@ -192,7 +187,7 @@ class StudentAttendanceCard extends StatelessWidget {
                               'Rs ${student.payment.amount}',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: Colors.green[700],
+                                color: AppColors.successText,
                                 fontSize: 14,
                               ),
                             ),
@@ -203,7 +198,7 @@ class StudentAttendanceCard extends StatelessWidget {
                                 ),
                                 style: TextStyle(
                                   fontSize: 11,
-                                  color: Colors.grey[600],
+                                  color: AppColors.textSecondary,
                                 ),
                               ),
                           ],
@@ -216,10 +211,10 @@ class StudentAttendanceCard extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.orange.withValues(alpha: 0.1),
+                            color: AppColors.warning.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
-                              color: Colors.orange.withValues(alpha: 0.2),
+                              color: AppColors.warning.withValues(alpha: 0.2),
                             ),
                           ),
                           child: Row(
@@ -228,7 +223,7 @@ class StudentAttendanceCard extends StatelessWidget {
                               const Icon(
                                 Icons.receipt_long,
                                 size: 14,
-                                color: Colors.orange,
+                                color: AppColors.warning,
                               ),
                               const SizedBox(width: 4),
                               Text(
@@ -236,7 +231,7 @@ class StudentAttendanceCard extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w500,
-                                  color: Colors.orange[700],
+                                  color: AppColors.warningText,
                                 ),
                               ),
                             ],
@@ -328,13 +323,13 @@ class StudentAttendanceCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: isPresent
-            ? Colors.green.withValues(alpha: 0.08)
-            : Colors.red.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(20),
+            ? AppColors.success.withValues(alpha: 0.08)
+            : AppColors.danger.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isPresent
-              ? Colors.green.withValues(alpha: 0.2)
-              : Colors.red.withValues(alpha: 0.2),
+              ? AppColors.success.withValues(alpha: 0.2)
+              : AppColors.danger.withValues(alpha: 0.2),
         ),
       ),
       child: Row(
@@ -343,7 +338,7 @@ class StudentAttendanceCard extends StatelessWidget {
           Icon(
             isPresent ? Icons.check_circle : Icons.cancel,
             size: 12,
-            color: isPresent ? Colors.green : Colors.red,
+            color: isPresent ? AppColors.success : AppColors.danger,
           ),
           const SizedBox(width: 4),
           Text(
@@ -351,7 +346,7 @@ class StudentAttendanceCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w500,
-              color: isPresent ? Colors.green : Colors.red,
+              color: isPresent ? AppColors.success : AppColors.danger,
             ),
           ),
         ],
@@ -365,13 +360,13 @@ class StudentAttendanceCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: isPaid
-            ? Colors.blue.withValues(alpha: 0.08)
-            : Colors.orange.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(20),
+            ? AppColors.primary.withValues(alpha: 0.08)
+            : AppColors.warning.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isPaid
-              ? Colors.blue.withValues(alpha: 0.2)
-              : Colors.orange.withValues(alpha: 0.2),
+              ? AppColors.primary.withValues(alpha: 0.2)
+              : AppColors.warning.withValues(alpha: 0.2),
         ),
       ),
       child: Row(
@@ -380,7 +375,7 @@ class StudentAttendanceCard extends StatelessWidget {
           Icon(
             isPaid ? Icons.payment : Icons.money_off,
             size: 12,
-            color: isPaid ? Colors.blue : Colors.orange,
+            color: isPaid ? AppColors.primary : AppColors.warning,
           ),
           const SizedBox(width: 4),
           Text(
@@ -388,7 +383,7 @@ class StudentAttendanceCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w500,
-              color: isPaid ? Colors.blue : Colors.orange,
+              color: isPaid ? AppColors.primary : AppColors.warning,
             ),
           ),
         ],
@@ -403,13 +398,13 @@ class StudentAttendanceCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: isEnrolled
-            ? Colors.teal.withValues(alpha: 0.1)
-            : Colors.red.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(20),
+            ? AppColors.info.withValues(alpha: 0.1)
+            : AppColors.danger.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isEnrolled
-              ? Colors.teal.withValues(alpha: 0.2)
-              : Colors.red.withValues(alpha: 0.2),
+              ? AppColors.info.withValues(alpha: 0.2)
+              : AppColors.danger.withValues(alpha: 0.2),
         ),
       ),
       child: Row(
@@ -418,7 +413,7 @@ class StudentAttendanceCard extends StatelessWidget {
           Icon(
             isEnrolled ? Icons.check_circle_outline : Icons.cancel_outlined,
             size: 12,
-            color: isEnrolled ? Colors.teal : Colors.red,
+            color: isEnrolled ? AppColors.info : AppColors.danger,
           ),
           const SizedBox(width: 4),
           Text(
@@ -426,7 +421,7 @@ class StudentAttendanceCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w600,
-              color: isEnrolled ? Colors.teal : Colors.red,
+              color: isEnrolled ? AppColors.info : AppColors.danger,
             ),
           ),
         ],
@@ -447,7 +442,7 @@ class StudentAttendanceCard extends StatelessWidget {
           return Container(
             decoration: const BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
             ),
             child: SingleChildScrollView(
               controller: scrollController,
@@ -461,7 +456,7 @@ class StudentAttendanceCard extends StatelessWidget {
                       width: 40,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: Colors.grey[300],
+                        color: AppColors.border,
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
@@ -510,7 +505,7 @@ class StudentAttendanceCard extends StatelessWidget {
                               'Grade ${student.student.grade} • ${student.student.studentCode}',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.grey[600],
+                                color: AppColors.textSecondary,
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -540,14 +535,14 @@ class StudentAttendanceCard extends StatelessWidget {
                     Icons.credit_card,
                     'Payment Status',
                     student.payment.isPaid ? 'Paid' : 'Unpaid',
-                    student.payment.isPaid ? Colors.green : Colors.orange,
+                    student.payment.isPaid ? AppColors.success : AppColors.warning,
                   ),
                   if (student.payment.isPaid) ...[
                     _buildDetailRow(
                       Icons.attach_money,
                       'Amount',
                       'Rs ${student.payment.amount}',
-                      Colors.green,
+                      AppColors.success,
                     ),
                     if (student.payment.paymentMonth != null)
                       _buildDetailRow(
@@ -583,18 +578,18 @@ class StudentAttendanceCard extends StatelessWidget {
                         },
                         icon: const Icon(
                           Icons.delete_outline,
-                          color: Colors.orange,
+                          color: AppColors.warning,
                         ),
                         label: const Text(
                           'Delete Attendance',
                           style: TextStyle(
-                            color: Colors.orange,
+                            color: AppColors.warning,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(
-                            color: Colors.orange.withValues(alpha: 0.4),
+                            color: AppColors.warning.withValues(alpha: 0.4),
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 13),
                           shape: RoundedRectangleBorder(
@@ -618,23 +613,23 @@ class StudentAttendanceCard extends StatelessWidget {
                       icon: Icon(
                         Icons.person_remove_outlined,
                         color: student.enrollmentStatus
-                            ? Colors.red
-                            : Colors.grey,
+                            ? AppColors.danger
+                            : AppColors.textSecondary,
                       ),
                       label: Text(
                         'Remove from Class',
                         style: TextStyle(
                           color: student.enrollmentStatus
-                              ? Colors.red
-                              : Colors.grey,
+                              ? AppColors.danger
+                              : AppColors.textSecondary,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(
                           color: student.enrollmentStatus
-                              ? Colors.red.withValues(alpha: 0.4)
-                              : Colors.grey.withValues(alpha: 0.4),
+                              ? AppColors.danger.withValues(alpha: 0.4)
+                              : AppColors.textSecondary.withValues(alpha: 0.4),
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 13),
                         shape: RoundedRectangleBorder(
@@ -693,7 +688,7 @@ class StudentAttendanceCard extends StatelessWidget {
                   label,
                   style: TextStyle(
                     fontSize: 11,
-                    color: Colors.grey[500],
+                    color: AppColors.textSecondary,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -720,7 +715,7 @@ class StudentAttendanceCard extends StatelessWidget {
       builder: (dialogContext) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(12),
           ),
           title: const Text(
             'Remove from Class?',
@@ -749,7 +744,7 @@ class StudentAttendanceCard extends StatelessWidget {
                           _deactivateEnrollment(context);
                         },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
+                    backgroundColor: AppColors.danger,
                     foregroundColor: Colors.white,
                   ),
                   child: state is ClassRoomDeactivateLoading
@@ -779,11 +774,11 @@ class StudentAttendanceCard extends StatelessWidget {
       builder: (dialogContext) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(12),
           ),
           title: const Row(
             children: [
-              Icon(Icons.delete_outline, color: Colors.orange),
+              Icon(Icons.delete_outline, color: AppColors.warning),
               SizedBox(width: 10),
               Expanded(
                 child: Text(
@@ -811,7 +806,7 @@ class StudentAttendanceCard extends StatelessWidget {
                 _deleteAttendance(context);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
+                backgroundColor: AppColors.warning,
                 foregroundColor: Colors.white,
               ),
               child: const Text('Delete'),
@@ -830,7 +825,7 @@ class StudentAttendanceCard extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Enrollment ID not found.'),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.danger,
         ),
       );
       return;

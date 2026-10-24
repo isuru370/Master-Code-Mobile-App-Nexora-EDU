@@ -279,6 +279,7 @@ class _StudentImageCapturePageState extends State<StudentImageCapturePage> {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: AppColors.radiusXLarge,
+                          border: Border.all(color: AppColors.border),
                           boxShadow: AppColors.softShadow,
                         ),
                         child: Column(
@@ -400,6 +401,7 @@ class _StudentImageCapturePageState extends State<StudentImageCapturePage> {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: AppColors.radiusLarge,
+                          border: Border.all(color: AppColors.border),
                         ),
                         child: const Column(
                           mainAxisSize: MainAxisSize.min,

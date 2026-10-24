@@ -270,24 +270,13 @@ class _PrintTestPageState extends State<PrintTestPage> {
       backgroundColor: AppColors.background,
 
       appBar: AppBar(
-        elevation: 0,
-
-        centerTitle: true,
-
-        backgroundColor: AppColors.primary,
-
-        foregroundColor: Colors.white,
-
         title: const Text(
           'Printer Manager',
-
           style: TextStyle(fontWeight: FontWeight.w800),
         ),
-
         actions: [
           IconButton(
             onPressed: _isScanning ? null : _scanPrinters,
-
             icon: const Icon(Icons.refresh_rounded),
           ),
         ],
@@ -307,7 +296,7 @@ class _PrintTestPageState extends State<PrintTestPage> {
               decoration: BoxDecoration(
                 gradient: AppColors.heroGradient,
 
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(12),
 
                 boxShadow: AppColors.largeShadow,
               ),
@@ -321,7 +310,7 @@ class _PrintTestPageState extends State<PrintTestPage> {
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: .12),
 
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(12),
                     ),
 
                     child: const Icon(
@@ -387,7 +376,9 @@ class _PrintTestPageState extends State<PrintTestPage> {
               decoration: BoxDecoration(
                 color: Colors.white,
 
-                borderRadius: BorderRadius.circular(26),
+                borderRadius: BorderRadius.circular(12),
+
+                border: Border.all(color: AppColors.border),
 
                 boxShadow: AppColors.softShadow,
               ),
@@ -404,7 +395,7 @@ class _PrintTestPageState extends State<PrintTestPage> {
                         decoration: BoxDecoration(
                           color: AppColors.info.withValues(alpha: .10),
 
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(12),
                         ),
 
                         child: const Icon(
@@ -456,7 +447,9 @@ class _PrintTestPageState extends State<PrintTestPage> {
               decoration: BoxDecoration(
                 color: Colors.white,
 
-                borderRadius: BorderRadius.circular(26),
+                borderRadius: BorderRadius.circular(12),
+
+                border: Border.all(color: AppColors.border),
 
                 boxShadow: AppColors.softShadow,
               ),
@@ -472,7 +465,7 @@ class _PrintTestPageState extends State<PrintTestPage> {
                   fillColor: AppColors.background,
 
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(12),
 
                     borderSide: BorderSide.none,
                   ),
@@ -589,7 +582,9 @@ class _PrintTestPageState extends State<PrintTestPage> {
                 decoration: BoxDecoration(
                   color: Colors.white,
 
-                  borderRadius: BorderRadius.circular(28),
+                  borderRadius: BorderRadius.circular(12),
+
+                  border: Border.all(color: AppColors.border),
 
                   boxShadow: AppColors.softShadow,
                 ),
@@ -601,7 +596,7 @@ class _PrintTestPageState extends State<PrintTestPage> {
 
                       size: 80,
 
-                      color: Colors.grey.shade400,
+                      color: AppColors.textMuted,
                     ),
 
                     const SizedBox(height: 16),
@@ -614,7 +609,7 @@ class _PrintTestPageState extends State<PrintTestPage> {
 
                         fontWeight: FontWeight.w800,
 
-                        color: Colors.grey.shade800,
+                        color: AppColors.darkLight,
                       ),
                     ),
 
@@ -626,7 +621,7 @@ class _PrintTestPageState extends State<PrintTestPage> {
 
                       textAlign: TextAlign.center,
 
-                      style: TextStyle(color: Colors.grey.shade600),
+                      style: TextStyle(color: AppColors.textSecondary),
                     ),
                   ],
                 ),
@@ -644,12 +639,12 @@ class _PrintTestPageState extends State<PrintTestPage> {
                   decoration: BoxDecoration(
                     color: Colors.white,
 
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: BorderRadius.circular(12),
 
                     border: Border.all(
                       color: isSelected
                           ? AppColors.primary
-                          : Colors.grey.shade200,
+                          : AppColors.divider,
                       width: isSelected ? 2 : 1,
                     ),
 
@@ -666,7 +661,7 @@ class _PrintTestPageState extends State<PrintTestPage> {
                       decoration: BoxDecoration(
                         color: AppColors.primary.withValues(alpha: .10),
 
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(12),
                       ),
 
                       child: const Icon(
@@ -748,7 +743,7 @@ class _PrintTestPageState extends State<PrintTestPage> {
           foregroundColor: Colors.white,
 
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
       ),
@@ -766,7 +761,7 @@ class _PrintTestPageState extends State<PrintTestPage> {
               title,
 
               style: TextStyle(
-                color: Colors.grey.shade700,
+                color: AppColors.darkLight,
 
                 fontWeight: FontWeight.w600,
               ),

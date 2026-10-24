@@ -54,7 +54,7 @@ class _AttendancePageNewState extends State<AttendancePageNew> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.message),
-                  backgroundColor: Colors.green,
+                  backgroundColor: AppColors.success,
                 ),
               );
 
@@ -72,7 +72,7 @@ class _AttendancePageNewState extends State<AttendancePageNew> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.message),
-                  backgroundColor: Colors.red,
+                  backgroundColor: AppColors.danger,
                 ),
               );
             }
@@ -85,7 +85,7 @@ class _AttendancePageNewState extends State<AttendancePageNew> {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Class enrolled successfully'),
-                  backgroundColor: Colors.green,
+                  backgroundColor: AppColors.success,
                 ),
               );
               Navigator.pop(context);
@@ -93,7 +93,7 @@ class _AttendancePageNewState extends State<AttendancePageNew> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.message),
-                  backgroundColor: Colors.red,
+                  backgroundColor: AppColors.danger,
                 ),
               );
             }
@@ -107,11 +107,6 @@ class _AttendancePageNewState extends State<AttendancePageNew> {
             'Attendance Details',
             style: TextStyle(fontWeight: FontWeight.w700),
           ),
-          centerTitle: true,
-          elevation: 0,
-          backgroundColor: AppColors.primary,
-          foregroundColor: Colors.white,
-          iconTheme: const IconThemeData(color: Colors.white),
           actions: [
             IconButton(
               onPressed: () {
@@ -157,8 +152,8 @@ class _AttendancePageNewState extends State<AttendancePageNew> {
                                 ? Icons.check_circle_rounded
                                 : Icons.cancel_rounded,
                             color: isCurrentMonthPaid
-                                ? Colors.green
-                                : Colors.red,
+                                ? AppColors.success
+                                : AppColors.danger,
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -168,7 +163,7 @@ class _AttendancePageNewState extends State<AttendancePageNew> {
                             title: 'Payment Month',
                             value: paymentMonthLabel,
                             icon: Icons.calendar_month_rounded,
-                            color: Colors.orange,
+                            color: AppColors.warning,
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -180,7 +175,7 @@ class _AttendancePageNewState extends State<AttendancePageNew> {
                                 ? 'Rs. ${lastPayment.amount}'
                                 : 'Rs. 0.00',
                             icon: Icons.attach_money_rounded,
-                            color: Colors.blue,
+                            color: AppColors.primary,
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -191,7 +186,7 @@ class _AttendancePageNewState extends State<AttendancePageNew> {
                             value:
                                 '${attendance.presentCount}/${attendance.totalCount}',
                             icon: Icons.fact_check_rounded,
-                            color: Colors.green,
+                            color: AppColors.success,
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -220,24 +215,24 @@ class _AttendancePageNewState extends State<AttendancePageNew> {
                         width: double.infinity,
                         padding: const EdgeInsets.all(14),
                         decoration: BoxDecoration(
-                          color: Colors.blue.withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(18),
+                          color: AppColors.primary.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: Colors.blue.withValues(alpha: 0.18),
+                            color: AppColors.primary.withValues(alpha: 0.18),
                           ),
                         ),
                         child: Row(
                           children: [
                             const Icon(
                               Icons.verified_rounded,
-                              color: Colors.blue,
+                              color: AppColors.primary,
                             ),
                             const SizedBox(width: 10),
                             Expanded(
                               child: Text(
                                 'Tute already issued for ${tute.month}',
                                 style: const TextStyle(
-                                  color: Colors.blue,
+                                  color: AppColors.primary,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -353,7 +348,7 @@ class _AttendancePageNewState extends State<AttendancePageNew> {
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
@@ -376,7 +371,7 @@ class _AttendancePageNewState extends State<AttendancePageNew> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: AppColors.heroGradient,
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: AppColors.largeShadow,
       ),
       child: Column(
@@ -530,7 +525,7 @@ class _AttendancePageNewState extends State<AttendancePageNew> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: AppColors.softShadow,
         border: Border.all(color: AppColors.border),
       ),
@@ -541,7 +536,7 @@ class _AttendancePageNewState extends State<AttendancePageNew> {
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.10),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: color, size: 20),
           ),
@@ -549,7 +544,7 @@ class _AttendancePageNewState extends State<AttendancePageNew> {
           Text(
             title,
             style: TextStyle(
-              color: Colors.grey.shade600,
+              color: AppColors.textSecondary,
               fontWeight: FontWeight.w600,
               fontSize: 12,
             ),
@@ -578,7 +573,7 @@ class _AttendancePageNewState extends State<AttendancePageNew> {
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: AppColors.softShadow,
         border: Border.all(color: AppColors.border),
       ),
@@ -591,7 +586,7 @@ class _AttendancePageNewState extends State<AttendancePageNew> {
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: AppColors.primary.withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(icon, color: AppColors.primary, size: 20),
               ),

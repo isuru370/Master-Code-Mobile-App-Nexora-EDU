@@ -17,14 +17,9 @@ class AttendanceSummaryCard extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
+        boxShadow: AppColors.softShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,24 +56,24 @@ class AttendanceSummaryCard extends StatelessWidget {
                 icon: Icons.people,
                 label: 'Total',
                 value: summary.totalStudents.toString(),
-                color: Colors.blue,
+                color: AppColors.primary,
               ),
               _buildSummaryItem(
                 icon: Icons.check_circle,
                 label: 'Present',
                 value: summary.presentStudents.toString(),
-                color: Colors.green,
+                color: AppColors.success,
               ),
               _buildSummaryItem(
                 icon: Icons.cancel,
                 label: 'Absent',
                 value: summary.absentStudents.toString(),
-                color: Colors.red,
+                color: AppColors.danger,
               ),
             ],
           ),
           const SizedBox(height: 16),
-          Divider(color: Colors.grey[200]),
+          Divider(color: AppColors.divider),
           const SizedBox(height: 16),
           Row(
             children: [
@@ -86,21 +81,21 @@ class AttendanceSummaryCard extends StatelessWidget {
                 icon: Icons.payment,
                 label: 'Paid',
                 value: summary.paidStudents.toString(),
-                color: Colors.blue,
+                color: AppColors.primary,
               ),
               _buildSummaryItem(
                 icon: Icons.money_off,
                 label: 'Unpaid',
                 value: summary.unpaidStudents.toString(),
-                color: Colors.orange,
+                color: AppColors.warning,
               ),
               _buildSummaryItem(
                 icon: Icons.percent,
                 label: 'Attendance',
                 value: '${summary.attendancePercentage}%',
                 color: summary.attendancePercentage >= 80
-                    ? Colors.green
-                    : Colors.orange,
+                    ? AppColors.success
+                    : AppColors.warning,
               ),
             ],
           ),
@@ -132,14 +127,14 @@ class AttendanceSummaryCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.grey[800],
+              color: AppColors.darkLight,
             ),
           ),
           Text(
             label,
             style: TextStyle(
               fontSize: 11,
-              color: Colors.grey[600],
+              color: AppColors.textSecondary,
               fontWeight: FontWeight.w500,
             ),
           ),

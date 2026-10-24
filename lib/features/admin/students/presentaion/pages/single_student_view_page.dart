@@ -49,11 +49,6 @@ class SingleStudentViewPage extends StatelessWidget {
         backgroundColor: AppColors.background,
 
         appBar: AppBar(
-          elevation: 0,
-          centerTitle: true,
-          backgroundColor: AppColors.primary,
-          foregroundColor: Colors.white,
-
           title: const Text(
             'Student Profile',
             style: TextStyle(fontWeight: FontWeight.w700),
@@ -93,8 +88,8 @@ class SingleStudentViewPage extends StatelessWidget {
                 padding: const EdgeInsets.all(24),
 
                 decoration: BoxDecoration(
-                  gradient: AppColors.primaryGradient,
-                  borderRadius: BorderRadius.circular(32),
+                  gradient: AppColors.heroGradient,
+                  borderRadius: BorderRadius.circular(12),
                   boxShadow: AppColors.mediumShadow,
                 ),
 
@@ -327,7 +322,8 @@ class SingleStudentViewPage extends StatelessWidget {
 
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
         boxShadow: AppColors.softShadow,
       ),
 
@@ -340,7 +336,7 @@ class SingleStudentViewPage extends StatelessWidget {
 
             decoration: BoxDecoration(
               color: color.withValues(alpha: .1),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(12),
             ),
 
             child: Icon(icon, color: color),
@@ -352,7 +348,7 @@ class SingleStudentViewPage extends StatelessWidget {
             title,
 
             style: TextStyle(
-              color: Colors.grey.shade600,
+              color: AppColors.textSecondary,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -381,7 +377,8 @@ class SingleStudentViewPage extends StatelessWidget {
 
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
         boxShadow: AppColors.softShadow,
       ),
 
@@ -396,7 +393,7 @@ class SingleStudentViewPage extends StatelessWidget {
 
                 decoration: BoxDecoration(
                   color: AppColors.primary.withValues(alpha: .08),
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(12),
                 ),
 
                 child: Icon(icon, color: AppColors.primary),
@@ -438,7 +435,7 @@ class SingleStudentViewPage extends StatelessWidget {
               title,
 
               style: TextStyle(
-                color: Colors.grey.shade700,
+                color: AppColors.darkLight,
                 fontWeight: FontWeight.w700,
               ),
             ),

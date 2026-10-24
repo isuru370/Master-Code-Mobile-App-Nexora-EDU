@@ -7,6 +7,7 @@ import '../../../qr/data/model/read_tute/read_tute_enrollment_model.dart';
 import '../../../qr/data/model/read_tute/read_tute_response_model.dart';
 import '../../../qr/data/model/read_tute/read_tute_student_model.dart';
 import '../bloc/tute/tute_bloc.dart';
+import '../../../../../core/theme/app_colors.dart';
 
 class CreateTutePage extends StatelessWidget {
   final ReadTuteResponseModel readTuteResponse;
@@ -24,18 +25,18 @@ class CreateTutePage extends StatelessWidget {
         if (state is TuteCreateSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              backgroundColor: Colors.green,
+              backgroundColor: AppColors.success,
               content: Text(state.message),
             ),
           );
         } else if (state is TuteError) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(backgroundColor: Colors.red, content: Text(state.message)),
+            SnackBar(backgroundColor: AppColors.danger, content: Text(state.message)),
           );
         }
       },
       child: Scaffold(
-        backgroundColor: Colors.grey.shade100,
+        backgroundColor: AppColors.surfaceSecondary,
         appBar: AppBar(title: const Text("Student Tutes"), centerTitle: true),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -154,7 +155,7 @@ class CreateTutePage extends StatelessWidget {
               ),
               _statusChip(
                 enrollment.paymentStatus ?? '',
-                isPaid ? Colors.green : Colors.orange,
+                isPaid ? AppColors.success : AppColors.warning,
               ),
             ],
           ),
@@ -167,7 +168,7 @@ class CreateTutePage extends StatelessWidget {
               ),
               _statusChip(
                 enrollment.tuteStatus ?? '',
-                isIssued ? Colors.green : Colors.red,
+                isIssued ? AppColors.success : AppColors.danger,
               ),
             ],
           ),
@@ -275,7 +276,7 @@ class CreateTutePage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
         text.toUpperCase(),
@@ -287,14 +288,9 @@ class CreateTutePage extends StatelessWidget {
   BoxDecoration _cardDecoration() {
     return BoxDecoration(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.05),
-          blurRadius: 10,
-          offset: const Offset(0, 4),
-        ),
-      ],
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: AppColors.border),
+      boxShadow: AppColors.softShadow,
     );
   }
 

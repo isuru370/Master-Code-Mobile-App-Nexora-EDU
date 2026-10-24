@@ -48,10 +48,6 @@ class _StudentListPageState extends State<StudentListPage> {
       backgroundColor: AppColors.background,
 
       appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
         title: const Text(
           'Students',
           style: TextStyle(fontWeight: FontWeight.w700),
@@ -79,8 +75,8 @@ class _StudentListPageState extends State<StudentListPage> {
                   decoration: const BoxDecoration(
                     color: AppColors.primary,
                     borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(28),
-                      bottomRight: Radius.circular(28),
+                      bottomLeft: Radius.circular(12),
+                      bottomRight: Radius.circular(12),
                     ),
                   ),
 
@@ -90,7 +86,8 @@ class _StudentListPageState extends State<StudentListPage> {
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(18),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.border),
                           boxShadow: AppColors.softShadow,
                         ),
 
@@ -115,7 +112,8 @@ class _StudentListPageState extends State<StudentListPage> {
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(18),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.border),
                           boxShadow: AppColors.softShadow,
                         ),
 
@@ -189,7 +187,7 @@ class _StudentListPageState extends State<StudentListPage> {
                       ? const Center(
                           child: Text(
                             'No students found',
-                            style: TextStyle(color: Colors.grey),
+                            style: TextStyle(color: AppColors.textSecondary),
                           ),
                         )
                       : ListView.builder(
@@ -216,7 +214,8 @@ class _StudentListPageState extends State<StudentListPage> {
 
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.circular(24),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: AppColors.border),
                                   boxShadow: AppColors.softShadow,
                                 ),
 
@@ -266,7 +265,7 @@ class _StudentListPageState extends State<StudentListPage> {
                                             Text(
                                               "Grade ${student.grade?.gradeName ?? 'N/A'}",
                                               style: TextStyle(
-                                                color: Colors.grey.shade700,
+                                                color: AppColors.darkLight,
                                                 fontWeight: FontWeight.w500,
                                               ),
                                             ),
@@ -276,7 +275,7 @@ class _StudentListPageState extends State<StudentListPage> {
                                             Text(
                                               student.mobile ?? "N/A",
                                               style: TextStyle(
-                                                color: Colors.grey.shade600,
+                                                color: AppColors.textSecondary,
                                               ),
                                             ),
                                           ],
@@ -321,7 +320,7 @@ class _StudentListPageState extends State<StudentListPage> {
                                           const Icon(
                                             Icons.arrow_forward_ios_rounded,
                                             size: 16,
-                                            color: Colors.grey,
+                                            color: AppColors.textSecondary,
                                           ),
                                         ],
                                       ),
@@ -341,7 +340,7 @@ class _StudentListPageState extends State<StudentListPage> {
             return Center(
               child: Text(
                 state.message,
-                style: const TextStyle(color: Colors.red),
+                style: const TextStyle(color: AppColors.danger),
               ),
             );
           }

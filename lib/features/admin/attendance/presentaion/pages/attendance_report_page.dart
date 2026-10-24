@@ -44,7 +44,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to generate PDF: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.danger,
           ),
         );
       }
@@ -54,11 +54,8 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.surfaceSecondary,
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
         title: const Text(
           'Attendance Report',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
@@ -118,7 +115,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                         ),
                       ],
                     ),
-                    backgroundColor: Colors.green,
+                    backgroundColor: AppColors.success,
                     behavior: SnackBarBehavior.floating,
                     margin: const EdgeInsets.all(16),
                     shape: RoundedRectangleBorder(
@@ -149,7 +146,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                         ),
                       ],
                     ),
-                    backgroundColor: Colors.red,
+                    backgroundColor: AppColors.danger,
                     behavior: SnackBarBehavior.floating,
                     margin: const EdgeInsets.all(16),
                     shape: RoundedRectangleBorder(
@@ -188,7 +185,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                         ),
                       ],
                     ),
-                    backgroundColor: Colors.green,
+                    backgroundColor: AppColors.success,
                     behavior: SnackBarBehavior.floating,
                     margin: const EdgeInsets.all(16),
                     shape: RoundedRectangleBorder(
@@ -218,7 +215,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                         ),
                       ],
                     ),
-                    backgroundColor: Colors.red,
+                    backgroundColor: AppColors.danger,
                     behavior: SnackBarBehavior.floating,
                     margin: const EdgeInsets.all(16),
                     shape: RoundedRectangleBorder(
@@ -246,7 +243,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                     SizedBox(height: 16),
                     Text(
                       'Loading attendance report...',
-                      style: TextStyle(color: Colors.grey),
+                      style: TextStyle(color: AppColors.textSecondary),
                     ),
                   ],
                 ),
@@ -258,14 +255,14 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.error_outline, size: 80, color: Colors.red[300]),
+                    Icon(Icons.error_outline, size: 80, color: AppColors.dangerLight),
                     const SizedBox(height: 16),
                     Text(
                       'Error Loading Report',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
-                        color: Colors.grey[800],
+                        color: AppColors.darkLight,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -273,7 +270,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 32),
                       child: Text(
                         state.message,
-                        style: TextStyle(color: Colors.grey[600]),
+                        style: TextStyle(color: AppColors.textSecondary),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -341,7 +338,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
             child: _buildSectionTitle(
               'Present Students',
               presentStudents.length,
-              Colors.green,
+              AppColors.success,
             ),
           ),
           SliverList(
@@ -359,7 +356,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
             child: _buildSectionTitle(
               'Absent Students',
               absentStudents.length,
-              Colors.red,
+              AppColors.danger,
             ),
           ),
           SliverList(
@@ -418,7 +415,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [AppColors.primary, Color(0xff1D4ED8)],
+          colors: [AppColors.dark, AppColors.dark, Color(0xFF172554)],
         ),
         boxShadow: [
           BoxShadow(
@@ -439,7 +436,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
                 ),
                 child: Row(
@@ -448,7 +445,7 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(
                         Icons.calendar_today,
@@ -620,13 +617,13 @@ class _AttendanceReportPageState extends State<AttendanceReportPage> {
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'completed':
-        return Colors.green;
+        return AppColors.success;
       case 'ongoing':
-        return Colors.orange;
+        return AppColors.warning;
       case 'upcoming':
-        return Colors.blue;
+        return AppColors.primary;
       default:
-        return Colors.grey;
+        return AppColors.textSecondary;
     }
   }
 

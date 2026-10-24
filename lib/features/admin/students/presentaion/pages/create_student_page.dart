@@ -191,10 +191,6 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
         return Scaffold(
           backgroundColor: AppColors.background,
           appBar: AppBar(
-            elevation: 0,
-            centerTitle: true,
-            backgroundColor: AppColors.primary,
-            foregroundColor: Colors.white,
             title: const Text(
               'Temporary Card Registration',
               style: TextStyle(fontWeight: FontWeight.w700),
@@ -211,7 +207,7 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
                       padding: const EdgeInsets.all(26),
                       decoration: BoxDecoration(
                         gradient: AppColors.heroGradient,
-                        borderRadius: BorderRadius.circular(32),
+                        borderRadius: BorderRadius.circular(12),
                         boxShadow: AppColors.largeShadow,
                       ),
                       child: Row(
@@ -221,7 +217,7 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
                             height: 68,
                             decoration: BoxDecoration(
                               color: Colors.white.withValues(alpha: .14),
-                              borderRadius: BorderRadius.circular(22),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Icon(
                               Icons.person_add_alt_1_rounded,
@@ -261,7 +257,8 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
                       padding: const EdgeInsets.all(22),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.border),
                         boxShadow: AppColors.softShadow,
                       ),
                       child: Column(
@@ -323,7 +320,7 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
                                   vertical: 16,
                                 ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
                             ),
@@ -466,7 +463,7 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
                         backgroundColor: AppColors.primary,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                     ),
@@ -550,15 +547,15 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
       fillColor: AppColors.background,
       prefixIcon: icon != null ? Icon(icon) : null,
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide.none,
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide.none,
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),

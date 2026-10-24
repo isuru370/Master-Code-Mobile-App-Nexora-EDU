@@ -238,7 +238,7 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
             return Container(
               decoration: const BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
               ),
               child: Column(
                 children: [
@@ -248,8 +248,8 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
                     width: 52,
                     height: 5,
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(20),
+                      color: AppColors.border,
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
 
@@ -302,8 +302,8 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
       margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        gradient: AppColors.primaryGradient,
-        borderRadius: BorderRadius.circular(28),
+        gradient: AppColors.heroGradient,
+        borderRadius: BorderRadius.circular(12),
         boxShadow: AppColors.mediumShadow,
       ),
       child: Row(
@@ -364,7 +364,7 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(28),
+          borderRadius: BorderRadius.circular(12),
           boxShadow: AppColors.softShadow,
           border: Border.all(color: AppColors.border),
         ),
@@ -377,7 +377,7 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withValues(alpha: .10),
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(
                     Icons.playlist_add_rounded,
@@ -519,7 +519,7 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
                                     : '$teacher • ${classItem.branchName}',
                                 style: TextStyle(
                                   fontSize: 11,
-                                  color: Colors.grey.shade600,
+                                  color: AppColors.textSecondary,
                                 ),
                               ),
                             ],
@@ -671,7 +671,7 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
                 color: const Color(0xfff8fafc),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: AppColors.border),
               ),
               child: Row(
@@ -682,8 +682,8 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         color: _isStudentFreeCard
-                            ? Colors.green
-                            : Colors.grey.shade700,
+                            ? AppColors.success
+                            : AppColors.darkLight,
                       ),
                     ),
                   ),
@@ -714,7 +714,7 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
                       foregroundColor: Colors.white,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     onPressed: isLoading ? null : _submitEnrollment,
@@ -750,7 +750,7 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         color: AppColors.primary.withValues(alpha: .06),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.primary.withValues(alpha: .15)),
       ),
       child: Row(
@@ -776,7 +776,7 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
               children: [
                 const Text(
                   'Selected Fee',
-                  style: TextStyle(fontSize: 11, color: Colors.grey),
+                  style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
                 ),
                 const SizedBox(height: 2),
                 Text(
@@ -860,7 +860,7 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
         _buildSectionTitle(
           title: 'Active Classes',
           count: activeClasses.length,
-          color: Colors.green,
+          color: AppColors.success,
         ),
 
         const SizedBox(height: 10),
@@ -878,7 +878,7 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
         _buildSectionTitle(
           title: 'Inactive Classes',
           count: inactiveClasses.length,
-          color: Colors.red,
+          color: AppColors.danger,
         ),
 
         const SizedBox(height: 10),
@@ -927,15 +927,15 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isActive
-              ? Colors.green.withValues(alpha: 0.20)
-              : Colors.red.withValues(alpha: 0.20),
+              ? AppColors.success.withValues(alpha: 0.20)
+              : AppColors.danger.withValues(alpha: 0.20),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.06),
+            color: AppColors.textSecondary.withValues(alpha: 0.06),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -964,14 +964,14 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
                 ),
                 decoration: BoxDecoration(
                   color: isActive
-                      ? Colors.green.withValues(alpha: 0.12)
-                      : Colors.red.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(20),
+                      ? AppColors.success.withValues(alpha: 0.12)
+                      : AppColors.danger.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
                   isActive ? 'Active' : 'Inactive',
                   style: TextStyle(
-                    color: isActive ? Colors.green : Colors.red,
+                    color: isActive ? AppColors.success : AppColors.danger,
                     fontWeight: FontWeight.w600,
                     fontSize: 12,
                   ),
@@ -983,8 +983,8 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
               Container(
                 decoration: BoxDecoration(
                   color: isActive
-                      ? Colors.red.withValues(alpha: 0.10)
-                      : Colors.green.withValues(alpha: 0.10),
+                      ? AppColors.danger.withValues(alpha: 0.10)
+                      : AppColors.success.withValues(alpha: 0.10),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: IconButton(
@@ -993,7 +993,7 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
                     isActive
                         ? Icons.toggle_off_outlined
                         : Icons.toggle_on_outlined,
-                    color: isActive ? Colors.red : Colors.green,
+                    color: isActive ? AppColors.danger : AppColors.success,
                     size: 28,
                   ),
                   onPressed: () {
@@ -1049,7 +1049,7 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: const Color(0xfff8fafc),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
       child: Text(
@@ -1057,7 +1057,7 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
         style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w600,
-          color: Colors.grey.shade800,
+          color: AppColors.darkLight,
         ),
       ),
     );
@@ -1068,7 +1068,7 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: Colors.grey.shade700),
+          Icon(icon, size: 18, color: AppColors.darkLight),
 
           const SizedBox(width: 8),
 
@@ -1077,7 +1077,7 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
           Expanded(
             child: Text(
               value,
-              style: TextStyle(color: Colors.grey.shade700),
+              style: TextStyle(color: AppColors.darkLight),
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -1092,13 +1092,13 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
       child: Center(
         child: Text(
           text,
-          style: TextStyle(color: Colors.grey.shade600, fontSize: 15),
+          style: TextStyle(color: AppColors.textSecondary, fontSize: 15),
         ),
       ),
     );
@@ -1122,7 +1122,7 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
       fillColor: const Color(0xfff8fafc),
       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide.none,
       ),
     );
@@ -1133,13 +1133,13 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.red.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.red.withValues(alpha: 0.2)),
+        color: AppColors.danger.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.danger.withValues(alpha: 0.2)),
       ),
       child: Text(
         message,
-        style: const TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
+        style: const TextStyle(color: AppColors.danger, fontWeight: FontWeight.w600),
       ),
     );
   }
@@ -1156,7 +1156,7 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Class enrolled successfully'),
-                  backgroundColor: Colors.green,
+                  backgroundColor: AppColors.success,
                 ),
               );
 
@@ -1167,7 +1167,7 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.message),
-                  backgroundColor: Colors.red,
+                  backgroundColor: AppColors.danger,
                 ),
               );
             }
@@ -1176,7 +1176,7 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.response.message),
-                  backgroundColor: Colors.green,
+                  backgroundColor: AppColors.success,
                 ),
               );
 
@@ -1187,7 +1187,7 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.message),
-                  backgroundColor: Colors.red,
+                  backgroundColor: AppColors.danger,
                 ),
               );
             }
@@ -1217,11 +1217,6 @@ class _CreateStudentClassesState extends State<CreateStudentClasses> {
             'Student Classes',
             style: TextStyle(fontWeight: FontWeight.w700),
           ),
-          centerTitle: true,
-          elevation: 0,
-          backgroundColor: AppColors.primary,
-          foregroundColor: Colors.white,
-          iconTheme: const IconThemeData(color: Colors.white),
           actions: [
             IconButton(
               tooltip: 'Refresh',

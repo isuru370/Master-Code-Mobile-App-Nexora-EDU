@@ -453,9 +453,6 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Attendance Scanner"),
-          centerTitle: true,
-          elevation: 0,
-          foregroundColor: AppColors.dark,
           actions: [
             IconButton(
               icon: Icon(
@@ -566,13 +563,14 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
                     decoration: BoxDecoration(
                       color: AppColors.surface,
                       borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(24),
+                        top: Radius.circular(12),
                       ),
-                      boxShadow: AppColors.mediumShadow,
+                      border: Border.all(color: AppColors.border),
+                      boxShadow: AppColors.softShadow,
                     ),
                     child: ClipRRect(
                       borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(24),
+                        top: Radius.circular(12),
                       ),
                       child: _buildBottomSheetContent(),
                     ),
@@ -630,7 +628,7 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
               color: _attendanceSuccess ? AppColors.success : AppColors.primary,
               width: 3,
             ),
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Center(
             child: Container(
@@ -664,7 +662,7 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
           color: Colors.black.withValues(alpha: 0.7),
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -693,7 +691,7 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
           color: AppColors.success.withValues(alpha: 0.9),
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -714,8 +712,8 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.blue.withValues(alpha: 0.8),
-          borderRadius: BorderRadius.circular(30),
+          color: AppColors.primary.withValues(alpha: 0.8),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -736,7 +734,7 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.black.withValues(alpha: 0.6),
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: const Text(
         "Scan Student QR Code",
@@ -1007,7 +1005,7 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
                   color: alreadyMarked
                       ? AppColors.warning.withValues(alpha: 0.12)
                       : AppColors.successLight,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -1044,7 +1042,7 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
                     gradient: const LinearGradient(
                       colors: [AppColors.warning, AppColors.primary],
                     ),
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -1333,7 +1331,7 @@ class _SummaryCard extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: isPaid ? AppColors.successLight : Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
             blurRadius: 6,

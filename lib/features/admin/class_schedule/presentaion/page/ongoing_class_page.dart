@@ -35,11 +35,8 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.surfaceSecondary,
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
         title: const Text(
           'Active Class',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
@@ -68,7 +65,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                   SizedBox(height: 16),
                   Text(
                     'Loading classes...',
-                    style: TextStyle(color: Colors.grey),
+                    style: TextStyle(color: AppColors.textSecondary),
                   ),
                 ],
               ),
@@ -96,21 +93,21 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                     Icon(
                       Icons.video_library_outlined,
                       size: 80,
-                      color: Colors.grey[400],
+                      color: AppColors.textMuted,
                     ),
                     const SizedBox(height: 16),
                     Text(
                       'No ongoing classes found',
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.grey[600],
+                        color: AppColors.textSecondary,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       'Check back later for active classes',
-                      style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+                      style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
                     ),
                   ],
                 ),
@@ -132,14 +129,14 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                               Icon(
                                 Icons.search_off,
                                 size: 80,
-                                color: Colors.grey[400],
+                                color: AppColors.textMuted,
                               ),
                               const SizedBox(height: 16),
                               Text(
                                 'No results found',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: Colors.grey[600],
+                                  color: AppColors.textSecondary,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -148,7 +145,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                                 'Try adjusting your search',
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: Colors.grey[500],
+                                  color: AppColors.textSecondary,
                                 ),
                               ),
                             ],
@@ -172,20 +169,20 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.error_outline, size: 80, color: Colors.red[300]),
+                  Icon(Icons.error_outline, size: 80, color: AppColors.dangerLight),
                   const SizedBox(height: 16),
                   Text(
                     'Error loading classes',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
-                      color: Colors.grey[800],
+                      color: AppColors.darkLight,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     state.message,
-                    style: TextStyle(color: Colors.grey[600]),
+                    style: TextStyle(color: AppColors.textSecondary),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
@@ -224,7 +221,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
     return Container(
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
             color: AppColors.primary.withValues(alpha: 0.3),
@@ -234,7 +231,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(12),
         child: Stack(
           children: [
             // Background Gradient
@@ -244,7 +241,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [AppColors.primary, Color(0xff1D4ED8)],
+                  colors: [AppColors.dark, AppColors.dark, Color(0xFF172554)],
                 ),
               ),
             ),
@@ -295,7 +292,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(
                       Icons.class_rounded,
@@ -333,7 +330,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                           ),
                           decoration: BoxDecoration(
                             color: Colors.white.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -370,21 +367,16 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
   Widget _buildSearchAndFilterBar() {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-      color: Colors.grey[50],
+      color: AppColors.surfaceSecondary,
       child: Column(
         children: [
           // Search Bar
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withValues(alpha: 0.05),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.border),
+              boxShadow: AppColors.softShadow,
             ),
             child: TextField(
               controller: _searchController,
@@ -395,11 +387,11 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
               },
               decoration: InputDecoration(
                 hintText: 'Search by class, subject, teacher...',
-                hintStyle: TextStyle(color: Colors.grey[400]),
-                prefixIcon: Icon(Icons.search, color: Colors.grey[500]),
+                hintStyle: TextStyle(color: AppColors.textMuted),
+                prefixIcon: Icon(Icons.search, color: AppColors.textSecondary),
                 suffixIcon: _searchQuery.isNotEmpty
                     ? IconButton(
-                        icon: Icon(Icons.clear, color: Colors.grey[500]),
+                        icon: Icon(Icons.clear, color: AppColors.textSecondary),
                         onPressed: () {
                           setState(() {
                             _searchController.clear();
@@ -409,15 +401,15 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                       )
                     : null,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: Colors.grey[200]!),
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppColors.divider),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: Colors.grey[200]!),
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppColors.divider),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(12),
                   borderSide: const BorderSide(color: AppColors.primary),
                 ),
                 contentPadding: const EdgeInsets.symmetric(vertical: 14),
@@ -449,15 +441,15 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                   selectedColor: AppColors.primary.withValues(alpha: 0.1),
                   checkmarkColor: AppColors.primary,
                   labelStyle: TextStyle(
-                    color: isSelected ? AppColors.primary : Colors.grey[700],
+                    color: isSelected ? AppColors.primary : AppColors.darkLight,
                     fontWeight: isSelected
                         ? FontWeight.w600
                         : FontWeight.normal,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(12),
                     side: BorderSide(
-                      color: isSelected ? AppColors.primary : Colors.grey[300]!,
+                      color: isSelected ? AppColors.primary : AppColors.border,
                     ),
                   ),
                 );
@@ -482,18 +474,13 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
+        boxShadow: AppColors.softShadow,
       ),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(12),
         child: InkWell(
           onTap: () {
             Navigator.push(
@@ -507,7 +494,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
               ),
             );
           },
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(12),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -524,7 +511,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                           end: Alignment.bottomRight,
                           colors: [AppColors.primary, Color(0xff1D4ED8)],
                         ),
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(
                         Icons.class_,
@@ -554,9 +541,9 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.blue[50],
+                              color: AppColors.primaryLight,
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.blue[200]!),
+                              border: Border.all(color: AppColors.primaryLight),
                             ),
                             child: const Row(
                               mainAxisSize: MainAxisSize.min,
@@ -564,7 +551,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                                 Icon(
                                   Icons.school,
                                   size: 12,
-                                  color: Colors.blue,
+                                  color: AppColors.primary,
                                 ),
                                 SizedBox(width: 4),
                                 Text(
@@ -572,7 +559,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                                   style: TextStyle(
                                     fontSize: 10,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.blue,
+                                    color: AppColors.primary,
                                   ),
                                 ),
                               ],
@@ -584,7 +571,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.grey[100],
+                        color: AppColors.surfaceSecondary,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(
@@ -597,7 +584,7 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
                 ),
                 const SizedBox(height: 16),
                 // Divider
-                Divider(color: Colors.grey[200], height: 1),
+                Divider(color: AppColors.divider, height: 1),
                 const SizedBox(height: 12),
                 // Teacher info
                 _buildInfoRow(
@@ -630,13 +617,13 @@ class _OngoingClassPageState extends State<OngoingClassPage> {
   Widget _buildInfoRow(IconData icon, String label, String value) {
     return Row(
       children: [
-        Icon(icon, size: 16, color: Colors.grey[500]),
+        Icon(icon, size: 16, color: AppColors.textSecondary),
         const SizedBox(width: 8),
         Text(
           '$label:',
           style: TextStyle(
             fontSize: 13,
-            color: Colors.grey[600],
+            color: AppColors.textSecondary,
             fontWeight: FontWeight.w500,
           ),
         ),
