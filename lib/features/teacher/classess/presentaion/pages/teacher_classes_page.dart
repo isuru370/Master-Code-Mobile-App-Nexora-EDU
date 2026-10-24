@@ -125,7 +125,7 @@ class _TeacherClassesPageState extends State<TeacherClassesPage> {
 
           decoration: BoxDecoration(
             color: AppColors.surface,
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(color: AppColors.border),
             boxShadow: AppColors.softShadow,
           ),
@@ -172,7 +172,7 @@ class _TeacherClassesPageState extends State<TeacherClassesPage> {
 
           decoration: BoxDecoration(
             color: AppColors.surface,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(color: AppColors.border),
           ),
 
@@ -201,7 +201,7 @@ class _TeacherClassesPageState extends State<TeacherClassesPage> {
       padding: const EdgeInsets.all(20),
 
       decoration: BoxDecoration(
-        gradient: AppColors.primaryGradient,
+        gradient: AppColors.heroGradient,
         borderRadius: AppColors.radiusLarge,
         boxShadow: AppColors.mediumShadow,
       ),
@@ -322,7 +322,7 @@ class _TeacherClassesPageState extends State<TeacherClassesPage> {
 
           decoration: BoxDecoration(
             color: AppColors.primaryLight,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(12),
           ),
 
           child: Text(
@@ -403,7 +403,7 @@ class _TeacherClassesPageState extends State<TeacherClassesPage> {
 
                   decoration: BoxDecoration(
                     color: _iconBackground(teacherClass),
-                    borderRadius: BorderRadius.circular(13),
+                    borderRadius: BorderRadius.circular(12),
                   ),
 
                   child: Icon(
@@ -461,7 +461,7 @@ class _TeacherClassesPageState extends State<TeacherClassesPage> {
                     color: isActive
                         ? AppColors.successLight
                         : AppColors.surfaceSecondary,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(12),
                   ),
 
                   child: Text(
@@ -571,7 +571,7 @@ class _TeacherClassesPageState extends State<TeacherClassesPage> {
 
           decoration: BoxDecoration(
             color: info.background,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(12),
           ),
 
           child: Text(

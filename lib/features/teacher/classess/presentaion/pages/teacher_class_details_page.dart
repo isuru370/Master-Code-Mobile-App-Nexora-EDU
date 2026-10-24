@@ -33,9 +33,6 @@ class TeacherClassDetailsPage extends StatelessWidget {
       // ============================================================
 
       appBar: AppBar(
-        backgroundColor: AppColors.background,
-        elevation: 0,
-
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: const Icon(
@@ -43,7 +40,6 @@ class TeacherClassDetailsPage extends StatelessWidget {
             color: AppColors.textPrimary,
           ),
         ),
-
         title: const Text(
           'Class Details',
           style: TextStyle(
@@ -181,7 +177,7 @@ class TeacherClassDetailsPage extends StatelessWidget {
       padding: const EdgeInsets.all(20),
 
       decoration: BoxDecoration(
-        gradient: AppColors.primaryGradient,
+        gradient: AppColors.heroGradient,
         borderRadius: AppColors.radiusLarge,
         boxShadow: AppColors.mediumShadow,
       ),
@@ -199,7 +195,7 @@ class TeacherClassDetailsPage extends StatelessWidget {
 
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: .15),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(12),
             ),
 
             child: const Icon(
@@ -259,7 +255,7 @@ class TeacherClassDetailsPage extends StatelessWidget {
 
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: .14),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(12),
             ),
 
             child: Row(
@@ -432,7 +428,7 @@ class TeacherClassDetailsPage extends StatelessWidget {
 
             decoration: BoxDecoration(
               color: AppColors.primaryLight,
-              borderRadius: BorderRadius.circular(13),
+              borderRadius: BorderRadius.circular(12),
             ),
 
             child: const Icon(
@@ -497,7 +493,7 @@ class TeacherClassDetailsPage extends StatelessWidget {
 
             decoration: BoxDecoration(
               color: AppColors.successLight,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(12),
             ),
 
             child: const Text(
@@ -552,7 +548,7 @@ class TeacherClassDetailsPage extends StatelessWidget {
 
             decoration: BoxDecoration(
               color: statusInfo.background,
-              borderRadius: BorderRadius.circular(13),
+              borderRadius: BorderRadius.circular(12),
             ),
 
             child: Icon(
@@ -681,7 +677,7 @@ class TeacherClassDetailsPage extends StatelessWidget {
 
             decoration: BoxDecoration(
               color: statusInfo.background,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(12),
             ),
 
             child: Text(

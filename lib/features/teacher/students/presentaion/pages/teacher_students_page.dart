@@ -202,7 +202,7 @@ class _TeacherStudentsPageState extends State<TeacherStudentsPage> {
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          gradient: AppColors.primaryGradient,
+          gradient: AppColors.heroGradient,
           borderRadius: AppColors.radiusLarge,
           boxShadow: AppColors.mediumShadow,
         ),
@@ -213,7 +213,7 @@ class _TeacherStudentsPageState extends State<TeacherStudentsPage> {
               height: 54,
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: 0.16),
-                borderRadius: BorderRadius.circular(17),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
                 Icons.groups_rounded,
@@ -253,7 +253,7 @@ class _TeacherStudentsPageState extends State<TeacherStudentsPage> {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
                 children: [
@@ -485,7 +485,7 @@ class _TeacherStudentsPageState extends State<TeacherStudentsPage> {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
               color: AppColors.successLight,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: const Row(
               children: [
@@ -739,7 +739,7 @@ class _TeacherStudentsPageState extends State<TeacherStudentsPage> {
                       color: student.isActive
                           ? AppColors.successLight
                           : AppColors.surfaceSecondary,
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       student.isActive ? 'ACTIVE' : 'INACTIVE',
@@ -782,7 +782,7 @@ class _TeacherStudentsPageState extends State<TeacherStudentsPage> {
       context: context,
       backgroundColor: AppColors.surface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
       ),
       builder: (sheetContext) => SafeArea(
         child: Padding(
@@ -813,7 +813,7 @@ class _TeacherStudentsPageState extends State<TeacherStudentsPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: student.isActive ? AppColors.successLight : AppColors.dangerLight,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
                   student.isActive ? 'Active' : 'Inactive',
@@ -884,7 +884,7 @@ class _TeacherStudentsPageState extends State<TeacherStudentsPage> {
         : '${ApiConstants.baseUrl}/storage/$imagePath';
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(15),
+      borderRadius: BorderRadius.circular(12),
       child: SizedBox(
         width: 52,
         height: 52,
@@ -928,7 +928,7 @@ class _TeacherStudentsPageState extends State<TeacherStudentsPage> {
       height: 48,
       decoration: BoxDecoration(
         color: AppColors.primaryLight,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Center(
         child: Text(
@@ -988,7 +988,7 @@ class _TeacherStudentsPageState extends State<TeacherStudentsPage> {
                   height: 58,
                   decoration: BoxDecoration(
                     color: AppColors.primaryLight,
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Padding(
                     padding: EdgeInsets.all(16),
@@ -1054,7 +1054,7 @@ class _TeacherStudentsPageState extends State<TeacherStudentsPage> {
                       height: 58,
                       decoration: BoxDecoration(
                         color: AppColors.dangerLight,
-                        borderRadius: BorderRadius.circular(18),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(
                         Icons.error_outline_rounded,
@@ -1230,7 +1230,7 @@ class _TeacherStudentsPageState extends State<TeacherStudentsPage> {
       context: context,
       backgroundColor: AppColors.surface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
       ),
       builder: (context) {
         return SafeArea(

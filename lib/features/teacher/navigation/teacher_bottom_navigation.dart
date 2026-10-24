@@ -14,7 +14,13 @@ class TeacherBottomNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return NavigationBar(
+    // Web style: white bar with a thin top line, soft blue pill on the
+    // selected item
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        border: Border(top: BorderSide(color: AppColors.divider)),
+      ),
+      child: NavigationBar(
       selectedIndex: currentIndex,
       onDestinationSelected: onTap,
 
@@ -22,9 +28,12 @@ class TeacherBottomNavigation extends StatelessWidget {
       surfaceTintColor: Colors.transparent,
       elevation: 0,
 
-      height: 72,
+      height: 68,
 
       indicatorColor: AppColors.primaryLight,
+      indicatorShape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
 
       labelTextStyle: WidgetStateProperty.resolveWith<TextStyle?>(
         (states) {
@@ -48,7 +57,7 @@ class TeacherBottomNavigation extends StatelessWidget {
         NavigationDestination(
           icon: Icon(
             Icons.home_outlined,
-            color: AppColors.iconSecondary,
+            color: AppColors.textSecondary,
           ),
           selectedIcon: Icon(
             Icons.home_rounded,
@@ -60,7 +69,7 @@ class TeacherBottomNavigation extends StatelessWidget {
         NavigationDestination(
           icon: Icon(
             Icons.menu_book_outlined,
-            color: AppColors.iconSecondary,
+            color: AppColors.textSecondary,
           ),
           selectedIcon: Icon(
             Icons.menu_book_rounded,
@@ -72,7 +81,7 @@ class TeacherBottomNavigation extends StatelessWidget {
         NavigationDestination(
           icon: Icon(
             Icons.calendar_month_outlined,
-            color: AppColors.iconSecondary,
+            color: AppColors.textSecondary,
           ),
           selectedIcon: Icon(
             Icons.calendar_month_rounded,
@@ -84,7 +93,7 @@ class TeacherBottomNavigation extends StatelessWidget {
         NavigationDestination(
           icon: Icon(
             Icons.groups_outlined,
-            color: AppColors.iconSecondary,
+            color: AppColors.textSecondary,
           ),
           selectedIcon: Icon(
             Icons.groups_rounded,
@@ -96,7 +105,7 @@ class TeacherBottomNavigation extends StatelessWidget {
         NavigationDestination(
           icon: Icon(
             Icons.person_outline_rounded,
-            color: AppColors.iconSecondary,
+            color: AppColors.textSecondary,
           ),
           selectedIcon: Icon(
             Icons.person_rounded,
@@ -105,6 +114,7 @@ class TeacherBottomNavigation extends StatelessWidget {
           label: 'Profile',
         ),
       ],
+      ),
     );
   }
 }

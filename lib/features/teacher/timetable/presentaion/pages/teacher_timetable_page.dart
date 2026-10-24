@@ -326,10 +326,10 @@ class _TeacherTimetablePageState extends State<TeacherTimetablePage> {
   Widget _dateButton({required IconData icon, required VoidCallback onTap}) {
     return Material(
       color: AppColors.surfaceSecondary,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         child: SizedBox(
           width: 44,
           height: 44,
@@ -361,7 +361,7 @@ class _TeacherTimetablePageState extends State<TeacherTimetablePage> {
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          gradient: AppColors.primaryGradient,
+          gradient: AppColors.heroGradient,
           borderRadius: AppColors.radiusLarge,
           boxShadow: AppColors.mediumShadow,
         ),
@@ -375,7 +375,7 @@ class _TeacherTimetablePageState extends State<TeacherTimetablePage> {
                   height: 52,
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.16),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(
                     Icons.event_available_rounded,
@@ -564,7 +564,7 @@ class _TeacherTimetablePageState extends State<TeacherTimetablePage> {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
                 color: AppColors.primaryLight,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: const Text(
                 'Today',
@@ -721,7 +721,7 @@ class _TeacherTimetablePageState extends State<TeacherTimetablePage> {
                       ),
                       decoration: BoxDecoration(
                         color: statusBackground,
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
                         _statusText(status),
@@ -978,7 +978,7 @@ class _TeacherTimetablePageState extends State<TeacherTimetablePage> {
                     height: 64,
                     decoration: BoxDecoration(
                       color: AppColors.dangerLight,
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(
                       Icons.error_outline_rounded,
@@ -1063,7 +1063,7 @@ class _TeacherTimetablePageState extends State<TeacherTimetablePage> {
               height: 64,
               decoration: BoxDecoration(
                 color: AppColors.primaryLight,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
                 Icons.event_busy_rounded,
