@@ -290,8 +290,20 @@ class _DashboardPageState extends State<DashboardPage> {
   /// Register Student -> choose the card type.
   ///   Temporary card (TMP001...)  -> /create_student  (type the TMP number)
   ///   Permanent card (QR)         -> scan the card -> /register-student
+  ///
+  /// The institute uses one of them (server: nexora:card-mode), so normally
+  /// the page opens straight away. Old backend (sends neither) -> chooser.
   Future<void> _openRegisterChooser() async {
-    final choice = await showModalBottomSheet<String>(
+    final onlyTemporary = _features.contains('register_temporary') &&
+        !_features.contains('register_permanent');
+    final onlyPermanent = _features.contains('register_permanent') &&
+        !_features.contains('register_temporary');
+
+    final choice = onlyTemporary
+        ? 'temporary'
+        : onlyPermanent
+        ? 'card'
+        : await showModalBottomSheet<String>(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
@@ -991,7 +1003,11 @@ class _DashboardPageState extends State<DashboardPage> {
 
         // ID cards
         const DashboardSectionTitle(title: 'ID Card Stock'),
-        CardStockCard(cards: dashboard.cards),
+        CardStockCard(
+          cards: dashboard.cards,
+          // permanent-card institutes do not use temporary cards
+          showTemporary: dashboard.cardMode != 'permanent',
+        ),
         const SizedBox(height: 24),
 
         // Overview

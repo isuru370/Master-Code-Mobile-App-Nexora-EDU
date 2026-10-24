@@ -77,6 +77,10 @@ class MobileDashboardData {
   /// Menu items this role can use (register_student, payment, class_schedule ...)
   final List<String> features;
 
+  /// How this institute gives ID cards: "permanent" / "temporary"
+  /// (null = old backend)
+  final String? cardMode;
+
   /// Server date "2026-10-16"
   final String? date;
 
@@ -113,6 +117,7 @@ class MobileDashboardData {
     required this.branch,
     required this.branches,
     required this.features,
+    this.cardMode,
     required this.date,
   });
 
@@ -225,6 +230,7 @@ class MobileDashboardData {
       features: (json['features'] is List ? json['features'] as List : const [])
           .map((e) => e.toString())
           .toList(),
+      cardMode: JsonRead.toStr(json['card_mode']),
       date: JsonRead.toStr(json['date']),
     );
   }
