@@ -8,6 +8,7 @@ import '../../data/models/today_payments/today_payment_item_model.dart';
 import '../../data/models/today_payments/today_payments_request_model.dart';
 import '../bloc/mark_payment/mark_payment_bloc.dart';
 import 'utils/payment_receipt_print.dart';
+import '../../../../../core/institute/institute_info.dart';
 
 class TodayPaymentPage extends StatefulWidget {
   const TodayPaymentPage({super.key});
@@ -161,7 +162,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
 
       await PaymentReceiptPrint.printReceipt(
         printerService: _printerService,
-        instituteName: 'EDU NEXORA',
+        instituteName: InstituteInfo.name,
         studentName: item.student.initialName,
         studentId: item.student.qrCode,
         paymentMonth: item.paymentMonth,

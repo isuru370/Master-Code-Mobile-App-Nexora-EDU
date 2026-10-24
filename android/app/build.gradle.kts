@@ -16,6 +16,21 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
+// --dart-define values (Flutter passes them base64 encoded as "dart-defines")
+// APP_NAME = the app name on the phone's home screen, e.g. MihisaraEdu:
+//   flutter build apk --dart-define=API_BASE_URL=https://... --dart-define=APP_NAME=MihisaraEdu
+val dartDefines: Map<String, String> = (project.findProperty("dart-defines") as String?)
+    ?.split(",")
+    ?.mapNotNull { encoded ->
+        runCatching { String(java.util.Base64.getDecoder().decode(encoded), Charsets.UTF_8) }.getOrNull()
+    }
+    ?.mapNotNull { pair ->
+        val i = pair.indexOf('=')
+        if (i > 0) pair.substring(0, i) to pair.substring(i + 1) else null
+    }
+    ?.toMap()
+    ?: emptyMap()
+
 android {
     namespace = "com.nexorait.master_app"
     compileSdk = flutter.compileSdkVersion
@@ -39,6 +54,9 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        // AndroidManifest android:label="${appLabel}"
+        manifestPlaceholders["appLabel"] = dartDefines["APP_NAME"]?.takeIf { it.isNotBlank() } ?: "NexoraEdu"
     }
 
     signingConfigs {

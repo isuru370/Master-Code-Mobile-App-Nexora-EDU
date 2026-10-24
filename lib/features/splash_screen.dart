@@ -6,6 +6,7 @@ import '../../core/storage/session_storage.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/nx_ui.dart';
 import '../../features/auth/data/datasources/auth_remote_data_source.dart';
+import '../../core/institute/institute_info.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -38,7 +39,15 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
+    // Institute name / logo: saved copy now, the server's in the background
+    InstituteInfo.changes.addListener(_onInstituteInfo);
+    InstituteInfo.loadSaved().then((_) => InstituteInfo.refresh());
+
     _checkSession();
+  }
+
+  void _onInstituteInfo() {
+    if (mounted) setState(() {});
   }
 
   Future<void> _checkSession() async {
@@ -124,6 +133,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   void dispose() {
+    InstituteInfo.changes.removeListener(_onInstituteInfo);
     _controller.dispose();
     super.dispose();
   }
@@ -159,17 +169,21 @@ class _SplashScreenState extends State<SplashScreen>
                           ),
                         ],
                       ),
-                      child: Image.asset(
-                        'assets/logo/logo.png',
+                      child: Image(
+                        image: InstituteInfo.logo,
                         fit: BoxFit.contain,
+                        errorBuilder: (_, _, _) => Image.asset(
+                          InstituteInfo.defaultLogoAsset,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
 
                     const SizedBox(height: 26),
 
-                    const Text(
-                      "MIHISARA HIGHER EDUCATION INSTITUTE",
-                      style: TextStyle(
+                    Text(
+                      InstituteInfo.name.toUpperCase(),
+                      style: const TextStyle(
                         fontSize: 22,
                         height: 1.3,
                         fontWeight: FontWeight.w800,
@@ -182,8 +196,9 @@ class _SplashScreenState extends State<SplashScreen>
 
                     const SizedBox(height: 10),
 
+                    if (InstituteInfo.tagline.isNotEmpty)
                     Text(
-                      "Towards a bright future",
+                      InstituteInfo.tagline,
                       style: TextStyle(
                         fontSize: 15,
                         color: Colors.white.withValues(alpha: .72),

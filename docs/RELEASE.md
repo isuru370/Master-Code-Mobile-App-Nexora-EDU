@@ -16,6 +16,18 @@ Without `--dart-define` the default in `lib/core/constants/api_constants.dart` i
 
 > Do not end the URL with `/` (the app adds `/api` itself).
 
+### App name on the phone (`APP_NAME`)
+
+The name under the icon is fixed when the APK is built. Use the institute's short name (`GET /api/institute` → `short_name`, e.g. *Mihisara Education Institute* → `MihisaraEdu`):
+
+```bash
+flutter build apk --release --dart-define=API_BASE_URL=https://mihisaraeducation.nexorait.lk --dart-define=APP_NAME=MihisaraEdu
+```
+
+Without it the name is `NexoraEdu`.
+
+The institute name, tagline and logo on the splash / login screens and on printed receipts come from the server (`INSTITUTE_NAME`, `INSTITUTE_TAGLINE`, `INSTITUTE_LOGO` in its `.env`) and are saved on the phone, so they need no build.
+
 ## 2. Release signing key (one time)
 
 Create the key (keep the `.jks` file and passwords safe; losing them means the
@@ -43,7 +55,7 @@ otherwise it falls back to the debug key (fine for testing, not for publishing).
 ```bash
 flutter clean
 flutter pub get
-flutter build apk --release --dart-define=API_BASE_URL=https://mihisaraeducation.nexorait.lk
+flutter build apk --release --dart-define=API_BASE_URL=https://mihisaraeducation.nexorait.lk --dart-define=APP_NAME=MihisaraEdu
 # APK: build/app/outputs/flutter-apk/app-release.apk
 ```
 
