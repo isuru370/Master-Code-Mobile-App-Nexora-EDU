@@ -39,7 +39,7 @@ class AppFeatures {
         headers: ApiConstants.headers(token: token),
       );
 
-      debugPrint('APP FEATURES: ${response.statusCode} ${response.body}');
+      if (kDebugMode) debugPrint('APP FEATURES: ${response.statusCode} ${response.body}');
 
       if (response.statusCode == 404) {
         await _save(const {});
@@ -56,7 +56,7 @@ class AppFeatures {
       await _save(data is Map ? _toBools(data) : const {});
     } catch (e) {
       // Offline: keep what we had
-      debugPrint('APP FEATURES ERROR: $e');
+      if (kDebugMode) debugPrint('APP FEATURES ERROR: $e');
     }
   }
 
