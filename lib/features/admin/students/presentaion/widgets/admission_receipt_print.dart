@@ -2,13 +2,15 @@ import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../../core/utils/printer_service.dart';
+import '../../../../../core/institute/institute_info.dart';
 
 class AdmissionReceiptPrint {
   const AdmissionReceiptPrint._();
 
   /// Name printed at the top of every admission receipt.
   /// Change it here only (both registration pages use it).
-  static const String defaultInstituteName = 'Mihisara Education Institute';
+  /// From the server (GET /api/institute)
+  static String get defaultInstituteName => InstituteInfo.name;
 
   static Future<void> printReceipt({
     required PrinterService printerService,

@@ -11,6 +11,7 @@ import '../../data/models/mark_payment_request_model.dart';
 import '../../data/models/mark_payment_response_model.dart';
 import '../bloc/mark_payment/mark_payment_bloc.dart';
 import 'utils/payment_receipt_print.dart';
+import '../../../../../core/institute/institute_info.dart';
 
 class PaymentPage extends StatefulWidget {
   final String? markMethod;
@@ -1079,7 +1080,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
     await PaymentReceiptPrint.printReceipt(
       printerService: _printerService,
-      instituteName: 'EDU NEXORA',
+      instituteName: InstituteInfo.name,
       studentName: receipt.studentDetails.name,
       studentId: receipt.studentDetails.customId,
       paymentMonth: DateFormat('yyyy-MM').format(_selectedPaymentDate),

@@ -7,6 +7,7 @@ import '../../../../core/navigation/role_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/nx_ui.dart';
 import '../bloc/auth/auth_bloc.dart';
+import '../../../../core/institute/institute_info.dart';
 
 /// Sign in, styled like the web login page (navy background, glass card).
 class SigninPage extends StatefulWidget {
@@ -31,10 +32,18 @@ class _SigninPageState extends State<SigninPage> {
   void initState() {
     super.initState();
     _loadSavedEmail();
+
+    InstituteInfo.changes.addListener(_onInstituteInfo);
+    InstituteInfo.loadSaved().then((_) => InstituteInfo.refresh());
+  }
+
+  void _onInstituteInfo() {
+    if (mounted) setState(() {});
   }
 
   @override
   void dispose() {
+    InstituteInfo.changes.removeListener(_onInstituteInfo);
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -228,9 +237,13 @@ class _SigninPageState extends State<SigninPage> {
                           ),
                         ],
                       ),
-                      child: Image.asset(
-                        'assets/logo/logo.png',
+                      child: Image(
+                        image: InstituteInfo.logo,
                         fit: BoxFit.contain,
+                        errorBuilder: (_, _, _) => Image.asset(
+                          InstituteInfo.defaultLogoAsset,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
                   ),
@@ -246,10 +259,10 @@ class _SigninPageState extends State<SigninPage> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'Sign in to continue to NexoraEDU',
+                  Text(
+                    'Sign in to continue to ${InstituteInfo.name}',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: _muted, fontSize: 14, height: 1.5),
+                    style: const TextStyle(color: _muted, fontSize: 14, height: 1.5),
                   ),
                   const SizedBox(height: 28),
 
@@ -368,7 +381,7 @@ class _SigninPageState extends State<SigninPage> {
 
                   const SizedBox(height: 22),
                   Text(
-                    '© ${DateTime.now().year} NexoraEDU',
+                    '© ${DateTime.now().year} ${InstituteInfo.name} · NexoraEDU',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: .55),
