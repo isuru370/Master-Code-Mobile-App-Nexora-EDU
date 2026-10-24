@@ -727,20 +727,29 @@ class _PaymentTile extends StatelessWidget {
 class CardStockCard extends StatelessWidget {
   final DashboardCardStock cards;
 
-  const CardStockCard({super.key, required this.cards});
+  /// false = the institute only uses permanent cards
+  final bool showTemporary;
+
+  const CardStockCard({
+    super.key,
+    required this.cards,
+    this.showTemporary = true,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final permanent = _StockBox(
+      title: 'Permanent Cards',
+      count: cards.permanentAvailable,
+      level: cards.permanentLevel,
+      icon: Icons.credit_card_rounded,
+    );
+
+    if (!showTemporary) return permanent;
+
     return Row(
       children: [
-        Expanded(
-          child: _StockBox(
-            title: 'Permanent Cards',
-            count: cards.permanentAvailable,
-            level: cards.permanentLevel,
-            icon: Icons.credit_card_rounded,
-          ),
-        ),
+        Expanded(child: permanent),
         const SizedBox(width: 12),
         Expanded(
           child: _StockBox(

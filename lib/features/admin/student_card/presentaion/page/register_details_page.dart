@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import '../../../../../core/storage/session_storage.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../data/model/current_card_model.dart';
 import '../../data/model/student_card_model.dart';
@@ -177,9 +178,22 @@ class RegisterDetailsPage extends StatelessWidget {
                         const SizedBox(height: 16),
 
                         // Danger Zone - Only show if card is active
-                        if (canReAssign) ...[
-                          _buildDangerZone(context, currentCard),
-                        ],
+                        // Replacing a card: Super Admin / Admin / Branch Admin
+                        // only (the server refuses a cashier too)
+                        if (canReAssign)
+                          FutureBuilder<String>(
+                            future: SessionStorage.getRole(),
+                            builder: (context, snapshot) {
+                              final role = snapshot.data ?? '';
+                              final allowed = role.isNotEmpty &&
+                                  role != 'USER' &&
+                                  role != 'TEACHER';
+
+                              return allowed
+                                  ? _buildDangerZone(context, currentCard)
+                                  : const SizedBox.shrink();
+                            },
+                          ),
 
                         const SizedBox(height: 24),
                       ],
