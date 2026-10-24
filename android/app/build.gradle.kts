@@ -1,4 +1,5 @@
 import java.io.FileInputStream
+import java.util.Base64
 import java.util.Properties
 
 plugins {
@@ -22,7 +23,7 @@ if (keystorePropertiesFile.exists()) {
 val dartDefines: Map<String, String> = (project.findProperty("dart-defines") as String?)
     ?.split(",")
     ?.mapNotNull { encoded ->
-        runCatching { String(java.util.Base64.getDecoder().decode(encoded), Charsets.UTF_8) }.getOrNull()
+        runCatching { String(Base64.getDecoder().decode(encoded), Charsets.UTF_8) }.getOrNull()
     }
     ?.mapNotNull { pair ->
         val i = pair.indexOf('=')
