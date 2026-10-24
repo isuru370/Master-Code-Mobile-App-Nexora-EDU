@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/widgets/nx_ui.dart';
 import '../../data/models/mobile_dashboard_response_model.dart';
 
 /// Shared formatting for the dashboard widgets.
@@ -26,7 +27,7 @@ class DashboardCard extends StatelessWidget {
   const DashboardCard({
     super.key,
     required this.child,
-    this.padding = const EdgeInsets.all(18),
+    this.padding = const EdgeInsets.all(16),
     this.color,
     this.borderColor,
   });
@@ -38,8 +39,8 @@ class DashboardCard extends StatelessWidget {
       padding: padding,
       decoration: BoxDecoration(
         color: color ?? Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: borderColor == null ? null : Border.all(color: borderColor!),
+        borderRadius: AppColors.radiusLarge,
+        border: Border.all(color: borderColor ?? AppColors.border),
         boxShadow: AppColors.softShadow,
       ),
       child: child,
@@ -62,36 +63,10 @@ class DashboardSectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              title,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: AppColors.dark,
-              ),
-            ),
-          ),
-          if (actionText != null && onAction != null)
-            TextButton(
-              onPressed: onAction,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    actionText!,
-                    style: const TextStyle(fontWeight: FontWeight.w700),
-                  ),
-                  const Icon(Icons.chevron_right_rounded, size: 20),
-                ],
-              ),
-            ),
-        ],
-      ),
+    return NxSectionTitle(
+      title: title,
+      actionText: actionText,
+      onAction: onAction,
     );
   }
 }
@@ -130,36 +105,13 @@ class _AlertTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (Color bg, Color fg, IconData icon) = switch (alert.level) {
-      'danger' => (AppColors.dangerLight, AppColors.danger, Icons.error_rounded),
-      'warning' => (
-        AppColors.warningLight,
-        const Color(0xFFB45309),
-        Icons.warning_amber_rounded,
-      ),
-      _ => (AppColors.infoLight, const Color(0xFF0369A1), Icons.info_rounded),
+    final (NxTone tone, IconData icon) = switch (alert.level) {
+      'danger' => (NxTone.red, Icons.error_rounded),
+      'warning' => (NxTone.amber, Icons.warning_amber_rounded),
+      _ => (NxTone.blue, Icons.info_rounded),
     };
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: fg.withValues(alpha: .25)),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: fg, size: 22),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              alert.message,
-              style: TextStyle(color: fg, fontWeight: FontWeight.w600),
-            ),
-          ),
-        ],
-      ),
-    );
+    return NxAlert(message: alert.message, tone: tone, icon: icon);
   }
 }
 
@@ -187,30 +139,23 @@ class CollectionSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: AppColors.radiusLarge,
       child: DashboardCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: AppColors.successLight,
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: const Icon(
-                    Icons.account_balance_wallet_rounded,
-                    color: AppColors.success,
-                  ),
+                const NxIconBox(
+                  icon: Icons.account_balance_wallet_rounded,
+                  tone: NxTone.green,
                 ),
                 const SizedBox(width: 12),
                 const Expanded(
                   child: Text(
                     "Today's Collection",
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 15,
                       fontWeight: FontWeight.w700,
                       color: AppColors.dark,
                     ),
@@ -231,7 +176,7 @@ class CollectionSummaryCard extends StatelessWidget {
                 DashboardFormat.lkr(collection.todayTotal),
                 maxLines: 1,
                 style: const TextStyle(
-                  fontSize: 28,
+                  fontSize: 26,
                   fontWeight: FontWeight.w800,
                   color: AppColors.dark,
                 ),
@@ -299,8 +244,8 @@ class CollectionSummaryCard extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceSecondary,
-                        borderRadius: BorderRadius.circular(20),
+                        color: AppColors.headBackground,
+                        borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
                         '${m.label}: ${DashboardFormat.money(m.amount)} (${m.count})',
@@ -338,7 +283,12 @@ class _MoneyLine extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: highlight ? AppColors.primaryLight : AppColors.surfaceSecondary,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: AppColors.radiusMedium,
+        border: Border.all(
+          color: highlight
+              ? AppColors.primary.withValues(alpha: .3)
+              : AppColors.border,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -348,7 +298,7 @@ class _MoneyLine extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
-              fontSize: 12,
+              fontSize: 11,
               color: AppColors.textSecondary,
               fontWeight: FontWeight.w600,
             ),
@@ -406,7 +356,7 @@ class FinanceSummaryCard extends StatelessWidget {
                 positive
                     ? Icons.trending_up_rounded
                     : Icons.trending_down_rounded,
-                color: positive ? AppColors.success : AppColors.danger,
+                color: positive ? AppColors.successText : AppColors.dangerText,
               ),
               const SizedBox(width: 8),
               const Expanded(
@@ -423,7 +373,7 @@ class FinanceSummaryCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w800,
-                  color: positive ? AppColors.success : AppColors.danger,
+                  color: positive ? AppColors.successText : AppColors.dangerText,
                 ),
               ),
             ],
@@ -455,7 +405,7 @@ class FinanceSummaryCard extends StatelessWidget {
           Text(
             '${negative && value > 0 ? '- ' : ''}${DashboardFormat.money(value)}',
             style: TextStyle(
-              color: negative && value > 0 ? AppColors.danger : AppColors.dark,
+              color: negative && value > 0 ? AppColors.dangerText : AppColors.dark,
               fontWeight: bold ? FontWeight.w800 : FontWeight.w600,
             ),
           ),
@@ -517,11 +467,11 @@ class _TodayClassTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (String label, Color color) = switch (item.status) {
-      'ongoing' => ('Ongoing', AppColors.success),
-      'completed' => ('Completed', AppColors.secondary),
-      'cancelled' => ('Cancelled', AppColors.danger),
-      _ => ('Scheduled', AppColors.primary),
+    final (String label, NxTone tone) = switch (item.status) {
+      'ongoing' => ('Ongoing', NxTone.green),
+      'completed' => ('Completed', NxTone.gray),
+      'cancelled' => ('Cancelled', NxTone.red),
+      _ => ('Scheduled', NxTone.blue),
     };
 
     final subtitle = [
@@ -596,21 +546,16 @@ class _TodayClassTile extends StatelessWidget {
                         : 'Cancelled: ${item.cancelReason}',
                     style: const TextStyle(
                       fontSize: 12,
-                      color: AppColors.danger,
+                      color: AppColors.dangerText,
                     ),
                   )
                 else
                   Row(
                     children: [
                       Expanded(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: LinearProgressIndicator(
-                            value: item.attendanceRate,
-                            minHeight: 6,
-                            backgroundColor: AppColors.surfaceSecondary,
-                            color: color,
-                          ),
+                        child: NxProgress(
+                          value: item.attendanceRate,
+                          tone: tone == NxTone.gray ? NxTone.blue : tone,
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -628,7 +573,7 @@ class _TodayClassTile extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          _Chip(label: label, color: color),
+          NxBadge(label, tone: tone),
         ],
       ),
     );
@@ -695,14 +640,14 @@ class _PaymentTile extends StatelessWidget {
       child: Row(
         children: [
           CircleAvatar(
-            radius: 20,
+            radius: 19,
             backgroundColor: AppColors.successLight,
             child: Text(
               item.studentName.isNotEmpty
                   ? item.studentName[0].toUpperCase()
                   : 'S',
               style: const TextStyle(
-                color: AppColors.success,
+                color: AppColors.successText,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -757,15 +702,13 @@ class _PaymentTile extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              _Chip(
-                label: PaymentMethodTotal(
+              NxBadge(
+                PaymentMethodTotal(
                   method: item.paymentMethod,
                   amount: 0,
                   count: 0,
                 ).label,
-                color: item.paymentMethod == 'cash'
-                    ? AppColors.success
-                    : AppColors.info,
+                tone: item.paymentMethod == 'cash' ? NxTone.green : NxTone.info,
               ),
             ],
           ),
@@ -827,43 +770,42 @@ class _StockBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (Color bg, Color fg, String text) = switch (level) {
-      'critical' => (AppColors.dangerLight, AppColors.danger, 'CRITICAL'),
-      'low' => (AppColors.warningLight, const Color(0xFFB45309), 'LOW'),
-      _ => (AppColors.successLight, AppColors.success, 'OK'),
+    final (NxTone tone, String text) = switch (level) {
+      'critical' => (NxTone.red, 'CRITICAL'),
+      'low' => (NxTone.amber, 'LOW'),
+      _ => (NxTone.green, 'OK'),
     };
 
     return DashboardCard(
-      color: bg,
-      borderColor: fg.withValues(alpha: .25),
       padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, color: fg),
+              NxIconBox(icon: icon, tone: tone, size: 36),
               const Spacer(),
-              _Chip(label: text, color: fg),
+              NxBadge(text, tone: tone),
             ],
           ),
           const SizedBox(height: 10),
           Text(
             '$count',
-            style: TextStyle(
-              fontSize: 26,
+            style: const TextStyle(
+              fontSize: 22,
               fontWeight: FontWeight.w800,
-              color: fg,
+              color: AppColors.dark,
             ),
           ),
           Text(
-            title,
+            title.toUpperCase(),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
-              fontSize: 12,
+              fontSize: 11,
+              letterSpacing: .4,
               fontWeight: FontWeight.w600,
-              color: AppColors.darkLight,
+              color: AppColors.textSecondary,
             ),
           ),
         ],
@@ -877,32 +819,6 @@ class _StockBox extends StatelessWidget {
 | Small pieces
 |--------------------------------------------------------------------------
 */
-
-class _Chip extends StatelessWidget {
-  final String label;
-  final Color color;
-
-  const _Chip({required this.label, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: .12),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-          color: color,
-        ),
-      ),
-    );
-  }
-}
 
 class _EmptyText extends StatelessWidget {
   final IconData icon;

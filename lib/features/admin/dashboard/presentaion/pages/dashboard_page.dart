@@ -9,6 +9,7 @@ import '../../../../../core/navigation/role_router.dart';
 import '../../../../../core/storage/session_storage.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/utils/printer_service.dart';
+import '../../../../../core/widgets/nx_ui.dart';
 import '../../../../auth/data/datasources/auth_remote_data_source.dart';
 import '../../../../auth/data/models/branch_model.dart';
 import '../../../../auth/data/models/user_model.dart';
@@ -172,7 +173,7 @@ class _DashboardPageState extends State<DashboardPage> {
     final picked = await showModalBottomSheet<int>(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (sheetContext) {
         Widget option({
@@ -293,7 +294,7 @@ class _DashboardPageState extends State<DashboardPage> {
     final choice = await showModalBottomSheet<String>(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (sheetContext) {
         Widget option({
@@ -415,14 +416,14 @@ class _DashboardPageState extends State<DashboardPage> {
     final hour = DateTime.now().hour;
 
     if (hour < 12) {
-      return 'Good Morning 👋';
+      return 'Good Morning';
     }
 
     if (hour < 17) {
-      return 'Good Afternoon ☀️';
+      return 'Good Afternoon';
     }
 
-    return 'Good Evening 🌙';
+    return 'Good Evening';
   }
 
   void _showPrinterSuggestionDialog() {
@@ -431,108 +432,60 @@ class _DashboardPageState extends State<DashboardPage> {
       barrierDismissible: false,
       builder: (context) {
         return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28),
-          ),
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(22),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  width: 90,
-                  height: 90,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: .1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.print_rounded,
-                    size: 48,
-                    color: AppColors.primary,
-                  ),
-                ),
-                const SizedBox(height: 20),
+                const NxIconBox(icon: Icons.print_rounded, size: 56),
+                const SizedBox(height: 16),
                 const Text(
                   'Printer Not Connected',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
                     color: AppColors.dark,
                   ),
                 ),
-                const SizedBox(height: 12),
-                Text(
-                  'No printer is currently connected.\n\n'
-                  'Connect your Bluetooth printer now to print payment receipts and reports instantly.',
+                const SizedBox(height: 8),
+                const Text(
+                  'Connect your Bluetooth printer to print payment receipts and reports.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.grey.shade700,
+                    color: AppColors.textSecondary,
                     height: 1.5,
                     fontSize: 14,
                   ),
                 ),
-                const SizedBox(height: 24),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.orange.shade50,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: Colors.orange.shade200),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.info_outline_rounded,
-                        color: Colors.orange.shade700,
-                      ),
-                      const SizedBox(width: 10),
-                      const Expanded(
-                        child: Text(
-                          'You can continue using the app without a printer.',
-                          style: TextStyle(fontSize: 13),
-                        ),
-                      ),
-                    ],
-                  ),
+                const SizedBox(height: 16),
+                const NxAlert(
+                  tone: NxTone.amber,
+                  icon: Icons.info_outline_rounded,
+                  message: 'You can continue using the app without a printer.',
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 20),
                 Row(
                   children: [
                     Expanded(
-                      child: TextButton(
-                        onPressed: () async {
-                          await Navigator.pushNamed(
-                            context,
-                            '/print_test_screen',
-                          );
-
-                          await _checkPrinterStatus();
-                        },
-                        child: const Text('Connect'),
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Later'),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size.fromHeight(50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                        ),
-                        onPressed: () {
+                        onPressed: () async {
                           Navigator.pop(context);
-                          Navigator.pushNamed(context, '/print_test_screen');
+                          await Navigator.pushNamed(
+                            this.context,
+                            '/print_test_screen',
+                          );
+                          await _checkPrinterStatus();
                         },
-                        icon: const Icon(Icons.bluetooth_rounded),
-                        label: const Text(
-                          'Connect',
-                          style: TextStyle(fontWeight: FontWeight.w700),
-                        ),
+                        icon: const Icon(Icons.bluetooth_rounded, size: 18),
+                        label: const Text('Connect'),
                       ),
                     ),
                   ],
@@ -556,7 +509,6 @@ class _DashboardPageState extends State<DashboardPage> {
       floatingActionButton: !_can('search_student')
           ? null
           : FloatingActionButton.extended(
-        backgroundColor: AppColors.primary,
         onPressed: () {
           Navigator.pushNamed(
             context,
@@ -564,62 +516,17 @@ class _DashboardPageState extends State<DashboardPage> {
             arguments: {'type': ScanType.student},
           );
         },
-        icon: const Icon(Icons.qr_code_scanner_rounded, color: Colors.white),
-        label: const Text(
-          'Search Student',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-        ),
+        icon: const Icon(Icons.qr_code_scanner_rounded),
+        label: const Text('Search Student'),
       ),
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppColors.primary,
-        title: InkWell(
+        titleSpacing: 0,
+        title: NxPageTitle(
+          'Dashboard',
+          subtitle: _branchLabel,
+          subtitleIcon: Icons.store_mall_directory_rounded,
           onTap: _hasManyBranches ? _showBranchPicker : null,
-          borderRadius: BorderRadius.circular(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Dashboard',
-                style: TextStyle(
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                ),
-              ),
-              if (_branchLabel.isNotEmpty)
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.store_mall_directory_rounded,
-                      size: 14,
-                      color: Colors.white70,
-                    ),
-                    const SizedBox(width: 4),
-                    Flexible(
-                      child: Text(
-                        _branchLabel,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.white70,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    if (_hasManyBranches)
-                      const Icon(
-                        Icons.arrow_drop_down_rounded,
-                        color: Colors.white70,
-                      ),
-                  ],
-                ),
-            ],
-          ),
         ),
-        iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           if (_hasManyBranches)
             IconButton(
@@ -641,263 +548,157 @@ class _DashboardPageState extends State<DashboardPage> {
           const SizedBox(width: 8),
         ],
       ),
-      drawer: Drawer(
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.only(
-                top: 60,
-                left: 20,
-                right: 20,
-                bottom: 24,
-              ),
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [AppColors.primary, Color(0xff1D4ED8)],
-                ),
-              ),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    radius: 32,
-                    backgroundColor: Colors.white,
-                    child: Text(
-                      userName.isNotEmpty ? userName[0].toUpperCase() : 'U',
-                      style: const TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.dark,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          userName,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          userEmail,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(color: Colors.white70),
-                        ),
-                        if (_roleLabel.isNotEmpty) ...[
-                          const SizedBox(height: 6),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 3,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: .18),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              _branchLabel.isEmpty
-                                  ? _roleLabel
-                                  : '$_roleLabel • $_branchLabel',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+      drawer: NxDrawer(
+        header: NxDrawerHeader(
+          userName: userName,
+          userDetail: _branchLabel.isEmpty ? userEmail : _branchLabel,
+          roleLabel: _roleLabel,
+        ),
+        footer: _drawerTile(
+          icon: Icons.logout_rounded,
+          title: _loggingOut ? 'Logging out...' : 'Logout',
+          danger: true,
+          onTap: _logout,
+        ),
+        children: [
+          NxDrawerItem(
+            icon: Icons.grid_view_rounded,
+            title: 'Dashboard',
+            active: true,
+            onTap: () => Navigator.pop(context),
+          ),
+          const SizedBox(height: 8),
+          _sectionHeader('Student Management'),
+          if (_can('register_student'))
+            _drawerTile(
+              icon: Icons.person_add_alt_1_rounded,
+              title: 'Register Student',
+              onTap: _openRegisterChooser,
             ),
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: [
-                  const SizedBox(height: 8),
-                  _sectionHeader('STUDENT MANAGEMENT', Icons.people_rounded),
-                  if (_can('register_student'))
-                    _drawerTile(
-                    icon: Icons.person_add_alt_1_rounded,
-                    title: 'Register Student',
-                    onTap: () {
-                      Navigator.pop(context); // close the drawer
-                      _openRegisterChooser();
-                    },
-                  ),
-                  if (_can('reassign_card'))
-                    _drawerTile(
-                    icon: Icons.person_add_alt_1_rounded,
-                    title: 'Re Assign Student',
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/qr-scan-student-card',
-                        arguments: {'type': ScanStudentCard.assignStudentCard},
-                      );
-                    },
-                  ),
-                  if (_can('capture_image'))
-                    _drawerTile(
-                    icon: Icons.image_outlined,
-                    title: 'Capture Image',
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/image_capture',
-                        arguments: {'registered': false},
-                      );
-                    },
-                  ),
-                  if (_can('students'))
-                    _drawerTile(
-                    icon: Icons.people_alt_rounded,
-                    title: 'Students',
-                    onTap: () {
-                      Navigator.pushNamed(context, '/students');
-                    },
-                  ),
-                  if (_can('student_images'))
-                    _drawerTile(
-                    icon: Icons.school_rounded,
-                    title: 'Student Images',
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/qr-scan-student-card',
-                        arguments: {'type': ScanStudentCard.studentImage},
-                      );
-                    },
-                  ),
-                  const Divider(height: 24, thickness: 1),
-                  _sectionHeader('CLASS & ATTENDANCE', Icons.class_rounded),
-                  if (_can('today_classes'))
-                    _drawerTile(
-                    icon: Icons.payments_rounded,
-                    title: 'Today Classes',
-                    onTap: () {
-                      Navigator.pushNamed(context, '/today-class');
-                    },
-                  ),
-                  if (_can('add_class'))
-                    _drawerTile(
-                    icon: Icons.payments_rounded,
-                    title: 'Add Class',
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/qr-scan',
-                        arguments: {'type': ScanType.classes},
-                      );
-                    },
-                  ),
-                  if (_can('class_schedule'))
-                    _drawerTile(
-                    icon: Icons.class_outlined,
-                    title: 'Class Schedule',
-                    onTap: () {
-                      Navigator.pushNamed(context, '/class_ongoing');
-                    },
-                  ),
-                  if (_can('attendance'))
-                    _drawerTile(
-                    icon: Icons.fact_check_rounded,
-                    title: 'Attendance',
-                    onTap: () {
-                      Navigator.pushNamed(context, '/attendance-scan');
-                    },
-                  ),
-                  const Divider(height: 24, thickness: 1),
-                  _sectionHeader('FINANCIAL', Icons.attach_money_rounded),
-                  if (_can('payment'))
-                    _drawerTile(
-                    icon: Icons.payments_rounded,
-                    title: 'Payment',
-                    onTap: () {
-                      Navigator.pushNamed(context, '/payment-scan');
-                    },
-                  ),
-                  if (_can('today_payments'))
-                    _drawerTile(
-                    icon: Icons.monetization_on_outlined,
-                    title: 'Today Payments',
-                    onTap: () {
-                      Navigator.pushNamed(context, '/today-payment');
-                    },
-                  ),
-                  if (_can('admission'))
-                    _drawerTile(
-                    icon: Icons.monetization_on_outlined,
-                    title: 'Admission',
-                    onTap: () {
-                      Navigator.pushNamed(context, '/admission-payment');
-                    },
-                  ),
-                  if (_hasCourses) ...[
-                    const Divider(height: 24, thickness: 1),
-                    _sectionHeader('COURSES', Icons.school_rounded),
-                    _drawerTile(
-                      icon: Icons.how_to_reg_rounded,
-                      title: 'Course Attendance',
-                      onTap: () {
-                        Navigator.pushNamed(context, '/course-attendance');
-                      },
-                    ),
-                    _drawerTile(
-                      icon: Icons.account_balance_wallet_rounded,
-                      title: 'Course Payment',
-                      onTap: () {
-                        Navigator.pushNamed(context, '/course-payment');
-                      },
-                    ),
-                  ],
-                  const Divider(height: 24, thickness: 1),
-                  _sectionHeader('OTHER', Icons.more_horiz_rounded),
-                  if (_can('student_tute'))
-                    _drawerTile(
-                    icon: Icons.menu_book_rounded,
-                    title: 'Student Tute',
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/qr-scan',
-                        arguments: {'type': ScanType.tute},
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                ],
-              ),
+          if (_can('reassign_card'))
+            _drawerTile(
+              icon: Icons.badge_rounded,
+              title: 'Re Assign Student',
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  '/qr-scan-student-card',
+                  arguments: {'type': ScanStudentCard.assignStudentCard},
+                );
+              },
             ),
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: _drawerTile(
-                  icon: Icons.logout_rounded,
-                  title: 'Logout',
-                  color: AppColors.danger,
-                  onTap: _logout,
-                ),
-              ),
+          if (_can('capture_image'))
+            _drawerTile(
+              icon: Icons.photo_camera_rounded,
+              title: 'Capture Image',
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  '/image_capture',
+                  arguments: {'registered': false},
+                );
+              },
+            ),
+          if (_can('students'))
+            _drawerTile(
+              icon: Icons.people_alt_rounded,
+              title: 'Students',
+              onTap: () => Navigator.pushNamed(context, '/students'),
+            ),
+          if (_can('student_images'))
+            _drawerTile(
+              icon: Icons.image_rounded,
+              title: 'Student Images',
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  '/qr-scan-student-card',
+                  arguments: {'type': ScanStudentCard.studentImage},
+                );
+              },
+            ),
+          _sectionHeader('Class & Attendance'),
+          if (_can('today_classes'))
+            _drawerTile(
+              icon: Icons.today_rounded,
+              title: 'Today Classes',
+              onTap: () => Navigator.pushNamed(context, '/today-class'),
+            ),
+          if (_can('add_class'))
+            _drawerTile(
+              icon: Icons.playlist_add_rounded,
+              title: 'Add Class',
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  '/qr-scan',
+                  arguments: {'type': ScanType.classes},
+                );
+              },
+            ),
+          if (_can('class_schedule'))
+            _drawerTile(
+              icon: Icons.calendar_month_rounded,
+              title: 'Class Schedule',
+              onTap: () => Navigator.pushNamed(context, '/class_ongoing'),
+            ),
+          if (_can('attendance'))
+            _drawerTile(
+              icon: Icons.fact_check_rounded,
+              title: 'Attendance',
+              onTap: () => Navigator.pushNamed(context, '/attendance-scan'),
+            ),
+          _sectionHeader('Financial'),
+          if (_can('payment'))
+            _drawerTile(
+              icon: Icons.payments_rounded,
+              title: 'Payment',
+              onTap: () => Navigator.pushNamed(context, '/payment-scan'),
+            ),
+          if (_can('today_payments'))
+            _drawerTile(
+              icon: Icons.receipt_long_rounded,
+              title: 'Today Payments',
+              onTap: () => Navigator.pushNamed(context, '/today-payment'),
+            ),
+          if (_can('admission'))
+            _drawerTile(
+              icon: Icons.how_to_reg_rounded,
+              title: 'Admission',
+              onTap: () => Navigator.pushNamed(context, '/admission-payment'),
+            ),
+          if (_hasCourses) ...[
+            _sectionHeader('Courses'),
+            _drawerTile(
+              icon: Icons.school_rounded,
+              title: 'Course Attendance',
+              onTap: () => Navigator.pushNamed(context, '/course-attendance'),
+            ),
+            _drawerTile(
+              icon: Icons.account_balance_wallet_rounded,
+              title: 'Course Payment',
+              onTap: () => Navigator.pushNamed(context, '/course-payment'),
             ),
           ],
-        ),
+          _sectionHeader('Other'),
+          if (_can('student_tute'))
+            _drawerTile(
+              icon: Icons.menu_book_rounded,
+              title: 'Student Tute',
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  '/qr-scan',
+                  arguments: {'type': ScanType.tute},
+                );
+              },
+            ),
+          _drawerTile(
+            icon: Icons.print_rounded,
+            title: 'Printer',
+            onTap: () => Navigator.pushNamed(context, '/print_test_screen'),
+          ),
+        ],
       ),
       body: _loadingSession
           ? const Center(child: CircularProgressIndicator())
@@ -918,41 +719,18 @@ class _DashboardPageState extends State<DashboardPage> {
                   }
 
                   if (state is MobileDashboardError) {
-                    return Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Container(
-                          padding: const EdgeInsets.all(24),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30),
-                            boxShadow: AppColors.softShadow,
-                          ),
+                    return ListView(
+                      padding: const EdgeInsets.all(16),
+                      children: [
+                        const SizedBox(height: 40),
+                        NxCard(
                           child: Column(
-                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(
-                                Icons.error_outline_rounded,
-                                size: 70,
-                                color: AppColors.danger,
-                              ),
-                              const SizedBox(height: 14),
-                              Text(
-                                state.message,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              const SizedBox(height: 18),
-                              ElevatedButton.icon(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.primary,
-                                  foregroundColor: Colors.white,
-                                ),
-                                onPressed: _refreshDashboard,
-                                icon: const Icon(Icons.refresh_rounded),
-                                label: const Text('Try Again'),
+                              NxEmpty(
+                                icon: Icons.error_outline_rounded,
+                                tone: NxTone.red,
+                                message: state.message,
+                                onRetry: _refreshDashboard,
                               ),
                               if (_hasManyBranches)
                                 TextButton(
@@ -962,7 +740,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             ],
                           ),
                         ),
-                      ),
+                      ],
                     );
                   }
 
@@ -1009,21 +787,21 @@ class _DashboardPageState extends State<DashboardPage> {
         _QuickActionCard(
           icon: Icons.assignment_turned_in_sharp,
           label: 'Attendance',
-          color: AppColors.primary,
+          tone: NxTone.blue,
           onTap: () => Navigator.pushNamed(context, '/attendance-scan'),
         ),
       if (_can('payment'))
         _QuickActionCard(
           icon: Icons.payments_rounded,
           label: 'Payment',
-          color: AppColors.success,
+          tone: NxTone.green,
           onTap: () => Navigator.pushNamed(context, '/payment-scan'),
         ),
       if (_can('add_class'))
         _QuickActionCard(
           icon: Icons.class_rounded,
           label: 'Add Class',
-          color: AppColors.secondary,
+          tone: NxTone.violet,
           onTap: () => Navigator.pushNamed(
             context,
             '/qr-scan',
@@ -1034,7 +812,7 @@ class _DashboardPageState extends State<DashboardPage> {
         _QuickActionCard(
           icon: Icons.menu_book_rounded,
           label: 'Student Tute',
-          color: AppColors.info,
+          tone: NxTone.info,
           onTap: () => Navigator.pushNamed(
             context,
             '/qr-scan',
@@ -1045,13 +823,13 @@ class _DashboardPageState extends State<DashboardPage> {
         _QuickActionCard(
           icon: Icons.school_rounded,
           label: 'Course Attendance',
-          color: AppColors.primaryDark,
+          tone: NxTone.blue,
           onTap: () => Navigator.pushNamed(context, '/course-attendance'),
         ),
         _QuickActionCard(
           icon: Icons.account_balance_wallet_rounded,
           label: 'Course Payment',
-          color: AppColors.success,
+          tone: NxTone.green,
           onTap: () => Navigator.pushNamed(context, '/course-payment'),
         ),
       ],
@@ -1059,101 +837,47 @@ class _DashboardPageState extends State<DashboardPage> {
         _QuickActionCard(
           icon: Icons.how_to_reg_rounded,
           label: 'Admission',
-          color: AppColors.warning,
+          tone: NxTone.amber,
           onTap: () => Navigator.pushNamed(context, '/admission-payment'),
         ),
       if (_can('register_student'))
         _QuickActionCard(
           icon: Icons.person_add_alt_1_rounded,
-          label: 'Register',
-          color: AppColors.primaryDark,
+          label: 'Register Student',
+          tone: NxTone.violet,
           onTap: _openRegisterChooser,
         ),
     ];
 
     final overview = [
-      (
-        'Students',
-        dashboard.students.total.toString(),
-        Icons.people_alt_rounded,
-        AppColors.primary,
-      ),
-      (
-        'Teachers',
-        dashboard.classes.teachers.toString(),
-        Icons.school_rounded,
-        AppColors.info,
-      ),
-      (
-        'Classes',
-        dashboard.classes.activeClasses.toString(),
-        Icons.class_rounded,
-        AppColors.success,
-      ),
-      (
-        'Enrollments',
-        dashboard.classes.activeEnrollments.toString(),
-        Icons.group_add_rounded,
-        AppColors.primaryDark,
-      ),
-      (
-        'Permanent',
-        dashboard.students.permanent.toString(),
-        Icons.verified_rounded,
-        AppColors.secondary,
-      ),
-      (
-        'Temporary',
-        dashboard.students.temporary.toString(),
-        Icons.qr_code_2_rounded,
-        AppColors.danger,
-      ),
-      (
-        'New This Month',
-        dashboard.students.newThisMonth.toString(),
-        Icons.fiber_new_rounded,
-        AppColors.warning,
-      ),
-      (
-        'Tutes Today',
-        dashboard.tutesIssuedToday.toString(),
-        Icons.menu_book_rounded,
-        AppColors.info,
-      ),
+      ('Students', dashboard.students.total.toString(), Icons.people_alt_rounded, NxTone.blue),
+      ('Teachers', dashboard.classes.teachers.toString(), Icons.school_rounded, NxTone.info),
+      ('Classes', dashboard.classes.activeClasses.toString(), Icons.class_rounded, NxTone.green),
+      ('Enrollments', dashboard.classes.activeEnrollments.toString(), Icons.group_add_rounded, NxTone.violet),
+      ('Permanent', dashboard.students.permanent.toString(), Icons.verified_rounded, NxTone.gray),
+      ('Temporary', dashboard.students.temporary.toString(), Icons.qr_code_2_rounded, NxTone.red),
+      ('New This Month', dashboard.students.newThisMonth.toString(), Icons.fiber_new_rounded, NxTone.amber),
+      ('Tutes Today', dashboard.tutesIssuedToday.toString(), Icons.menu_book_rounded, NxTone.info),
     ];
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
       children: [
         // Printer
         if (_showPrinterBanner) ...[
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.orange.shade50,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.orange.shade200),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.print_disabled_rounded, color: Colors.orange),
-                const SizedBox(width: 12),
-                const Expanded(
-                  child: Text(
-                    'Printer not connected. Connect now to print receipts instantly.',
-                  ),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    await Navigator.pushNamed(context, '/print_test_screen');
-                    await _checkPrinterStatus();
-                  },
-                  child: const Text('Connect'),
-                ),
-              ],
+          NxAlert(
+            tone: NxTone.amber,
+            icon: Icons.print_disabled_rounded,
+            message: 'Printer not connected. Connect it to print receipts.',
+            action: TextButton(
+              onPressed: () async {
+                await Navigator.pushNamed(context, '/print_test_screen');
+                await _checkPrinterStatus();
+              },
+              child: const Text('Connect'),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
         ],
 
         // Alerts from the server (low cards, cancelled classes ...)
@@ -1173,41 +897,38 @@ class _DashboardPageState extends State<DashboardPage> {
           roleLabel: _roleLabel,
           branchLabel: dashboard.branch?.name ?? _branchLabel,
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
 
         // Today classes / attendance
         Row(
           children: [
             Expanded(
-              child: InkWell(
+              child: NxStatCard(
                 onTap: _can('today_classes')
                     ? () => Navigator.pushNamed(context, '/today-class')
                     : null,
-                child: _miniStat(
-                  title: 'Today Classes',
-                  value: dashboard.classes.todayRunning.toString(),
-                  icon: Icons.today_rounded,
-                  color: AppColors.warning,
-                ),
+                label: 'Today Classes',
+                value: dashboard.classes.todayRunning.toString(),
+                icon: Icons.today_rounded,
+                tone: NxTone.amber,
               ),
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: InkWell(
+              child: NxStatCard(
                 onTap: _can('attendance')
                     ? () => Navigator.pushNamed(context, '/attendance-scan')
                     : null,
-                child: _miniStat(
-                  title: 'Attendance Today',
-                  value: dashboard.todayAttendanceCount.toString(),
-                  icon: Icons.fact_check_rounded,
-                  color: AppColors.primary,
-                ),
+                label: 'Attendance',
+                value: dashboard.todayAttendanceCount.toString(),
+                note: 'Marked today',
+                icon: Icons.fact_check_rounded,
+                tone: NxTone.blue,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
 
         // Money
         CollectionSummaryCard(
@@ -1222,13 +943,15 @@ class _DashboardPageState extends State<DashboardPage> {
         // Quick actions
         if (quickActions.isNotEmpty) ...[
           const DashboardSectionTitle(title: 'Quick Actions'),
-          GridView.count(
+          GridView(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            crossAxisCount: width > 600 ? 6 : 3,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 0.95,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: width > 600 ? 3 : 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              mainAxisExtent: 64,
+            ),
             children: quickActions,
           ),
           const SizedBox(height: 24),
@@ -1279,18 +1002,18 @@ class _DashboardPageState extends State<DashboardPage> {
           itemCount: overview.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: columns,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 1.05,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            mainAxisExtent: 76,
           ),
           itemBuilder: (context, index) {
             final item = overview[index];
 
-            return _StatCard(
-              title: item.$1,
+            return NxStatCard(
+              label: item.$1,
               value: item.$2,
               icon: item.$3,
-              color: item.$4,
+              tone: item.$4,
             );
           },
         ),
@@ -1298,26 +1021,7 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Widget _sectionHeader(String title, IconData icon) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        children: [
-          Icon(icon, size: 18, color: AppColors.primaryDark),
-          const SizedBox(width: 8),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: AppColors.primaryDark,
-              letterSpacing: 0.8,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget _sectionHeader(String title) => NxDrawerSection(title);
 
   Widget _heroCard({
     required String userName,
@@ -1327,65 +1031,60 @@ class _DashboardPageState extends State<DashboardPage> {
     String roleLabel = '',
     String branchLabel = '',
   }) {
-    return Container(
-      padding: const EdgeInsets.all(28),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xff2563EB), Color(0xff1D4ED8), Color(0xff1E40AF)],
-        ),
-        borderRadius: BorderRadius.circular(34),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xff2563EB).withValues(alpha: .25),
-            blurRadius: 30,
-            offset: const Offset(0, 14),
-          ),
-        ],
-      ),
+    return NxHero(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            _getGreeting(),
-            style: const TextStyle(
-              color: Colors.white70,
-              fontSize: 16,
+            _getGreeting().toUpperCase(),
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: .75),
+              fontSize: 11,
+              letterSpacing: .8,
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 4),
           Text(
             userName,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
             ),
           ),
-          const SizedBox(height: 6),
-          Text(userEmail, style: const TextStyle(color: Colors.white70)),
-          const SizedBox(height: 18),
+          const SizedBox(height: 2),
+          Text(
+            userEmail,
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: .8),
+              fontSize: 13,
+            ),
+          ),
+          const SizedBox(height: 14),
           Wrap(
-            spacing: 10,
-            runSpacing: 10,
+            spacing: 8,
+            runSpacing: 8,
             children: [
-              _heroBadge(
-                icon: Icons.verified_user_rounded,
-                text: tokenActive ? 'Session Active' : 'No Session',
+              NxHeroChip(
+                icon: Icons.calendar_today_rounded,
+                text: DateFormat('EEE, dd MMM yyyy').format(DateTime.now()),
               ),
               if (roleLabel.isNotEmpty)
-                _heroBadge(icon: Icons.badge_rounded, text: roleLabel),
+                NxHeroChip(icon: Icons.badge_rounded, text: roleLabel),
               if (branchLabel.isNotEmpty)
-                _heroBadge(
+                NxHeroChip(
                   icon: Icons.store_mall_directory_rounded,
                   text: branchLabel,
                 ),
               if (smsBalance != null)
-                _heroBadge(
-                  icon: Icons.sms_rounded,
-                  text: 'SMS Balance: $smsBalance',
+                NxHeroChip(icon: Icons.sms_rounded, text: 'SMS: $smsBalance'),
+              if (!tokenActive)
+                const NxHeroChip(
+                  icon: Icons.warning_amber_rounded,
+                  text: 'No session',
                 ),
             ],
           ),
@@ -1394,108 +1093,21 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Widget _heroBadge({required IconData icon, required String text}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: Colors.white, size: 18),
-          const SizedBox(width: 8),
-          Text(
-            text,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _miniStat({
-    required String title,
-    required String value,
-    required IconData icon,
-    required Color color,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: .04),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: .10),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Icon(icon, color: color),
-          ),
-          const SizedBox(height: 14),
-          // Big amounts shrink instead of wrapping to a second line
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Text(
-              value,
-              maxLines: 1,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w800,
-                color: AppColors.dark,
-              ),
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: Colors.grey.shade600,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
+  /// Sidebar item: closes the drawer, then opens the page.
   Widget _drawerTile({
     required IconData icon,
     required String title,
     required VoidCallback onTap,
-    Color color = AppColors.secondary,
+    bool danger = false,
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-      child: ListTile(
-        leading: Icon(icon, color: color),
-        title: Text(
-          title,
-          style: TextStyle(color: color, fontWeight: FontWeight.w600),
-        ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        onTap: onTap,
-      ),
+    return NxDrawerItem(
+      icon: icon,
+      title: title,
+      danger: danger,
+      onTap: () {
+        Navigator.pop(context);
+        onTap();
+      },
     );
   }
 }
@@ -1503,124 +1115,18 @@ class _DashboardPageState extends State<DashboardPage> {
 class _QuickActionCard extends StatelessWidget {
   final IconData icon;
   final String label;
-  final Color color;
+  final NxTone tone;
   final VoidCallback onTap;
 
   const _QuickActionCard({
     required this.icon,
     required this.label,
-    required this.color,
+    required this.tone,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(26),
-        child: Ink(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [color.withValues(alpha: .12), color.withValues(alpha: .03)],
-            ),
-            borderRadius: BorderRadius.circular(26),
-            border: Border.all(color: color.withValues(alpha: .12)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon, color: color, size: 30),
-                const SizedBox(height: 8),
-                Text(
-                  label,
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.dark,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _StatCard extends StatelessWidget {
-  final String title;
-  final String value;
-  final IconData icon;
-  final Color color;
-
-  const _StatCard({
-    required this.title,
-    required this.value,
-    required this.icon,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
-        ],
-        border: Border.all(color: Colors.grey.withValues(alpha: 0.08)),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 46,
-            height: 46,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.12),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: color, size: 24),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            value,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w800,
-              color: AppColors.dark,
-              height: 1.0,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey.shade600,
-            ),
-          ),
-        ],
-      ),
-    );
+    return NxQuickAction(icon: icon, title: label, tone: tone, onTap: onTap);
   }
 }
