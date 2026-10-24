@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../core/errors/app_exceptions.dart';
 import '../../core/navigation/role_router.dart';
 import '../../core/storage/session_storage.dart';
+import '../../core/theme/app_colors.dart';
+import '../../core/widgets/nx_ui.dart';
 import '../../features/auth/data/datasources/auth_remote_data_source.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -128,59 +130,79 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    // Same navy background as the web login page
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color.fromARGB(255, 112, 122, 126),
-              Color.fromARGB(255, 161, 172, 177),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
+      backgroundColor: AppColors.dark,
+      body: NxNavyBackground(
         child: Center(
           child: FadeTransition(
             opacity: _fade,
             child: ScaleTransition(
               scale: _scale,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                    height: 140,
-                    child: Image.asset(
-                      'assets/logo/logo.png',
-                      fit: BoxFit.contain,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 28),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 132,
+                      height: 132,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: AppColors.radiusXLarge,
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color(0x731D4ED8),
+                            blurRadius: 30,
+                            offset: Offset(0, 12),
+                          ),
+                        ],
+                      ),
+                      child: Image.asset(
+                        'assets/logo/logo.png',
+                        fit: BoxFit.contain,
+                      ),
                     ),
-                  ),
 
-                  const SizedBox(height: 2),
+                    const SizedBox(height: 26),
 
-                  const Text(
-                    "MIHISARA HIGHER EDUCATION INSTITUTE",
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      letterSpacing: 2,
+                    const Text(
+                      "MIHISARA HIGHER EDUCATION INSTITUTE",
+                      style: TextStyle(
+                        fontSize: 22,
+                        height: 1.3,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        letterSpacing: 1,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
                     ),
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                  ),
 
-                  const SizedBox(height: 8),
+                    const SizedBox(height: 10),
 
-                  const Text(
-                    "Towards a bright future",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white70,
-                      letterSpacing: 1.2,
+                    Text(
+                      "Towards a bright future",
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.white.withValues(alpha: .72),
+                        letterSpacing: .5,
+                      ),
                     ),
-                  ),
-                ],
+
+                    const SizedBox(height: 36),
+
+                    const SizedBox(
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.2,
+                        color: Colors.white70,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

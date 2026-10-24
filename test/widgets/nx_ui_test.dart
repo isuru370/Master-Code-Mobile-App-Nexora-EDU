@@ -134,4 +134,18 @@ void main() {
     expect(find.text('STUDENT MANAGEMENT'), findsOneWidget);
     expect(find.text('Logout'), findsOneWidget);
   });
+
+  testWidgets('navy background (login / splash)', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.lightTheme,
+        home: const Scaffold(
+          body: NxNavyBackground(child: Center(child: Text('Welcome Back'))),
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('Welcome Back'), findsOneWidget);
+  });
 }

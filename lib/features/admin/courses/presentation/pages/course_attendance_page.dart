@@ -133,9 +133,12 @@ class _SessionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(18),
+      shape: RoundedRectangleBorder(
+        borderRadius: AppColors.radiusLarge,
+        side: const BorderSide(color: AppColors.border),
+      ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(12),
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(16),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/widgets/nx_ui.dart';
 
 /// Small shared pieces for the course screens.
 class CourseUi {
@@ -41,6 +42,7 @@ class CourseUi {
 }
 
 /// scheduled / ongoing / completed / cancelled, paid / overdue ...
+/// (web .nx-badge)
 class CourseStatusChip extends StatelessWidget {
   final String status;
 
@@ -48,29 +50,19 @@ class CourseStatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (Color color, String label) = switch (status) {
-      'scheduled' => (AppColors.info, 'Scheduled'),
-      'ongoing' => (AppColors.primary, 'Ongoing'),
-      'completed' => (AppColors.secondary, 'Completed'),
-      'cancelled' => (AppColors.danger, 'Cancelled'),
-      'paid' => (AppColors.success, 'Paid'),
-      'partly_paid' => (AppColors.warning, 'Part paid'),
-      'overdue' => (AppColors.danger, 'Overdue'),
-      'due' => (AppColors.secondary, 'Due'),
-      _ => (AppColors.secondary, status),
+    final (NxTone tone, String label) = switch (status) {
+      'scheduled' => (NxTone.info, 'Scheduled'),
+      'ongoing' => (NxTone.blue, 'Ongoing'),
+      'completed' => (NxTone.gray, 'Completed'),
+      'cancelled' => (NxTone.red, 'Cancelled'),
+      'paid' => (NxTone.green, 'Paid'),
+      'partly_paid' => (NxTone.amber, 'Part paid'),
+      'overdue' => (NxTone.red, 'Overdue'),
+      'due' => (NxTone.gray, 'Due'),
+      _ => (NxTone.gray, status),
     };
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(color: color, fontWeight: FontWeight.w700, fontSize: 12),
-      ),
-    );
+    return NxBadge(label, tone: tone);
   }
 }
 
@@ -85,25 +77,7 @@ class CourseMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 56, color: AppColors.textMuted),
-            const SizedBox(height: 12),
-            Text(message, textAlign: TextAlign.center, style: const TextStyle(color: AppColors.textSecondary)),
-            if (onRetry != null) ...[
-              const SizedBox(height: 16),
-              OutlinedButton.icon(
-                onPressed: onRetry,
-                icon: const Icon(Icons.refresh_rounded),
-                label: const Text('Try again'),
-              ),
-            ],
-          ],
-        ),
-      ),
+      child: NxEmpty(icon: icon, message: message, onRetry: onRetry),
     );
   }
 }

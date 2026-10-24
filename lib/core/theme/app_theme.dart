@@ -44,14 +44,9 @@ class AppTheme {
         statusBarIconBrightness: Brightness.dark,
         statusBarBrightness: Brightness.light,
       ),
-      iconTheme: IconThemeData(color: AppColors.textSecondary),
-      actionsIconTheme: IconThemeData(color: AppColors.textSecondary),
-      titleTextStyle: TextStyle(
-        fontFamily: fontFamily,
-        color: AppColors.dark,
-        fontSize: 18,
-        fontWeight: FontWeight.w700,
-      ),
+      // No iconTheme / titleTextStyle here: the title (textTheme.titleLarge)
+      // and icons then follow foregroundColor, so a page that sets its own
+      // dark bar with foregroundColor: Colors.white still works.
     ),
 
     // nx-card
