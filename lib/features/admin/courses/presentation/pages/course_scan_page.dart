@@ -3,8 +3,8 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../../../../core/theme/app_colors.dart';
 
-/// Scans one student QR (or takes a typed ID) and returns it:
-///   final result = await Navigator.push<CourseScanResult>(...)
+/// Scans one student QR (or takes a typed ID) and returns it as a
+/// [CourseScanResult] when the page is popped.
 class CourseScanPage extends StatefulWidget {
   final String title;
 
