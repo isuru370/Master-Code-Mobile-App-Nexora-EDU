@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -38,6 +39,8 @@ class AppFeatures {
         headers: ApiConstants.headers(token: token),
       );
 
+      if (kDebugMode) debugPrint('APP FEATURES: ${response.statusCode} ${response.body}');
+
       if (response.statusCode == 404) {
         await _save(const {});
         return;
@@ -51,8 +54,9 @@ class AppFeatures {
       final data = body is Map<String, dynamic> ? body['data'] : null;
 
       await _save(data is Map ? _toBools(data) : const {});
-    } catch (_) {
+    } catch (e) {
       // Offline: keep what we had
+      if (kDebugMode) debugPrint('APP FEATURES ERROR: $e');
     }
   }
 
