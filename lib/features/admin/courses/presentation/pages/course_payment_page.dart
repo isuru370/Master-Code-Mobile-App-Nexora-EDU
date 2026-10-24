@@ -80,7 +80,7 @@ class _CoursePaymentPageState extends State<CoursePaymentPage> {
     final input = await showModalBottomSheet<_PayInput>(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(12))),
       builder: (_) => _PaySheet(
         enrollment: enrollment,
         methods: _data?.paymentMethods ?? const ['cash'],
@@ -149,7 +149,7 @@ class _CoursePaymentPageState extends State<CoursePaymentPage> {
     final input = await showModalBottomSheet<_EnrollInput>(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(12))),
       builder: (_) => _EnrollSheet(course: course),
     );
 
@@ -224,7 +224,7 @@ class _CoursePaymentPageState extends State<CoursePaymentPage> {
                   padding: const EdgeInsets.fromLTRB(14, 6, 6, 6),
                   decoration: BoxDecoration(
                     color: AppColors.successLight,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
                     children: [
@@ -290,7 +290,7 @@ class _StudentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(gradient: AppColors.primaryGradient, borderRadius: BorderRadius.circular(20)),
+      decoration: BoxDecoration(gradient: AppColors.heroGradient, borderRadius: BorderRadius.circular(12)),
       child: Row(
         children: [
           CircleAvatar(
@@ -334,7 +334,7 @@ class _EnrollmentCard extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18)),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.border)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -411,7 +411,7 @@ class _AvailableCourseCard extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
       child: Row(

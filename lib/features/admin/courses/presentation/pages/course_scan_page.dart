@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../../../../core/theme/app_colors.dart';
@@ -51,6 +52,8 @@ class _CourseScanPageState extends State<CourseScanPage> {
         title: Text(widget.title),
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
+        shape: const Border(),
         actions: [
           IconButton(
             tooltip: 'Torch',
@@ -79,7 +82,7 @@ class _CourseScanPageState extends State<CourseScanPage> {
                   height: 240,
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.white, width: 3),
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ],

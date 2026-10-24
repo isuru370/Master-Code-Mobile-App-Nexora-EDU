@@ -88,7 +88,7 @@ class _CourseSessionPageState extends State<CourseSessionPage> {
         context: context,
         isScrollControlled: true,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
         ),
         builder: (_) => _MarkResultSheet(result: marked, error: error),
       );
@@ -117,7 +117,7 @@ class _CourseSessionPageState extends State<CourseSessionPage> {
     await showModalBottomSheet<void>(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
       ),
       builder: (sheet) => SafeArea(
         child: Column(
@@ -252,8 +252,8 @@ class _Header extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: AppColors.primaryGradient,
-        borderRadius: BorderRadius.circular(20),
+        gradient: AppColors.heroGradient,
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,11 +266,7 @@ class _Header extends StatelessWidget {
                   style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w800),
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
-                child: CourseStatusChip(session.status),
-              ),
+              CourseStatusChip(session.status),
             ],
           ),
           const SizedBox(height: 4),
@@ -344,7 +340,7 @@ class _StudentList extends StatelessWidget {
                 final s = students[i];
 
                 return Container(
-                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14)),
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.border)),
                   child: ListTile(
                     leading: CircleAvatar(
                       backgroundColor: (present ? AppColors.success : AppColors.danger).withValues(alpha: 0.12),

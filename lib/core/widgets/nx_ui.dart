@@ -1053,3 +1053,69 @@ class NxDrawerItem extends StatelessWidget {
     );
   }
 }
+
+/* ------------------------------------------------------------------------ */
+/* Navy background (web login page)                                         */
+/* ------------------------------------------------------------------------ */
+
+/// Dark blue page background with soft glows and circles, like the web
+/// login page. Used by the login and splash screens.
+class NxNavyBackground extends StatelessWidget {
+  final Widget child;
+
+  const NxNavyBackground({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    Widget circle(double size) => Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.white.withValues(alpha: .05),
+      ),
+    );
+
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF020617), Color(0xFF0F172A), Color(0xFF1E3A8A)],
+        ),
+      ),
+      child: Stack(
+        children: [
+          // glows
+          const Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: RadialGradient(
+                  center: Alignment.topLeft,
+                  radius: .9,
+                  colors: [Color(0x471D4ED8), Color(0x001D4ED8)],
+                ),
+              ),
+            ),
+          ),
+          const Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: RadialGradient(
+                  center: Alignment.bottomRight,
+                  radius: .9,
+                  colors: [Color(0x2E3B82F6), Color(0x003B82F6)],
+                ),
+              ),
+            ),
+          ),
+          // floating circles
+          Positioned(top: -60, left: -60, child: circle(240)),
+          Positioned(bottom: -50, right: -40, child: circle(180)),
+          Positioned(top: 140, right: 50, child: circle(90)),
+          child,
+        ],
+      ),
+    );
+  }
+}
