@@ -5,6 +5,8 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/utils/app_datetime.dart';
+import '../../../../../core/voice/attendance_voice.dart';
+import '../../../../../core/voice/voice_settings_button.dart';
 import '../../data/model/scan_attendance_new/attendance_data_model.dart';
 import '../../data/model/scan_attendance_new/scan_attendance_response_model.dart';
 import '../../data/model/scan_payment_new/scan_payment_request_model.dart';
@@ -395,6 +397,9 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
 
               final alreadyMarked = data.attendanceResult.alreadyMarked;
 
+              // "tts" feature: name, subject, grade + this month's fee
+              AttendanceVoice.instance.announce(data);
+
               setState(() {
                 _scanResponse = response;
                 _errorMessage = null;
@@ -454,6 +459,7 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
         appBar: AppBar(
           title: const Text("Attendance Scanner"),
           actions: [
+            const VoiceSettingsButton(),
             IconButton(
               icon: Icon(
                 _isManualInputMode ? Icons.qr_code_scanner : Icons.edit,

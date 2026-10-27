@@ -6,6 +6,8 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../../core/enums/scan_type.dart';
 import '../../../../../core/theme/app_theme.dart';
+import '../../../../../core/voice/attendance_voice.dart';
+import '../../../../../core/voice/voice_settings_button.dart';
 import '../../../../../route_observer.dart';
 import '../../../students/presentaion/pages/single_student_view_page.dart';
 import '../bloc/read_payment/read_payment_bloc.dart';
@@ -236,6 +238,9 @@ class _QrScannerPageState extends State<QrScannerPage> with RouteAware {
               current is ScanAttendanceFailure,
           listener: (context, state) async {
             if (state is ScanAttendanceSuccess) {
+              // "tts" feature: name, subject, grade + this month's fee
+              AttendanceVoice.instance.announce(state.response.data);
+
               await _safeStopScanner();
               if (!mounted) return;
 
@@ -374,6 +379,9 @@ class _QrScannerPageState extends State<QrScannerPage> with RouteAware {
       child: Scaffold(
         appBar: AppBar(
           title: Text(_getTitle()),
+          actions: [
+            if (widget.scanType == ScanType.attendance) const VoiceSettingsButton(),
+          ],
         ),
         body: Stack(
           children: [
