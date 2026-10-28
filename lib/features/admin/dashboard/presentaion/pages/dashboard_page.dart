@@ -44,6 +44,10 @@ class _DashboardPageState extends State<DashboardPage> {
   bool _can(String feature) =>
       _features.isEmpty || _features.contains(feature);
 
+  /// Teacher advance: only when the server lists it (Admin / Branch Admin),
+  /// never for an old server that sends no list.
+  bool get _canTeacherAdvance => _features.contains('teacher_advance');
+
   bool get _hasManyBranches => _branches.length > 1;
 
   String get _branchLabel {
@@ -679,6 +683,12 @@ class _DashboardPageState extends State<DashboardPage> {
               title: 'Admission',
               onTap: () => Navigator.pushNamed(context, '/admission-payment'),
             ),
+          if (_canTeacherAdvance)
+            _drawerTile(
+              icon: Icons.volunteer_activism_rounded,
+              title: 'Teacher Advance',
+              onTap: () => Navigator.pushNamed(context, '/teacher-advance'),
+            ),
           if (_hasCourses) ...[
             _sectionHeader('Courses'),
             _drawerTile(
@@ -851,6 +861,13 @@ class _DashboardPageState extends State<DashboardPage> {
           label: 'Admission',
           tone: NxTone.amber,
           onTap: () => Navigator.pushNamed(context, '/admission-payment'),
+        ),
+      if (_canTeacherAdvance)
+        _QuickActionCard(
+          icon: Icons.volunteer_activism_rounded,
+          label: 'Teacher Advance',
+          tone: NxTone.violet,
+          onTap: () => Navigator.pushNamed(context, '/teacher-advance'),
         ),
       if (_can('register_student'))
         _QuickActionCard(
