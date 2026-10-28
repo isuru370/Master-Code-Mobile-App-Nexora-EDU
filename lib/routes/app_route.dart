@@ -14,6 +14,7 @@ import '../features/admin/attendance/presentaion/pages/attendance_schedule_page.
 import '../features/admin/courses/presentation/pages/course_attendance_page.dart';
 import '../features/admin/courses/presentation/pages/course_payment_page.dart';
 import '../features/admin/dashboard/presentaion/pages/dashboard_page.dart';
+import '../features/admin/teacher_advance/presentation/teacher_advance_page.dart';
 import '../features/admin/image_upload/presentation/pages/camera_screen_page.dart';
 import '../features/admin/image_upload/presentation/pages/student_image_capture_page.dart';
 import '../features/admin/payment/presentaion/pages/payment_history_view_page.dart';
@@ -66,6 +67,10 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const CourseAttendancePage());
       case '/course-payment':
         return MaterialPageRoute(builder: (_) => const CoursePaymentPage());
+
+      // Teacher advance (Admin / Branch Admin; dashboard feature "teacher_advance")
+      case '/teacher-advance':
+        return MaterialPageRoute(builder: (_) => const TeacherAdvancePage());
 
       case '/print_test_screen':
         return MaterialPageRoute(builder: (_) => PrintTestPage());
