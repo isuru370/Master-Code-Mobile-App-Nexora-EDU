@@ -7,6 +7,8 @@ import '../../core/theme/app_colors.dart';
 import '../../core/widgets/nx_ui.dart';
 import '../../features/auth/data/datasources/auth_remote_data_source.dart';
 import '../../core/institute/institute_info.dart';
+import '../../core/institute/server_config.dart';
+import 'auth/presentation/pages/institute_setup_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -53,6 +55,14 @@ class _SplashScreenState extends State<SplashScreen>
   Future<void> _checkSession() async {
     // Splash animation runs while we check the session
     final splashDelay = Future.delayed(const Duration(seconds: 2));
+
+    // First start (or after "Change institute"): scan the institute QR
+    if (!ServerConfig.isConfigured) {
+      await splashDelay;
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(context, InstituteSetupPage.routeName);
+      return;
+    }
 
     final token = await SessionStorage.getToken();
 

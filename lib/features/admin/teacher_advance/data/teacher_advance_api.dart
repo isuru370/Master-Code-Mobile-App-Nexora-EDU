@@ -10,7 +10,7 @@ import '../../../../core/storage/session_storage.dart';
 class TeacherAdvanceApi {
   const TeacherAdvanceApi();
 
-  static const String _base = '${ApiConstants.apiUrl}/teacher-advances';
+  static String get _base => '${ApiConstants.apiUrl}/teacher-advances';
 
   /// This month's teachers of the branch. Without [branchId] the server uses
   /// the user's only branch, or answers [TeacherAdvanceBranchChoice].
