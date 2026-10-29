@@ -8,6 +8,8 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/nx_ui.dart';
 import '../bloc/auth/auth_bloc.dart';
 import '../../../../core/institute/institute_info.dart';
+import '../../../../core/institute/server_config.dart';
+import 'institute_setup_page.dart';
 
 /// Sign in, styled like the web login page (navy background, glass card).
 class SigninPage extends StatefulWidget {
@@ -110,6 +112,40 @@ class _SigninPageState extends State<SigninPage> {
         password: _passwordController.text.trim(),
       ),
     );
+  }
+
+  /// Forget this institute and scan another institute's QR.
+  Future<void> _changeInstitute() async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Change institute?'),
+        content: Text(
+          'This phone will stop using ${InstituteInfo.name}. '
+          'You will scan another institute\'s Staff App QR and sign in again.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Change'),
+          ),
+        ],
+      ),
+    );
+
+    if (ok != true) return;
+
+    await SessionStorage.clear();
+    await SessionStorage.clearSavedEmail();
+    await InstituteInfo.clearSaved();
+    await ServerConfig.clear();
+
+    if (!mounted) return;
+    Navigator.of(context).pushNamedAndRemoveUntil(InstituteSetupPage.routeName, (_) => false);
   }
 
   @override
@@ -378,6 +414,17 @@ class _SigninPageState extends State<SigninPage> {
                       ),
                     ),
                   ),
+
+                  // One app for every institute: connect to another one
+                  if (!ServerConfig.isBuiltForInstitute) ...[
+                    const SizedBox(height: 14),
+                    TextButton.icon(
+                      onPressed: isLoading ? null : _changeInstitute,
+                      icon: const Icon(Icons.swap_horiz_rounded, size: 18),
+                      label: const Text('Change institute'),
+                      style: TextButton.styleFrom(foregroundColor: _label),
+                    ),
+                  ],
 
                   const SizedBox(height: 22),
                   Text(

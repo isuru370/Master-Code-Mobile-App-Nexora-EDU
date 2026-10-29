@@ -7,9 +7,9 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 import 'app.dart';
-import 'core/constants/api_constants.dart';
 import 'core/di/injection_container.dart' as di;
 import 'core/di/injection_container.dart';
+import 'core/institute/server_config.dart';
 import 'core/network/app_http_client.dart';
 import 'features/admin/admission/presentaion/bloc/admission/admission_bloc.dart';
 import 'features/admin/attendance/presentaion/bloc/attendance/attendance_bloc.dart';
@@ -58,12 +58,9 @@ Future<void> _startApp() async {
     debugPrint = (String? message, {int? wrapWidth}) {};
   }
 
-  // A release build must say which institute server it uses:
-  //   flutter build apk --release --dart-define=API_BASE_URL=https://<institute>.nexorait.lk
-  if (kReleaseMode && !ApiConstants.isBaseUrlConfigured) {
-    runApp(const _MissingServerApp());
-    return;
-  }
+  // Institute server: saved from the scanned institute QR (or fixed by
+  // --dart-define=API_BASE_URL). Without one the splash opens the QR setup.
+  await ServerConfig.load();
 
   await initializeDateFormatting('en', null);
 
@@ -114,30 +111,4 @@ Future<void> _startApp() async {
       child: const NexoraMobileApp(),
     ),
   );
-}
-
-/// Shown instead of the app when a release build was made without
-/// --dart-define=API_BASE_URL (so it is never shipped pointing at a test server).
-class _MissingServerApp extends StatelessWidget {
-  const _MissingServerApp();
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: Center(
-          child: Padding(
-            padding: EdgeInsets.all(24),
-            child: Text(
-              'This build has no server address.\n\n'
-              'Build it again with:\n'
-              '--dart-define=API_BASE_URL=https://<institute>.nexorait.lk',
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }

@@ -11,7 +11,7 @@ import 'course_models.dart';
 class CourseApi {
   const CourseApi();
 
-  static const String _base = '${ApiConstants.apiUrl}/courses';
+  static String get _base => '${ApiConstants.apiUrl}/courses';
 
   /* ----------------------------- Attendance ----------------------------- */
 

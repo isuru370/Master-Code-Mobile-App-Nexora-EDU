@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/api_constants.dart';
+import 'server_config.dart';
 
 /// This institute's name, tagline and logo (splash, login, printed
 /// receipts), from GET /api/institute - the server .env INSTITUTE_*.
@@ -74,6 +75,9 @@ class InstituteInfo {
 
   /// Ask the server; keeps the saved details when it cannot be reached.
   static Future<void> refresh() async {
+    // Before the institute QR is scanned there is no server to ask
+    if (!ServerConfig.isConfigured) return;
+
     try {
       final response = await http
           .get(
@@ -104,6 +108,44 @@ class InstituteInfo {
     } catch (e) {
       if (kDebugMode) debugPrint('INSTITUTE INFO ERROR: $e');
     }
+  }
+
+  /// Details from the institute QR check (POST /api/app-setup/verify):
+  /// shown and saved straight away, logo downloaded.
+  static Future<void> applyFromSetup(Map data) async {
+    final newLogoUrl = data['logo_url']?.toString() ?? '';
+
+    _apply(data);
+    _logoPath = newLogoUrl.isEmpty ? null : await _downloadLogo(newLogoUrl);
+
+    await _save();
+    changes.value++;
+  }
+
+  /// "Change institute": forget this institute's name and logo.
+  static Future<void> clearSaved() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_key);
+
+      final path = _logoPath;
+      if (path != null) {
+        final file = File(path);
+        if (file.existsSync()) {
+          PaintingBinding.instance.imageCache.evict(FileImage(file));
+          await file.delete();
+        }
+      }
+    } catch (_) {
+      // nothing saved / file already gone
+    }
+
+    _name = '';
+    _shortName = '';
+    _tagline = '';
+    _logoUrl = '';
+    _logoPath = null;
+    changes.value++;
   }
 
   static void _apply(Map data) {

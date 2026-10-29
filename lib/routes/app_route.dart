@@ -37,6 +37,7 @@ import '../features/admin/student_image/presentaion/pages/student_image_page.dar
 import '../features/admin/student_tute/presentation/pages/create_tute_page.dart';
 import '../features/admin/student_tute/presentation/pages/tute_view_page.dart';
 import '../features/admin/students/presentaion/pages/create_new_student_page.dart';
+import '../features/auth/presentation/pages/institute_setup_page.dart';
 import '../features/auth/presentation/pages/signin_page.dart';
 import '../features/splash_screen.dart';
 import '../features/teacher/dashboard/presentaion/pages/teacher_dashboard_page.dart';
@@ -52,6 +53,10 @@ class AppRoutes {
       case '/signup':
       case '/signin':
         return MaterialPageRoute(builder: (_) => const SigninPage());
+
+      // First start: scan the institute's Staff App QR
+      case InstituteSetupPage.routeName:
+        return MaterialPageRoute(builder: (_) => const InstituteSetupPage());
 
       case '/dashboard':
         return MaterialPageRoute(

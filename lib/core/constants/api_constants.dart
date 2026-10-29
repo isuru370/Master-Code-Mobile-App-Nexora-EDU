@@ -1,25 +1,22 @@
+import '../institute/server_config.dart';
+
 class ApiConstants {
-  /// Server address. Set it at build time, no code change needed:
+  /// Server address of this phone's institute.
   ///
-  ///   flutter run --dart-define=API_BASE_URL=http://192.168.1.10:8000
+  /// One app for every institute: the address comes from the institute QR
+  /// scanned on first start (see ServerConfig). A build made for a single
+  /// institute still works and skips the QR:
+  ///
   ///   flutter build apk --release --dart-define=API_BASE_URL=https://mihisaraeducation.nexorait.lk
   ///
-  /// Without --dart-define the default below is used.
-  static const String baseUrl = String.fromEnvironment(
-    'API_BASE_URL',
-    defaultValue: 'http://10.17.162.230:8000',
-  );
-  static const String apiUrl = '$baseUrl/api';
+  /// These are getters (not const) because the address is known only at run time.
+  static String get baseUrl => ServerConfig.baseUrl;
+  static String get apiUrl => '$baseUrl/api';
 
-  /// True when the build was given --dart-define=API_BASE_URL=...
-  /// A release build without it would talk to the developer's laptop IP,
-  /// so main() refuses to start such a build (see _startApp).
-  static const bool isBaseUrlConfigured = bool.hasEnvironment('API_BASE_URL');
-
-  static const String login = '$apiUrl/login';
-  static const String logout = '$apiUrl/logout';
-  static const String me = '$apiUrl/me';
-  static const String profile = '$apiUrl/profile';
+  static String get login => '$apiUrl/login';
+  static String get logout => '$apiUrl/logout';
+  static String get me => '$apiUrl/me';
+  static String get profile => '$apiUrl/profile';
 
   static const String contentType = 'Content-Type';
   static const String accept = 'Accept';
