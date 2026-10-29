@@ -117,13 +117,16 @@ class ServerConfig {
               : http.post(uri, headers: headers, body: body))
           .timeout(const Duration(seconds: 15));
     } on TimeoutException {
-      throw const InstituteSetupException(
-        'The institute server did not answer. Check the internet connection and try again.',
+      throw InstituteSetupException(
+        'The institute server did not answer (${qr.baseUrl}). '
+        'Check the internet connection and try again.',
       );
-    } catch (_) {
+    } catch (e) {
       // no internet, DNS, TLS, ... (AppHttpClient may wrap these)
-      throw const InstituteSetupException(
-        'Cannot reach the institute server. Check the internet connection and try again.',
+      debugPrint('INSTITUTE SETUP: cannot reach ${qr.baseUrl}: $e');
+      throw InstituteSetupException(
+        'Cannot reach the institute server (${qr.baseUrl}). '
+        'Check the internet connection and try again.',
       );
     }
 
