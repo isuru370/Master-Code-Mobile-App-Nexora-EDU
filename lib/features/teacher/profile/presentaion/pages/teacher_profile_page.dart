@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/navigation/role_router.dart';
 import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/widgets/privacy_policy_link.dart';
 import '../../../../auth/data/datasources/auth_remote_data_source.dart';
 import '../../data/model/teacher_profile_model.dart';
 import '../bloc/teacher_profile/teacher_profile_bloc.dart';
@@ -448,6 +449,8 @@ class _TeacherProfilePageState extends State<TeacherProfilePage> {
               ),
             ),
           ),
+          const SizedBox(height: 6),
+          const Center(child: PrivacyPolicyLink(color: AppColors.textSecondary)),
         ],
       ),
     );
