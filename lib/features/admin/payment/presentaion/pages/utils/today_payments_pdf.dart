@@ -76,7 +76,7 @@ class TodayPaymentsPdf {
           alignment: pw.Alignment.centerRight,
           margin: const pw.EdgeInsets.only(top: 8),
           child: pw.Text(
-            'Printed $printedAt  ·  Page ${context.pageNumber} of ${context.pagesCount}',
+            'Printed $printedAt  |  Page ${context.pageNumber} of ${context.pagesCount}',
             style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey600),
           ),
         ),
@@ -157,7 +157,7 @@ class TodayPaymentsPdf {
     return pw.Container(
       margin: const pw.EdgeInsets.only(bottom: 8),
       child: pw.Text(
-        '${InstituteInfo.name}  ·  Payments ${DateFormat('d MMM yyyy').format(date)}',
+        '${InstituteInfo.name}  |  Payments ${DateFormat('d MMM yyyy').format(date)}',
         style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey700),
       ),
     );
@@ -195,7 +195,7 @@ class TodayPaymentsPdf {
         if (byMethod.length > 1) ...[
           pw.SizedBox(height: 6),
           pw.Text(
-            byMethod.entries.map((e) => '${e.key}: LKR ${_money.format(e.value)}').join('   ·   '),
+            byMethod.entries.map((e) => '${e.key}: LKR ${_money.format(e.value)}').join('   |   '),
             style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey800),
           ),
         ],
