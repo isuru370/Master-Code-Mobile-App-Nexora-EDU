@@ -9,6 +9,9 @@ class MarkPaymentItemModel {
   final String? markMethod;
   final String? note;
 
+  /// Payment Rules > tute: also give this month's tute (optional).
+  final bool giveTute;
+
   const MarkPaymentItemModel({
     required this.code,
     required this.enrollmentId,
@@ -19,6 +22,7 @@ class MarkPaymentItemModel {
     this.paymentMethod,
     this.markMethod,
     this.note,
+    this.giveTute = false,
   });
 
   factory MarkPaymentItemModel.fromJson(Map<String, dynamic> json) {
@@ -60,6 +64,7 @@ class MarkPaymentItemModel {
       'payment_method': paymentMethod,
       'mark_method': markMethod,
       'note': note,
+      if (giveTute) 'give_tute': true,
     };
   }
 }

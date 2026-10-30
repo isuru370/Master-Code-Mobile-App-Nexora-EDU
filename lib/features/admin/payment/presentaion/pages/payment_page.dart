@@ -9,6 +9,7 @@ import '../../../qr/data/model/scan_payment_new/scan_payment_response_model.dart
 import '../../data/models/mark_payment_item_model.dart';
 import '../../data/models/mark_payment_request_model.dart';
 import '../../data/models/mark_payment_response_model.dart';
+import '../../data/payment_month_info.dart';
 import '../bloc/mark_payment/mark_payment_bloc.dart';
 import 'utils/payment_receipt_print.dart';
 import '../../../../../core/institute/institute_info.dart';
@@ -615,12 +616,78 @@ class _PaymentPageState extends State<PaymentPage> {
 
     DateTime tempSelectedDate = _getDefaultPaymentMonth(selectedPayments);
 
+    // Payment Rules (per institute): attendance this month, fee after the
+    // rules, amount the cashier can change, optional tute. Without rules the
+    // amounts stay the class fees, as before.
+    final studentCode = widget.paymentResponse.student?.customId ?? '';
+    final infos = <int, PaymentMonthInfo?>{};
+    final giveTute = <int, bool>{};
+    final amountControllers = <int, TextEditingController>{
+      for (final payment in selectedPayments)
+        payment.enrollmentId as int: TextEditingController(
+          text: _formatAmount(payment.finalFee),
+        ),
+    };
+    var dialogOpen = true;
+    var infoStarted = false;
+    var loadingInfo = false;
+
+    double amountOf(int enrollmentId) =>
+        double.tryParse(amountControllers[enrollmentId]?.text.trim() ?? '') ?? 0;
+
+    Future<void> loadInfos(StateSetter setDialogState) async {
+      final month = DateFormat('yyyy-MM').format(tempSelectedDate);
+      setDialogState(() => loadingInfo = true);
+
+      final results = await Future.wait(
+        selectedPayments.map(
+          (payment) => PaymentMonthInfo.fetch(
+            code: studentCode,
+            enrollmentId: payment.enrollmentId as int,
+            paymentMonth: month,
+          ),
+        ),
+      );
+
+      // Month changed again while loading, or the dialog was closed
+      if (!dialogOpen || month != DateFormat('yyyy-MM').format(tempSelectedDate)) {
+        return;
+      }
+
+      setDialogState(() {
+        for (var i = 0; i < selectedPayments.length; i++) {
+          final payment = selectedPayments[i];
+          final id = payment.enrollmentId as int;
+          final info = results[i];
+
+          infos[id] = info;
+          giveTute[id] = false;
+          amountControllers[id]!.text = _formatAmount(
+            info != null && info.ruleEnabled ? info.suggestedAmount : payment.finalFee,
+          );
+        }
+        loadingInfo = false;
+      });
+    }
+
     await showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) {
         return StatefulBuilder(
           builder: (context, setDialogState) {
+            if (!infoStarted) {
+              infoStarted = true;
+              WidgetsBinding.instance.addPostFrameCallback(
+                (_) => loadInfos(setDialogState),
+              );
+            }
+
+            final total = selectedPayments.fold<double>(
+              0,
+              (sum, payment) => sum + amountOf(payment.enrollmentId as int),
+            );
+
             return AlertDialog(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -703,6 +770,7 @@ class _PaymentPageState extends State<PaymentPage> {
                           setDialogState(() {
                             tempSelectedDate = picked;
                           });
+                          loadInfos(setDialogState);
                         }
                       },
                       child: InputDecorator(
@@ -812,36 +880,116 @@ class _PaymentPageState extends State<PaymentPage> {
 
                     const SizedBox(height: 6),
 
+                    if (loadingInfo)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 6),
+                        child: LinearProgressIndicator(minHeight: 2),
+                      ),
+
                     ...selectedPayments.map((payment) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 3),
-                        child: Row(
+                      final id = payment.enrollmentId as int;
+                      final info = infos[id];
+                      final editable = info?.amountEditable ?? false;
+
+                      return Container(
+                        margin: const EdgeInsets.symmetric(vertical: 4),
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: AppColors.border),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(
-                              Icons.circle,
-                              size: 6,
-                              color: AppColors.textMuted,
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    '${payment.className} - ${payment.subject}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.darkLight,
+                                    ),
+                                  ),
+                                ),
+                                if (!editable)
+                                  Text(
+                                    'LKR ${_formatAmount(amountOf(id))}',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                              ],
                             ),
 
-                            const SizedBox(width: 6),
-
-                            Expanded(
-                              child: Text(
-                                '${payment.className} - ${payment.subject}',
+                            if (info != null) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                _monthInfoLine(info),
                                 style: TextStyle(
-                                  fontSize: 12,
-                                  color: AppColors.darkLight,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                  color: info.noFee
+                                      ? AppColors.textSecondary
+                                      : AppColors.primary,
                                 ),
                               ),
-                            ),
+                            ],
 
-                            Text(
-                              'LKR ${_formatAmount(payment.finalFee)}',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
+                            if (info != null && info.alreadyPaid) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                'Already paid for ${info.monthName}'
+                                '${info.paidReceipt != null ? ' (${info.paidReceipt})' : ''}',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.dangerText,
+                                ),
                               ),
-                            ),
+                            ],
+
+                            if (editable) ...[
+                              const SizedBox(height: 8),
+                              TextField(
+                                controller: amountControllers[id],
+                                keyboardType: const TextInputType.numberWithOptions(
+                                  decimal: true,
+                                ),
+                                onChanged: (_) => setDialogState(() {}),
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  labelText: 'Amount (LKR)',
+                                  helperText: info!.noFee
+                                      ? 'No fee this month. Leave 0 to skip.'
+                                      : 'Fee LKR ${_formatAmount(info.grossFee)}. Less is saved as a discount.',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              ),
+                            ],
+
+                            if (info != null && info.tuteEnabled)
+                              CheckboxListTile(
+                                dense: true,
+                                contentPadding: EdgeInsets.zero,
+                                controlAffinity: ListTileControlAffinity.leading,
+                                value: info.tuteIssued ? true : (giveTute[id] ?? false),
+                                onChanged: info.tuteIssued
+                                    ? null
+                                    : (value) => setDialogState(
+                                          () => giveTute[id] = value ?? false,
+                                        ),
+                                title: Text(
+                                  info.tuteIssued
+                                      ? 'Tute already given${info.tuteIssuedAt != null ? ' (${info.tuteIssuedAt})' : ''}'
+                                      : 'Give ${info.monthName} tute',
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                              ),
                           ],
                         ),
                       );
@@ -868,7 +1016,7 @@ class _PaymentPageState extends State<PaymentPage> {
                           ),
 
                           Text(
-                            'LKR ${_formatAmount(_calculateSelectedTotal(selectedPayments))}',
+                            'LKR ${_formatAmount(total)}',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w800,
@@ -892,16 +1040,27 @@ class _PaymentPageState extends State<PaymentPage> {
                 ),
 
                 ElevatedButton(
-                  onPressed: _isSubmitting
+                  onPressed: _isSubmitting || loadingInfo
                       ? null
                       : () {
                           setState(() {
                             _selectedPaymentDate = tempSelectedDate;
                           });
 
+                          final amounts = {
+                            for (final payment in selectedPayments)
+                              payment.enrollmentId as int:
+                                  amountOf(payment.enrollmentId as int),
+                          };
+                          final tutes = Map<int, bool>.from(giveTute);
+
                           Navigator.pop(dialogContext);
 
-                          _submitBulkPayments(classes);
+                          _submitBulkPayments(
+                            classes,
+                            amounts: amounts,
+                            giveTute: tutes,
+                          );
                         },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
@@ -919,6 +1078,22 @@ class _PaymentPageState extends State<PaymentPage> {
         );
       },
     );
+
+    dialogOpen = false;
+    for (final controller in amountControllers.values) {
+      controller.dispose();
+    }
+  }
+
+  /// "Attendance 1 · Attendance 1: 50% fee"
+  String _monthInfoLine(PaymentMonthInfo info) {
+    final attendance = 'Attendance in ${info.monthName}: ${info.attendanceCount}';
+
+    if (!info.ruleEnabled) return attendance;
+
+    return info.noFee
+        ? '$attendance · No fee this month'
+        : '$attendance · ${info.rulePercent}% fee = LKR ${_formatAmount(info.suggestedAmount)}';
   }
 
   Widget _paymentInfoItem({
@@ -972,16 +1147,22 @@ class _PaymentPageState extends State<PaymentPage> {
   // SUBMIT BULK PAYMENTS
   // ==========================================================================
 
-  void _submitBulkPayments(List<dynamic> classes) {
+  void _submitBulkPayments(
+    List<dynamic> classes, {
+    Map<int, double> amounts = const {},
+    Map<int, bool> giveTute = const {},
+  }) {
     final selectedPayments = classes
         .where((item) => _selectedEnrollmentIds.contains(item.enrollmentId))
         .where((item) => item.isFreeCard == false)
+        // Payment Rules: a 0 amount (e.g. no fee this month) is not sent
+        .where((item) => (amounts[item.enrollmentId] ?? item.finalFee.toDouble()) > 0)
         .toList();
 
     if (selectedPayments.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please select at least one payable class'),
+          content: Text('Nothing to pay: no class has an amount above 0'),
         ),
       );
 
@@ -1018,7 +1199,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
     final request = MarkPaymentRequestModel(
       payments: selectedPayments.map((item) {
-        final finalAmount = item.finalFee.toDouble();
+        final finalAmount = amounts[item.enrollmentId] ?? item.finalFee.toDouble();
 
         return MarkPaymentItemModel(
           code: student.customId,
@@ -1037,13 +1218,15 @@ class _PaymentPageState extends State<PaymentPage> {
 
           markMethod: markMethod,
 
+          giveTute: giveTute[item.enrollmentId] ?? false,
+
           note:
               'Student Name ${student.initialName} | '
               '${item.className} | '
               '${item.categoryName} | '
               'Fee Option ${item.feeOption?.label ?? '-'} | '
               'Teacher ${item.teacherInitials} | '
-              'Bulk payment without discount',
+              'Mobile payment',
         );
       }).toList(),
     );
@@ -1094,20 +1277,6 @@ class _PaymentPageState extends State<PaymentPage> {
     | Fallback
     |--------------------------------------------------------------------------
     */
-}
-
-// ==========================================================================
-// TOTAL
-// ==========================================================================
-
-double _calculateSelectedTotal(List<dynamic> payments) {
-  double total = 0;
-
-  for (final payment in payments) {
-    total += payment.finalFee.toDouble();
-  }
-
-  return total;
 }
 
 // ==========================================================================
