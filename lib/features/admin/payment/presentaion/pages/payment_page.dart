@@ -622,6 +622,7 @@ class _PaymentPageState extends State<PaymentPage> {
     final studentCode = widget.paymentResponse.student?.customId ?? '';
     final infos = <int, PaymentMonthInfo?>{};
     final giveTute = <int, bool>{};
+    final chosenOption = <int, int?>{};
     final amountControllers = <int, TextEditingController>{
       for (final payment in selectedPayments)
         payment.enrollmentId as int: TextEditingController(
@@ -662,9 +663,16 @@ class _PaymentPageState extends State<PaymentPage> {
 
           infos[id] = info;
           giveTute[id] = false;
-          amountControllers[id]!.text = _formatAmount(
-            info != null && info.ruleEnabled ? info.suggestedAmount : payment.finalFee,
-          );
+
+          // The student's own fee option first; the cashier can pick another
+          final option = info != null && info.feeOptionEnabled ? info.studentOption : null;
+          chosenOption[id] = option?.id;
+
+          // No attendance this month (institute rule): no payment by default
+          final amount = info != null && info.noAttendance
+              ? 0
+              : (option?.amount ?? payment.finalFee.toDouble());
+          amountControllers[id]!.text = _formatAmount(amount);
         }
         loadingInfo = false;
       });
@@ -889,7 +897,10 @@ class _PaymentPageState extends State<PaymentPage> {
                     ...selectedPayments.map((payment) {
                       final id = payment.enrollmentId as int;
                       final info = infos[id];
-                      final editable = info?.amountEditable ?? false;
+                      final editable = info?.customAmount ?? false;
+                      final options = info != null && info.feeOptionEnabled
+                          ? info.feeOptions
+                          : const <PaymentFeeOption>[];
 
                       return Container(
                         margin: const EdgeInsets.symmetric(vertical: 4),
@@ -931,7 +942,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
-                                  color: info.noFee
+                                  color: info.noAttendance
                                       ? AppColors.textSecondary
                                       : AppColors.primary,
                                 ),
@@ -951,6 +962,43 @@ class _PaymentPageState extends State<PaymentPage> {
                               ),
                             ],
 
+                            if (options.isNotEmpty) ...[
+                              const SizedBox(height: 8),
+                              DropdownButtonFormField<int>(
+                                // new month = new list and selection
+                                key: ValueKey('fee-option-$id-${info!.monthName}'),
+                                initialValue: chosenOption[id],
+                                isExpanded: true,
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  labelText: 'Fee option for ${info.monthName}',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                items: options
+                                    .map(
+                                      (option) => DropdownMenuItem<int>(
+                                        value: option.id,
+                                        child: Text(
+                                          '${option.label} - LKR ${_formatAmount(option.amount)}'
+                                          '${option.isStudentOption ? ' (student)' : ''}',
+                                          style: const TextStyle(fontSize: 12),
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
+                                onChanged: (value) => setDialogState(() {
+                                  chosenOption[id] = value;
+                                  final picked = options.where((o) => o.id == value);
+                                  if (picked.isNotEmpty) {
+                                    amountControllers[id]!.text =
+                                        _formatAmount(picked.first.amount);
+                                  }
+                                }),
+                              ),
+                            ],
+
                             if (editable) ...[
                               const SizedBox(height: 8),
                               TextField(
@@ -962,8 +1010,8 @@ class _PaymentPageState extends State<PaymentPage> {
                                 decoration: InputDecoration(
                                   isDense: true,
                                   labelText: 'Amount (LKR)',
-                                  helperText: info!.noFee
-                                      ? 'No fee this month. Leave 0 to skip.'
+                                  helperText: info!.noAttendance
+                                      ? 'No attendance this month. Leave 0 to skip.'
                                       : 'Fee LKR ${_formatAmount(info.grossFee)}. Less is saved as a discount.',
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -1053,6 +1101,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                   amountOf(payment.enrollmentId as int),
                           };
                           final tutes = Map<int, bool>.from(giveTute);
+                          final feeOptions = Map<int, int?>.from(chosenOption);
 
                           Navigator.pop(dialogContext);
 
@@ -1060,6 +1109,7 @@ class _PaymentPageState extends State<PaymentPage> {
                             classes,
                             amounts: amounts,
                             giveTute: tutes,
+                            feeOptions: feeOptions,
                           );
                         },
                   style: ElevatedButton.styleFrom(
@@ -1085,15 +1135,13 @@ class _PaymentPageState extends State<PaymentPage> {
     }
   }
 
-  /// "Attendance 1 · Attendance 1: 50% fee"
+  /// "Attendance in November 2026: 1" (+ no attendance warning)
   String _monthInfoLine(PaymentMonthInfo info) {
     final attendance = 'Attendance in ${info.monthName}: ${info.attendanceCount}';
 
-    if (!info.ruleEnabled) return attendance;
-
-    return info.noFee
-        ? '$attendance · No fee this month'
-        : '$attendance · ${info.rulePercent}% fee = LKR ${_formatAmount(info.suggestedAmount)}';
+    return info.noAttendance
+        ? '$attendance · No attendance: no payment is taken'
+        : attendance;
   }
 
   Widget _paymentInfoItem({
@@ -1151,6 +1199,7 @@ class _PaymentPageState extends State<PaymentPage> {
     List<dynamic> classes, {
     Map<int, double> amounts = const {},
     Map<int, bool> giveTute = const {},
+    Map<int, int?> feeOptions = const {},
   }) {
     final selectedPayments = classes
         .where((item) => _selectedEnrollmentIds.contains(item.enrollmentId))
@@ -1219,6 +1268,8 @@ class _PaymentPageState extends State<PaymentPage> {
           markMethod: markMethod,
 
           giveTute: giveTute[item.enrollmentId] ?? false,
+
+          feeOptionId: feeOptions[item.enrollmentId],
 
           note:
               'Student Name ${student.initialName} | '
