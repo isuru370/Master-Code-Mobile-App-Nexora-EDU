@@ -1130,9 +1130,14 @@ class _PaymentPageState extends State<PaymentPage> {
     );
 
     dialogOpen = false;
-    for (final controller in amountControllers.values) {
-      controller.dispose();
-    }
+
+    // The dialog still rebuilds its fields during the closing animation, so
+    // the controllers are disposed only after that has finished.
+    Future<void>.delayed(const Duration(milliseconds: 600), () {
+      for (final controller in amountControllers.values) {
+        controller.dispose();
+      }
+    });
   }
 
   /// "Attendance in November 2026: 1" (+ no attendance warning)
