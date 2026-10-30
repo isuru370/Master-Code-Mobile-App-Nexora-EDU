@@ -8,6 +8,7 @@ import '../../data/models/today_payments/today_payment_item_model.dart';
 import '../../data/models/today_payments/today_payments_request_model.dart';
 import '../bloc/mark_payment/mark_payment_bloc.dart';
 import 'utils/payment_receipt_print.dart';
+import 'utils/today_payments_pdf.dart';
 import '../../../../../core/institute/institute_info.dart';
 
 class TodayPaymentPage extends StatefulWidget {
@@ -57,6 +58,42 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
   | Printer
   |--------------------------------------------------------------------------
   */
+
+  bool _sharingPdf = false;
+
+  /// PDF of the loaded day's payments, shared with WhatsApp / email etc.
+  Future<void> _shareReport() async {
+    final state = context.read<MarkPaymentBloc>().state;
+    if (state is! TodayPaymentsLoaded) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Payments are still loading. Try again.')),
+      );
+      return;
+    }
+    if (state.response.data.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No payments on this day to share.')),
+      );
+      return;
+    }
+
+    setState(() => _sharingPdf = true);
+    try {
+      await TodayPaymentsPdf.share(
+        date: _selectedDate,
+        payments: state.response.data,
+        search: state.response.search,
+      );
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not create the PDF. Please try again.')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _sharingPdf = false);
+    }
+  }
 
   Future<void> _checkPrinterStatus() async {
     await _printerService.autoReconnect();
@@ -315,6 +352,17 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
           style: TextStyle(fontWeight: FontWeight.w700),
         ),
         actions: [
+          IconButton(
+            onPressed: _sharingPdf ? null : _shareReport,
+            icon: _sharingPdf
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.picture_as_pdf_rounded),
+            tooltip: 'Share PDF report',
+          ),
           IconButton(
             onPressed: _checkPrinterStatus,
             icon: const Icon(Icons.print_rounded),

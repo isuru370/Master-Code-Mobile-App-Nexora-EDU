@@ -6,6 +6,7 @@ import '../../../../../core/storage/session_storage.dart';
 import '../../../../core/navigation/role_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/nx_ui.dart';
+import '../../../../core/widgets/privacy_policy_link.dart';
 import '../bloc/auth/auth_bloc.dart';
 import '../../../../core/institute/institute_info.dart';
 import '../../../../core/institute/server_config.dart';
@@ -426,7 +427,9 @@ class _SigninPageState extends State<SigninPage> {
                     ),
                   ],
 
-                  const SizedBox(height: 22),
+                  const SizedBox(height: 10),
+                  const Center(child: PrivacyPolicyLink()),
+                  const SizedBox(height: 6),
                   Text(
                     '© ${DateTime.now().year} ${InstituteInfo.name} · NexoraEDU',
                     textAlign: TextAlign.center,

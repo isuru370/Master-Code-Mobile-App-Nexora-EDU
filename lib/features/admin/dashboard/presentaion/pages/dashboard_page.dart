@@ -10,6 +10,7 @@ import '../../../../../core/storage/session_storage.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/utils/printer_service.dart';
 import '../../../../../core/widgets/nx_ui.dart';
+import '../../../../../core/widgets/privacy_policy_link.dart';
 import '../../../../auth/data/datasources/auth_remote_data_source.dart';
 import '../../../../auth/data/models/branch_model.dart';
 import '../../../../auth/data/models/user_model.dart';
@@ -570,11 +571,21 @@ class _DashboardPageState extends State<DashboardPage> {
           userDetail: _branchLabel.isEmpty ? userEmail : _branchLabel,
           roleLabel: _roleLabel,
         ),
-        footer: _drawerTile(
-          icon: Icons.logout_rounded,
-          title: _loggingOut ? 'Logging out...' : 'Logout',
-          danger: true,
-          onTap: _logout,
+        footer: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _drawerTile(
+              icon: Icons.privacy_tip_outlined,
+              title: 'Privacy Policy',
+              onTap: () => AppLinks.openPrivacyPolicy(context),
+            ),
+            _drawerTile(
+              icon: Icons.logout_rounded,
+              title: _loggingOut ? 'Logging out...' : 'Logout',
+              danger: true,
+              onTap: _logout,
+            ),
+          ],
         ),
         children: [
           NxDrawerItem(

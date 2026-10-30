@@ -8,6 +8,7 @@ import '../../../../core/institute/server_config.dart';
 import '../../../../core/navigation/role_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/nx_ui.dart';
+import '../../../../core/widgets/privacy_policy_link.dart';
 
 /// First start: connect the app to an institute by scanning the
 /// "Staff App QR" from the institute website (Admin > Staff App QR).
@@ -189,6 +190,8 @@ class _InstituteSetupPageState extends State<InstituteSetupPage> {
           busy: _checking,
           onPressed: _checking ? null : _scan,
         ),
+        const SizedBox(height: 18),
+        const Center(child: PrivacyPolicyLink()),
       ],
     );
   }
