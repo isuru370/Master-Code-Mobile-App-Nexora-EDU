@@ -35,6 +35,27 @@ class AppDateTime {
     }
   }
 
+  /// Sri Lanka time (UTC+05:30, no daylight saving)
+  static const Duration sriLankaOffset = Duration(hours: 5, minutes: 30);
+
+  /// A date / time from the API as Sri Lanka wall-clock time.
+  ///
+  /// Laravel sends datetimes as UTC ("2026-11-01T06:35:00.000000Z"); shown
+  /// as is, the time is 5 h 30 min early. Values without a zone
+  /// ("2026-11-01 12:05:00") are already local and are kept.
+  /// Does not depend on the phone's own time zone.
+  static DateTime? parseApi(String? value) {
+    final text = (value ?? '').trim();
+    if (text.isEmpty) return null;
+
+    final parsed = DateTime.tryParse(text.replaceFirst(' ', 'T'));
+    if (parsed == null) return null;
+    if (!parsed.isUtc) return parsed;
+
+    final local = parsed.add(sriLankaOffset);
+    return DateTime(local.year, local.month, local.day, local.hour, local.minute, local.second);
+  }
+
   /// Format date for API (YYYY-MM-DD)
   static String formatForApi(DateTime date) {
     return DateFormat('yyyy-MM-dd').format(date);

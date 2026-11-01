@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/utils/app_datetime.dart';
 import '../../../../../core/utils/printer_service.dart';
 import '../../data/models/today_payments/today_payment_item_model.dart';
 import '../../data/models/today_payments/today_payments_request_model.dart';
@@ -1244,12 +1245,8 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
       return '-';
     }
 
-    try {
-      final date = DateTime.parse(value.replaceFirst(' ', 'T'));
+    final date = AppDateTime.parseApi(value);
 
-      return DateFormat('yyyy-MM-dd HH:mm').format(date);
-    } catch (_) {
-      return value;
-    }
+    return date == null ? value : DateFormat('yyyy-MM-dd hh:mm a').format(date);
   }
 }
