@@ -18,6 +18,11 @@ void main() {
     expect([date.hour, date.minute], [12, 5]);
   });
 
+  test('payment month sent as UTC is the right month', () {
+    final date = AppDateTime.parseApi('2026-09-30T18:30:00.000000Z')!;
+    expect([date.year, date.month, date.day], [2026, 10, 1]);
+  });
+
   test('empty or bad values', () {
     expect(AppDateTime.parseApi(''), isNull);
     expect(AppDateTime.parseApi(null), isNull);

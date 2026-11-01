@@ -1221,7 +1221,8 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
     }
 
     try {
-      final date = DateTime.parse(value);
+      // UTC from older servers ("2026-09-30T18:30:00Z" = October) -> Sri Lanka date
+      final date = AppDateTime.parseApi(value) ?? DateTime.parse(value);
 
       return DateFormat('yyyy / MM').format(date);
     } catch (_) {

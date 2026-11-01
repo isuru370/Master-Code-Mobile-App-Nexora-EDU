@@ -278,7 +278,8 @@ class TodayPaymentsPdf {
 
   static String _month(String paymentMonth) {
     if (paymentMonth.length < 7) return paymentMonth;
-    final value = DateTime.tryParse('${paymentMonth.substring(0, 7)}-01');
+    final local = AppDateTime.parseApi(paymentMonth);
+    final value = local ?? DateTime.tryParse('${paymentMonth.substring(0, 7)}-01');
     return value == null ? paymentMonth : DateFormat('MMM yyyy').format(value);
   }
 
