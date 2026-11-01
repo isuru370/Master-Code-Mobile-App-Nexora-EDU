@@ -8,6 +8,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:share_plus/share_plus.dart';
 
 import '../../../../../../core/institute/institute_info.dart';
+import '../../../../../../core/utils/app_datetime.dart';
 import '../../../data/models/today_payments/today_payment_item_model.dart';
 
 /// A4 PDF of the payments shown on the Today Payments page (one date),
@@ -230,6 +231,7 @@ class TodayPaymentsPdf {
   }
 
   static pw.Widget _paymentsTable(List<TodayPaymentItemModel> payments, double total) {
+    // ISO strings of the same zone sort by time
     final sorted = [...payments]..sort((a, b) => a.paidAt.compareTo(b.paidAt));
 
     return pw.TableHelper.fromTextArray(
@@ -270,7 +272,7 @@ class TodayPaymentsPdf {
   }
 
   static String _time(String paidAt) {
-    final value = DateTime.tryParse(paidAt.replaceFirst(' ', 'T'));
+    final value = AppDateTime.parseApi(paidAt);
     return value == null ? '' : DateFormat('h:mm a').format(value);
   }
 
