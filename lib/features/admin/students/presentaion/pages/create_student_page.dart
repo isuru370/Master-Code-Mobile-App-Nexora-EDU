@@ -388,7 +388,7 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
 
                               if (state is StudentGradeLoaded) {
                                 return DropdownButtonFormField<int>(
-                                  value: _selectedGradeId,
+                                  initialValue: _selectedGradeId,
                                   decoration: _inputDecoration(
                                     label: 'Select Grade',
                                     icon: Icons.class_rounded,

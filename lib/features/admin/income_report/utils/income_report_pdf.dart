@@ -73,8 +73,7 @@ class IncomeReportPdf {
           if (r.classFeesByMethod.length > 1) ...[
             pw.SizedBox(height: 4),
             pw.Text(
-              'Class fees by payment method:  ' +
-                  r.classFeesByMethod.entries.map((e) => '${_label(e.key)} Rs. ${_money.format(e.value)}').join('   |   '),
+              'Class fees by payment method:  ${r.classFeesByMethod.entries.map((e) => '${_label(e.key)} Rs. ${_money.format(e.value)}').join('   |   ')}',
               style: const pw.TextStyle(fontSize: 8.5, color: PdfColors.grey800),
             ),
           ],
