@@ -11,7 +11,15 @@ class ReadStudentClassPaymentModel {
   final String grade;
   final String subject;
   final bool isFreeCard;
-  final int finalFee;
+
+  /// What to pay: class fee + hall fee (server sends it with the hall fee).
+  final double finalFee;
+
+  /// Class fee only (older servers: same as finalFee).
+  final double classFee;
+
+  /// Hall fee of the class (0 = none).
+  final double hallFee;
   final ReadLastPaymentModel? lastPayment;
   final ReadAttendanceModel? attendance;
 
@@ -26,9 +34,11 @@ class ReadStudentClassPaymentModel {
     required this.subject,
     required this.isFreeCard,
     required this.finalFee,
+    double? classFee,
+    this.hallFee = 0,
     required this.lastPayment,
     required this.attendance,
-  });
+  }) : classFee = classFee ?? finalFee;
 
   factory ReadStudentClassPaymentModel.fromJson(Map<String, dynamic> json) {
     return ReadStudentClassPaymentModel(
@@ -41,7 +51,9 @@ class ReadStudentClassPaymentModel {
       grade: json['grade']?.toString() ?? '',
       subject: json['subject'] ?? '',
       isFreeCard: json['is_free_card'] ?? false,
-      finalFee: _toInt(json['final_fee']),
+      finalFee: _toDouble(json['final_fee']),
+      classFee: json['class_fee'] == null ? null : _toDouble(json['class_fee']),
+      hallFee: _toDouble(json['hall_fee']),
       lastPayment: json['last_payment'] != null
           ? ReadLastPaymentModel.fromJson(
               json['last_payment'] as Map<String, dynamic>,
@@ -55,10 +67,9 @@ class ReadStudentClassPaymentModel {
     );
   }
 
-  static int _toInt(dynamic value) {
+  static double _toDouble(dynamic value) {
     if (value == null) return 0;
-    if (value is int) return value;
-    if (value is double) return value.toInt();
-    return int.tryParse(value.toString()) ?? 0;
+    if (value is num) return value.toDouble();
+    return double.tryParse(value.toString()) ?? 0;
   }
 }
