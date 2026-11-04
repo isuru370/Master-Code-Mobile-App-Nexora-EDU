@@ -11,6 +11,9 @@ class TodayPaymentItemModel {
   final String receiptNumber;
   final double amount;
   final double discountAmount;
+
+  /// Hall fee in this payment (0 = no hall fee).
+  final double hallFee;
   final String paidAt;
   final String paymentMonth;
   final String paymentMethod;
@@ -32,6 +35,7 @@ class TodayPaymentItemModel {
     required this.receiptNumber,
     required this.amount,
     required this.discountAmount,
+    this.hallFee = 0,
     required this.paidAt,
     required this.paymentMonth,
     required this.paymentMethod,
@@ -67,6 +71,11 @@ class TodayPaymentItemModel {
 
       discountAmount: double.tryParse(
             json['discount_amount']?.toString() ?? '0',
+          ) ??
+          0.0,
+
+      hallFee: double.tryParse(
+            json['hall_fee']?.toString() ?? '0',
           ) ??
           0.0,
 

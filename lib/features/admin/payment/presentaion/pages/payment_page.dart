@@ -1313,6 +1313,7 @@ class _PaymentPageState extends State<PaymentPage> {
         categoryName: item.categoryName,
         feeOptionName: item.feeOptionName,
         classFee: item.classFee,
+        hallFee: item.hallFee,
         receiptNumber: item.receiptNumber,
       );
     }).toList();

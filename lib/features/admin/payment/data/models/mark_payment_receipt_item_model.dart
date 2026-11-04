@@ -5,6 +5,9 @@ class MarkPaymentReceiptItemModel {
   final String categoryName;
   final String feeOptionName;
   final double classFee;
+
+  /// Hall fee of the class (0 = no hall fee).
+  final double hallFee;
   final String receiptNumber;
 
   const MarkPaymentReceiptItemModel({
@@ -14,6 +17,7 @@ class MarkPaymentReceiptItemModel {
     required this.categoryName,
     required this.feeOptionName,
     required this.classFee,
+    this.hallFee = 0,
     required this.receiptNumber,
   });
 
@@ -38,6 +42,11 @@ class MarkPaymentReceiptItemModel {
 
       classFee: double.tryParse(
             json['class_fee']?.toString() ?? '0',
+          ) ??
+          0.0,
+
+      hallFee: double.tryParse(
+            json['hall_fee']?.toString() ?? '0',
           ) ??
           0.0,
 

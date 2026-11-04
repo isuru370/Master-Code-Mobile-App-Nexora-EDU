@@ -222,8 +222,32 @@ class PaymentReceiptPrint {
       }
 
       // -------------------------------------------------------
-      // Class Fee
+      // Class fee + hall fee (hall fee only when it is not 0)
       // -------------------------------------------------------
+
+      if (item.hallFee > 0) {
+        bytes.addAll(
+          generator.row([
+            PosColumn(text: 'Class fee', width: 6),
+            PosColumn(
+              text: 'LKR ${item.classFee.toStringAsFixed(2)}',
+              width: 6,
+              styles: const PosStyles(align: PosAlign.right),
+            ),
+          ]),
+        );
+
+        bytes.addAll(
+          generator.row([
+            PosColumn(text: 'Hall fee', width: 6),
+            PosColumn(
+              text: 'LKR ${item.hallFee.toStringAsFixed(2)}',
+              width: 6,
+              styles: const PosStyles(align: PosAlign.right),
+            ),
+          ]),
+        );
+      }
 
       bytes.addAll(
         generator.row([
@@ -232,7 +256,7 @@ class PaymentReceiptPrint {
             width: 6,
           ),
           PosColumn(
-            text: 'LKR ${item.classFee.toStringAsFixed(2)}',
+            text: 'LKR ${item.totalFee.toStringAsFixed(2)}',
             width: 6,
             styles: const PosStyles(
               align: PosAlign.right,
@@ -255,8 +279,26 @@ class PaymentReceiptPrint {
 
     final total = classes.fold<double>(
       0,
-      (sum, item) => sum + item.classFee,
+      (sum, item) => sum + item.totalFee,
     );
+
+    final totalHallFee = classes.fold<double>(
+      0,
+      (sum, item) => sum + item.hallFee,
+    );
+
+    if (totalHallFee > 0 && classes.length > 1) {
+      bytes.addAll(
+        generator.row([
+          PosColumn(text: 'Hall fee', width: 7),
+          PosColumn(
+            text: 'LKR ${totalHallFee.toStringAsFixed(2)}',
+            width: 5,
+            styles: const PosStyles(align: PosAlign.right),
+          ),
+        ]),
+      );
+    }
 
     bytes.addAll(
       generator.row([
@@ -343,7 +385,13 @@ class ReceiptClassDetail {
   final String categoryName;
   final String feeOptionName;
   final double classFee;
+
+  /// Hall fee of the class (0 = no hall fee).
+  final double hallFee;
   final String receiptNumber;
+
+  /// Class fee + hall fee.
+  double get totalFee => classFee + hallFee;
 
   const ReceiptClassDetail({
     required this.className,
@@ -352,6 +400,7 @@ class ReceiptClassDetail {
     required this.categoryName,
     required this.feeOptionName,
     required this.classFee,
+    this.hallFee = 0,
     required this.receiptNumber,
   });
 }
