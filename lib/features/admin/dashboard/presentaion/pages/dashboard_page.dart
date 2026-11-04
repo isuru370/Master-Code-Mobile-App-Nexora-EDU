@@ -6,6 +6,7 @@ import 'package:nexorait_education_app/core/enums/scan_type.dart';
 import '../../../../../core/enums/scan_student_card.dart';
 import '../../../../../core/features/app_features.dart';
 import '../../../../../core/navigation/role_router.dart';
+import '../../../../../core/navigation/staff_features.dart';
 import '../../../../../core/storage/session_storage.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/utils/printer_service.dart';
@@ -162,6 +163,7 @@ class _DashboardPageState extends State<DashboardPage> {
       if (data.branches.isNotEmpty) _branches = data.branches;
       _features = data.features;
     });
+    StaffFeatures.set(data.features);
   }
 
   /// null = all branches

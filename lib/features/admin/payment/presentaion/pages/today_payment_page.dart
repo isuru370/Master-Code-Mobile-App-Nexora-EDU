@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../core/navigation/staff_features.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/utils/app_datetime.dart';
 import '../../../../../core/utils/printer_service.dart';
 import '../../data/models/today_payments/today_payment_item_model.dart';
+import '../../data/payment_delete_api.dart';
 import '../../data/models/today_payments/today_payments_request_model.dart';
 import '../bloc/mark_payment/mark_payment_bloc.dart';
 import 'utils/payment_receipt_print.dart';
@@ -25,6 +27,10 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
   final PrinterService _printerService = PrinterService();
 
   String _reprintingId = '';
+
+  /// Admin only (server menu "payment_delete")
+  bool get _canDelete => StaffFeatures.has('payment_delete');
+  int? _deletingId;
 
   /// Payment ID based expanded state.
   final Set<int> _expandedItems = {};
@@ -1115,6 +1121,30 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                       ],
                     ),
                   ),
+
+                  if (_canDelete) ...[
+                    const SizedBox(height: 14),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: _deletingId == item.paymentId
+                            ? null
+                            : () => _deletePayment(item),
+                        icon: _deletingId == item.paymentId
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : const Icon(Icons.delete_outline_rounded),
+                        label: const Text('Delete payment'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.danger,
+                          side: const BorderSide(color: AppColors.danger),
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -1124,6 +1154,44 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
         ],
       ),
     );
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Delete Payment (Admin, with a reason)
+  |--------------------------------------------------------------------------
+  */
+
+  Future<void> _deletePayment(TodayPaymentItemModel item) async {
+    final reason = await showDialog<String>(
+      context: context,
+      builder: (_) => _DeletePaymentDialog(item: item),
+    );
+
+    if (reason == null || !mounted) return;
+
+    setState(() => _deletingId = item.paymentId);
+
+    try {
+      final message = await const PaymentDeleteApi().delete(
+        paymentId: item.paymentId,
+        reason: reason,
+      );
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message), backgroundColor: AppColors.success),
+      );
+      _expandedItems.remove(item.paymentId);
+      _loadPayments();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString()), backgroundColor: AppColors.danger),
+      );
+    } finally {
+      if (mounted) setState(() => _deletingId = null);
+    }
   }
 
   /*
@@ -1250,5 +1318,91 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
     final date = AppDateTime.parseApi(value);
 
     return date == null ? value : DateFormat('yyyy-MM-dd hh:mm a').format(date);
+  }
+}
+
+/// Asks why the payment is deleted (5 - 500 characters) and confirms.
+/// Returns the reason, or null when cancelled.
+class _DeletePaymentDialog extends StatefulWidget {
+  final TodayPaymentItemModel item;
+
+  const _DeletePaymentDialog({required this.item});
+
+  @override
+  State<_DeletePaymentDialog> createState() => _DeletePaymentDialogState();
+}
+
+class _DeletePaymentDialogState extends State<_DeletePaymentDialog> {
+  final TextEditingController _reason = TextEditingController();
+  String? _error;
+
+  @override
+  void dispose() {
+    _reason.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    final text = _reason.text.trim();
+    if (text.length < 5) {
+      setState(() => _error = 'Please write why (at least 5 characters).');
+      return;
+    }
+    Navigator.pop(context, text);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final item = widget.item;
+    final amount = NumberFormat('#,##0.00').format(item.amount);
+
+    return AlertDialog(
+      title: const Text('Delete payment?'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '${item.receiptNumber}  -  LKR $amount\n'
+              '${item.student.initialName}\n'
+              '${item.studentClass.className}',
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'The payment is removed from receipts and reports, and this class '
+              'and month can be paid again. It is kept with the reason for checking.',
+              style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _reason,
+              autofocus: true,
+              maxLength: 500,
+              minLines: 2,
+              maxLines: 4,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: InputDecoration(
+                labelText: 'Reason',
+                hintText: 'e.g. Paid for the wrong class',
+                errorText: _error,
+                border: const OutlineInputBorder(),
+              ),
+              onChanged: (_) {
+                if (_error != null) setState(() => _error = null);
+              },
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+        FilledButton(
+          style: FilledButton.styleFrom(backgroundColor: AppColors.danger),
+          onPressed: _submit,
+          child: const Text('Delete'),
+        ),
+      ],
+    );
   }
 }
