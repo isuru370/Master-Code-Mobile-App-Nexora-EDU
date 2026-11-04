@@ -49,6 +49,9 @@ class _DashboardPageState extends State<DashboardPage> {
   /// never for an old server that sends no list.
   bool get _canTeacherAdvance => _features.contains('teacher_advance');
 
+  /// Income Report: only when the server lists it (needs the new API).
+  bool get _canIncomeReport => _features.contains('income_report');
+
   bool get _hasManyBranches => _branches.length > 1;
 
   String get _branchLabel {
@@ -693,6 +696,12 @@ class _DashboardPageState extends State<DashboardPage> {
               icon: Icons.how_to_reg_rounded,
               title: 'Admission',
               onTap: () => Navigator.pushNamed(context, '/admission-payment'),
+            ),
+          if (_canIncomeReport)
+            _drawerTile(
+              icon: Icons.summarize_rounded,
+              title: 'Income Report',
+              onTap: () => Navigator.pushNamed(context, '/income-report'),
             ),
           if (_canTeacherAdvance)
             _drawerTile(
