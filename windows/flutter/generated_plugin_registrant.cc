@@ -9,6 +9,7 @@
 #include <file_selector_windows/file_selector_windows.h>
 #include <flutter_blue_plus_winrt/flutter_blue_plus_plugin.h>
 #include <flutter_thermal_printer/flutter_thermal_printer_plugin_c_api.h>
+#include <flutter_tts/flutter_tts_plugin.h>
 #include <permission_handler_windows/permission_handler_windows_plugin.h>
 #include <printing/printing_plugin.h>
 #include <share_plus/share_plus_windows_plugin_c_api.h>
@@ -22,6 +23,8 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("FlutterBluePlusPlugin"));
   FlutterThermalPrinterPluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("FlutterThermalPrinterPluginCApi"));
+  FlutterTtsPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("FlutterTtsPlugin"));
   PermissionHandlerWindowsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("PermissionHandlerWindowsPlugin"));
   PrintingPluginRegisterWithRegistrar(

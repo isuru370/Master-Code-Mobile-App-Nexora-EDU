@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter_thermal_printer/flutter_thermal_printer.dart';
 import 'package:flutter_thermal_printer/utils/printer.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PrinterService {
@@ -140,7 +142,48 @@ class PrinterService {
   // Scan printers
   // ---------------------------------------------------------------------------
 
-  Future<List<Printer>> getAvailablePrinters() async {
+  /// [askLocation] false for the silent auto reconnect (no location dialog
+  /// when the saved printer is just switched off).
+  Future<List<Printer>> getAvailablePrinters({bool askLocation = true}) async {
+    await _requestBluetoothPermissions();
+
+    var printers = await _scanPrinters();
+
+    // Android 11 and below find Bluetooth printers only with the location
+    // permission (Android 12+ do not need it: neverForLocation in the manifest).
+    if (printers.isEmpty && askLocation && Platform.isAndroid) {
+      final status = await Permission.locationWhenInUse.status;
+
+      if (!status.isGranted && !status.isPermanentlyDenied) {
+        final asked = await Permission.locationWhenInUse.request();
+
+        if (asked.isGranted) {
+          printers = await _scanPrinters();
+        }
+      }
+    }
+
+    return printers;
+  }
+
+  /// Bluetooth scan / connect permission (Android 12+). Asked every time
+  /// before a scan, so the scan never runs without it.
+  Future<void> _requestBluetoothPermissions() async {
+    if (!Platform.isAndroid) return;
+
+    final statuses = await [
+      Permission.bluetoothScan,
+      Permission.bluetoothConnect,
+    ].request();
+
+    final granted = statuses.values.every((s) => s.isGranted || s.isLimited);
+
+    if (!granted) {
+      log('Bluetooth permission not granted: $statuses');
+    }
+  }
+
+  Future<List<Printer>> _scanPrinters() async {
     final Map<String, Printer> printers = {};
 
     final completer = Completer<List<Printer>>();
@@ -246,7 +289,7 @@ class PrinterService {
 
       log('Trying auto reconnect for: $savedKey');
 
-      final printers = await getAvailablePrinters();
+      final printers = await getAvailablePrinters(askLocation: false);
 
       Printer? printer;
 
@@ -311,9 +354,6 @@ class PrinterService {
 
       await _printer.printData(_connectedPrinter!, chunk);
 
-      // BLE printer වල buffer issue avoid කරන්න.
-      // USB වලදී මේ delay එක අවශ්‍ය නැති වෙන්න පුළුවන්,
-      // නමුත් common flow එකක් විදිහට තියාගන්න පුළුවන්.
       if (_connectedPrinter!.connectionType == ConnectionType.BLE) {
         await Future.delayed(const Duration(milliseconds: 120));
       }

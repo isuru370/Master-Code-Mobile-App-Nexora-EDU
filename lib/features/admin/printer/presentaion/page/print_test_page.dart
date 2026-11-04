@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_thermal_printer/utils/printer.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../../../core/institute/institute_info.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/utils/printer_service.dart';
 
@@ -222,7 +223,7 @@ class _PrintTestPageState extends State<PrintTestPage> {
         0x61,
         0x01,
 
-        ...'MINIPALASA EDUCATION CENTRE\n'.codeUnits,
+        ...'${InstituteInfo.name.toUpperCase()}\n'.codeUnits,
 
         ...'TEST PRINT\n'.codeUnits,
 
@@ -642,9 +643,7 @@ class _PrintTestPageState extends State<PrintTestPage> {
                     borderRadius: BorderRadius.circular(12),
 
                     border: Border.all(
-                      color: isSelected
-                          ? AppColors.primary
-                          : AppColors.divider,
+                      color: isSelected ? AppColors.primary : AppColors.divider,
                       width: isSelected ? 2 : 1,
                     ),
 
