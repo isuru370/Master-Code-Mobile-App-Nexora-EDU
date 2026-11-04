@@ -118,7 +118,7 @@ class _StudentListPageState extends State<StudentListPage> {
                         ),
 
                         child: DropdownButtonFormField<String>(
-                          value: selectedGrade,
+                          initialValue: selectedGrade,
 
                           decoration: const InputDecoration(
                             border: InputBorder.none,

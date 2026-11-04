@@ -124,7 +124,7 @@ class _BranchSelectorFieldState extends State<BranchSelectorField> {
     }
 
     return DropdownButtonFormField<int>(
-      value: _selectedId,
+      initialValue: _selectedId,
       isExpanded: true,
       decoration: _decoration(),
       hint: const Text('Select branch'),

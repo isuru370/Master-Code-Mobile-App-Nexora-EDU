@@ -324,7 +324,7 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4),
                       child: DropdownButtonFormField<String>(
-                        value: _selectedReason,
+                        initialValue: _selectedReason,
                         decoration: InputDecoration(
                           labelText: 'Reason',
                           labelStyle: TextStyle(

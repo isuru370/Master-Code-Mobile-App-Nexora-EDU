@@ -835,7 +835,7 @@ class _StudentCardAssignmentPageState extends State<StudentCardAssignmentPage> {
             const SizedBox(height: 14),
 
             DropdownButtonFormField<String>(
-              value: _selectedReason,
+              initialValue: _selectedReason,
               decoration: InputDecoration(
                 labelText: 'Reason',
                 prefixIcon: const Icon(Icons.label_important_outline),

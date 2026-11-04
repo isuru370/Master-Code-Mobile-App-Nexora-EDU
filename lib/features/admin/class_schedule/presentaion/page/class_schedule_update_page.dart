@@ -575,7 +575,7 @@ class _ClassScheduleUpdatePageState extends State<ClassScheduleUpdatePage> {
             }
 
             return DropdownButtonFormField<int>(
-              value: _selectedHallId,
+              initialValue: _selectedHallId,
               hint: const Text('Select Hall'),
               isExpanded: true,
               decoration: InputDecoration(
