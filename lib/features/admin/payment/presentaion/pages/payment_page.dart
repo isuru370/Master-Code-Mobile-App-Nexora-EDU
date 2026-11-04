@@ -362,6 +362,14 @@ class _PaymentPageState extends State<PaymentPage> {
                                           color: AppColors.primary,
                                         ),
 
+                                        // Hall fee is part of the amount above
+                                        if (!payment.isFreeCard && payment.hallFee > 0)
+                                          _premiumBadge(
+                                            icon: Icons.meeting_room_rounded,
+                                            text: 'Class ${_formatAmount(payment.classFee)} + Hall ${_formatAmount(payment.hallFee)}',
+                                            color: AppColors.info,
+                                          ),
+
                                         _premiumBadge(
                                           icon: Icons.person_rounded,
                                           text: payment.teacherInitials,
