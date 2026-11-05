@@ -153,7 +153,7 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
     final value = qr.trim();
     if (value.isEmpty) return;
 
-    _processStudentCode(value);
+    _processStudentCode(value, markMethod: 'qr_mobile');
   }
 
   //---------------------------------------
@@ -172,10 +172,11 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
     // Hide keyboard
     _studentCodeFocusNode.unfocus();
 
-    _processStudentCode(code);
+    // Typed Student ID: the student did not bring the card
+    _processStudentCode(code, markMethod: 'manual_mobile');
   }
 
-  void _processStudentCode(String code) {
+  void _processStudentCode(String code, {required String markMethod}) {
     setState(() {
       _isScanning = true;
       _isMarkingAttendance = true;
@@ -183,7 +184,9 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
       _errorMessage = null;
     });
 
-    context.read<ScanAttendanceBloc>().add(ScanAttendanceRequested(code: code));
+    context.read<ScanAttendanceBloc>().add(
+          ScanAttendanceRequested(code: code, markMethod: markMethod),
+        );
   }
 
   //---------------------------------------
