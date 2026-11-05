@@ -7,6 +7,11 @@ class SummaryData {
   final int unpaidStudents;
   final int paymentPercentage;
 
+  /// Present students marked by scanning the card / by typing the ID
+  /// (null: older server).
+  final int? qrMarked;
+  final int? manualMarked;
+
   SummaryData({
     required this.totalStudents,
     required this.presentStudents,
@@ -15,6 +20,8 @@ class SummaryData {
     required this.paidStudents,
     required this.unpaidStudents,
     required this.paymentPercentage,
+    this.qrMarked,
+    this.manualMarked,
   });
 
   factory SummaryData.fromJson(Map<String, dynamic> json) {
@@ -26,6 +33,8 @@ class SummaryData {
       paidStudents: json['paid_students'] ?? 0,
       unpaidStudents: json['unpaid_students'] ?? 0,
       paymentPercentage: json['payment_percentage'] ?? 0,
+      qrMarked: json['qr_marked'] is int ? json['qr_marked'] as int : null,
+      manualMarked: json['manual_marked'] is int ? json['manual_marked'] as int : null,
     );
   }
 
@@ -38,6 +47,8 @@ class SummaryData {
       'paid_students': paidStudents,
       'unpaid_students': unpaidStudents,
       'payment_percentage': paymentPercentage,
+      'qr_marked': qrMarked,
+      'manual_marked': manualMarked,
     };
   }
 }

@@ -146,6 +146,10 @@ class StudentAttendanceCard extends StatelessWidget {
                                   color: AppColors.textSecondary,
                                 ),
                               ),
+                              if (student.attendance.markMethod != null) ...[
+                                const SizedBox(width: 8),
+                                _markMethodBadge(student.attendance.isManual),
+                              ],
                             ],
                           ),
                         ],
@@ -897,5 +901,29 @@ class StudentAttendanceCard extends StatelessWidget {
     } catch (e) {
       return dateTime;
     }
+  }
+
+  /// "Card" = scanned, "Typed" = Student ID typed (did not bring the card)
+  Widget _markMethodBadge(bool manual) {
+    final color = manual ? AppColors.warning : AppColors.success;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: .12),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(manual ? Icons.keyboard : Icons.qr_code_scanner, size: 12, color: color),
+          const SizedBox(width: 3),
+          Text(
+            manual ? 'Typed' : 'Card',
+            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: color),
+          ),
+        ],
+      ),
+    );
   }
 }

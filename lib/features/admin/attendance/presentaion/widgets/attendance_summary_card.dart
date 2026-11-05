@@ -99,6 +99,27 @@ class AttendanceSummaryCard extends StatelessWidget {
               ),
             ],
           ),
+          if (summary.qrMarked != null && summary.manualMarked != null) ...[
+            const SizedBox(height: 16),
+            Divider(color: AppColors.divider),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                _buildSummaryItem(
+                  icon: Icons.qr_code_scanner,
+                  label: 'Card scanned',
+                  value: summary.qrMarked.toString(),
+                  color: AppColors.success,
+                ),
+                _buildSummaryItem(
+                  icon: Icons.keyboard,
+                  label: 'Typed (no card)',
+                  value: summary.manualMarked.toString(),
+                  color: AppColors.warning,
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );

@@ -6,6 +6,19 @@ import '../../../../../../core/utils/printer_service.dart';
 class PaymentReceiptPrint {
   const PaymentReceiptPrint._();
 
+  /// "2026-10", "2026-10-01" or "2026-10-01T00:00:00..." -> "2026 Oct".
+  /// Anything else is printed as it is.
+  static String monthLabel(String value) {
+    final text = value.trim();
+    final match = RegExp(r'^(\d{4})-(\d{2})').firstMatch(text);
+    if (match == null) return text;
+
+    final month = int.tryParse(match.group(2)!) ?? 0;
+    if (month < 1 || month > 12) return text;
+
+    return DateFormat('yyyy MMM').format(DateTime(int.parse(match.group(1)!), month));
+  }
+
   static Future<void> printReceipt({
     required PrinterService printerService,
     required String instituteName,
@@ -98,7 +111,7 @@ class PaymentReceiptPrint {
 
     bytes.addAll(
       generator.text(
-        'Month : $paymentMonth',
+        'Month : ${monthLabel(paymentMonth)}',
       ),
     );
 
