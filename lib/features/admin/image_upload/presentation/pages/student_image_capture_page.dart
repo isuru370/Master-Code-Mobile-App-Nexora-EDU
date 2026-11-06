@@ -3,17 +3,30 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/utils/image_picker_service.dart';
+import '../../../../../core/utils/photo_recovery.dart';
 import '../../data/models/image_upload/image_upload_request_model.dart';
 import '../bloc/image_upload/image_upload_bloc.dart';
 
 class StudentImageCapturePage extends StatefulWidget {
   final bool registered;
 
-  const StudentImageCapturePage({super.key, required this.registered});
+  /// Opened again after the phone killed the app while the gallery was open
+  final bool recovered;
+
+  /// The photo picked before the app was killed (null if it was lost)
+  final String? recoveredImagePath;
+
+  const StudentImageCapturePage({
+    super.key,
+    required this.registered,
+    this.recovered = false,
+    this.recoveredImagePath,
+  });
+
+  static const String routeName = '/image_capture';
 
   @override
   State<StudentImageCapturePage> createState() =>
@@ -29,10 +42,46 @@ class _StudentImageCapturePageState extends State<StudentImageCapturePage> {
 
   bool _isUploading = false;
 
+  /// After a restart the student form that opened this page is gone, so the
+  /// Quick Image ID is shown in a dialog instead of being sent back.
+  bool get _returnsId => widget.registered && !widget.recovered;
+
   @override
   void initState() {
     super.initState();
     _imageUploadBloc = GetIt.instance<ImageUploadBloc>();
+
+    if (widget.recovered) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _restoreLostPhoto());
+    }
+  }
+
+  Future<void> _restoreLostPhoto() async {
+    final path = widget.recoveredImagePath;
+
+    if (path == null || !File(path).existsSync()) {
+      _showMessage('The phone closed the app while choosing the photo. Please choose it again.');
+      return;
+    }
+
+    _showMessage('The phone closed the app while choosing the photo. It was recovered - crop it to continue.');
+
+    try {
+      await PhotoRecovery.markPending(StudentImageCapturePage.routeName, {'registered': widget.registered});
+      final file = await _imageService.cropImage(path);
+      await PhotoRecovery.clear();
+
+      if (!mounted || file == null) return;
+      setState(() => _imageFile = file);
+    } catch (e) {
+      await PhotoRecovery.clear();
+      _showMessage('Failed to crop image: $e');
+    }
+  }
+
+  void _showMessage(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -41,9 +90,31 @@ class _StudentImageCapturePageState extends State<StudentImageCapturePage> {
     super.dispose();
   }
 
-  Future<void> _pickImage(ImageSource source) async {
+  /// Camera: inside the app (no risk of the phone killing it)
+  Future<void> _takePhoto() async {
     try {
-      final file = await _imageService.pickImage(source: source);
+      final file = await _imageService.takePhoto(context);
+
+      if (!mounted || file == null) return;
+
+      setState(() {
+        _imageFile = file;
+      });
+    } catch (e) {
+      debugPrint('Camera error: $e');
+      _showMessage('Failed to take photo: $e');
+    }
+  }
+
+  /// Gallery: another app opens, so remember this page in case the phone
+  /// kills our app meanwhile (PhotoRecovery brings it back)
+  Future<void> _pickFromGallery() async {
+    try {
+      await PhotoRecovery.markPending(StudentImageCapturePage.routeName, {'registered': widget.registered});
+
+      final file = await _imageService.pickFromGallery();
+
+      await PhotoRecovery.clear();
 
       if (!mounted) return;
 
@@ -53,6 +124,7 @@ class _StudentImageCapturePageState extends State<StudentImageCapturePage> {
         });
       }
     } catch (e) {
+      await PhotoRecovery.clear();
       debugPrint('Image picking error: $e');
 
       if (!mounted) return;
@@ -182,7 +254,7 @@ class _StudentImageCapturePageState extends State<StudentImageCapturePage> {
               final data = state.response.data;
               final quickImageId = data?.customId;
 
-              if (widget.registered) {
+              if (_returnsId) {
                 if (quickImageId != null && quickImageId.trim().isNotEmpty) {
                   Navigator.pop(context, quickImageId);
                 } else {
@@ -294,9 +366,7 @@ class _StudentImageCapturePageState extends State<StudentImageCapturePage> {
                                 OutlinedButton.icon(
                                   onPressed: _isUploading
                                       ? null
-                                      : () {
-                                          _pickImage(ImageSource.camera);
-                                        },
+                                      : _takePhoto,
                                   icon: const Icon(Icons.camera_alt_rounded),
                                   label: const Text('Camera'),
                                   style: OutlinedButton.styleFrom(
@@ -316,9 +386,7 @@ class _StudentImageCapturePageState extends State<StudentImageCapturePage> {
                                 ElevatedButton.icon(
                                   onPressed: _isUploading
                                       ? null
-                                      : () {
-                                          _pickImage(ImageSource.gallery);
-                                        },
+                                      : _pickFromGallery,
                                   icon: const Icon(Icons.photo_library_rounded),
                                   label: const Text('Gallery'),
                                   style: ElevatedButton.styleFrom(
