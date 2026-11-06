@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/theme/app_colors.dart';
 import '../../../student_grade/presentation/bloc/student_grade/student_grade_bloc.dart';
+import '../../data/datasources/temporary_card_remote_data_source.dart';
 import '../../data/models/admission_dialog_result.dart';
 import '../../data/models/students_model.dart';
 import '../bloc/students/students_bloc.dart';
@@ -31,10 +32,28 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
   bool _isLoading = false;
   int? _selectedAdmissionId;
 
+  /// The card the server will give automatically (TMP045 ...)
+  NextTemporaryCard? _nextCard;
+  bool _loadingNextCard = false;
+
   @override
   void initState() {
     super.initState();
     context.read<StudentGradeBloc>().add(GetStudentGradesEvent());
+    _loadNextCard();
+  }
+
+  Future<void> _loadNextCard() async {
+    setState(() => _loadingNextCard = true);
+
+    final next = await TemporaryCardRemoteDataSource().next();
+
+    if (!mounted) return;
+
+    setState(() {
+      _nextCard = next;
+      _loadingNextCard = false;
+    });
   }
 
   @override
@@ -116,7 +135,10 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
 
     final student = StudentModel(
       branchId: _selectedBranchId,
-      temporaryQrCode: 'TMP${_temporaryQrCodeController.text.trim()}',
+      // Empty = the server gives the next issued card automatically
+      temporaryQrCode: _temporaryQrCodeController.text.trim().isEmpty
+          ? null
+          : 'TMP${_temporaryQrCodeController.text.trim()}',
       quickImageId: (quickImageText.isEmpty) ? null : quickImageText,
       initialName: _lnameController.text.trim(),
       gender: _selectedGender,
@@ -141,39 +163,29 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
             _isLoading = false;
           });
 
-          final payment = state.response.admissionPayment;
+          final response = state.response;
+          final payment = response.admissionPayment;
 
-          if (payment != null) {
-            // Prints automatically; the form is cleared after "Done"
-            showAdmissionReceiptDialog(
-              context: context,
-              response: state.response,
-            ).then((_) {
-              if (!mounted) return;
+          // Receipt first (prints automatically), then the Custom ID and
+          // the card to give, then a fresh form
+          final receipt = payment != null
+              ? showAdmissionReceiptDialog(context: context, response: response)
+              : Future<void>.value();
 
-              _clearForm();
+          receipt.then((_) async {
+            if (!mounted) return;
 
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  backgroundColor: AppColors.success,
-                  content: Text(
-                    'Student created successfully (ID: ${state.response.student.customId})',
-                  ),
-                ),
-              );
-            });
-          } else {
-            _clearForm();
-
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: AppColors.success,
-                content: Text(
-                  'Student created successfully (ID: ${state.response.student.customId})',
-                ),
-              ),
+            await _showRegisteredDialog(
+              customId: response.student.customId ?? '-',
+              card: response.student.temporaryQrCode ?? '-',
+              name: response.student.initialName,
             );
-          }
+
+            if (!mounted) return;
+
+            _clearForm();
+            _loadNextCard();
+          });
         } else if (state is StudentsError) {
           setState(() {
             _isLoading = false;
@@ -274,11 +286,36 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
 
                           const SizedBox(height: 18),
 
+                          _buildNextCardBox(),
+
+                          const SizedBox(height: 12),
+
                           _buildTextField(
                             controller: _temporaryQrCodeController,
-                            label: 'Temporary QR Code',
+                            label: 'Different card (optional)',
                             icon: Icons.qr_code_scanner_rounded,
                             prefixText: 'TMP',
+                            keyboardType: TextInputType.number,
+                            requiredField: false,
+                            customValidator: (value) {
+                              final text = value?.trim() ?? '';
+                              if (text.isEmpty) return null;
+                              if (!RegExp(r'^\d+$').hasMatch(text)) {
+                                return 'Numbers only, e.g. 045';
+                              }
+                              return null;
+                            },
+                          ),
+
+                          const SizedBox(height: 4),
+
+                          const Text(
+                            'Leave empty: the next card is given automatically. '
+                            'Type a number only if you give a different card.',
+                            style: TextStyle(
+                              color: AppColors.textSecondary,
+                              fontSize: 12,
+                            ),
                           ),
 
                           const SizedBox(height: 18),
@@ -559,6 +596,148 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
         borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+    );
+  }
+
+  Widget _buildNextCardBox() {
+    final next = _nextCard?.next;
+    final noneLeft = _nextCard != null && next == null;
+
+    final Color color = noneLeft ? AppColors.danger : AppColors.success;
+
+    String title;
+    String subtitle;
+
+    if (_loadingNextCard) {
+      title = 'Checking the next card...';
+      subtitle = '';
+    } else if (_nextCard == null) {
+      title = 'Next card: automatic';
+      subtitle = 'The next issued card is given when you register.';
+    } else if (noneLeft) {
+      title = 'No issued cards left';
+      subtitle = _nextCard!.message ?? 'Issue more temporary cards on the web first.';
+    } else {
+      title = 'Next card: $next';
+      subtitle = '${_nextCard!.issuedLeft} issued card(s) left';
+    }
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 12, 6, 12),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: .08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: .35)),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            noneLeft ? Icons.warning_amber_rounded : Icons.badge_rounded,
+            color: color,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                if (subtitle.isNotEmpty) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          IconButton(
+            tooltip: 'Refresh',
+            onPressed: _loadingNextCard ? null : _loadNextCard,
+            icon: const Icon(Icons.refresh_rounded),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// After registering: Custom ID + the card to give, in big letters
+  Future<void> _showRegisteredDialog({
+    required String customId,
+    required String card,
+    required String name,
+  }) {
+    Widget big(String label, String value, Color color) {
+      return Column(
+        children: [
+          Text(
+            label,
+            style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+          ),
+          const SizedBox(height: 4),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              value,
+              style: TextStyle(
+                color: color,
+                fontSize: 34,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1,
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.check_circle_rounded, color: AppColors.success),
+            SizedBox(width: 10),
+            Expanded(child: Text('Student Registered')),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (name.isNotEmpty) ...[
+              Text(
+                name,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+              ),
+              const SizedBox(height: 14),
+            ],
+            big('Custom ID', customId, AppColors.dark),
+            const SizedBox(height: 16),
+            big('Give this card', card, AppColors.primary),
+          ],
+        ),
+        actions: [
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Done'),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
