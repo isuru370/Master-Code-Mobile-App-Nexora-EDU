@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../../../../core/utils/image_picker_service.dart';
 import '../../data/models/image_upload/image_upload_request_model.dart';
@@ -33,14 +32,14 @@ class _CameraScreenPageState extends State<CameraScreenPage> {
   }
 
   Future<void> _captureImage() async {
-    final image = await _imagePickerService.pickImage(
-      source: ImageSource.camera,
-    );
+    // In-app camera: the app stays open, so low-RAM phones do not kill it
+    final image = await _imagePickerService.takePhoto(context);
 
     if (!mounted) return;
 
     if (image == null) {
-      Navigator.pop(context);
+      // Cancelled the first photo -> back; cancelled a retake -> keep the old one
+      if (_image == null) Navigator.pop(context);
       return;
     }
 

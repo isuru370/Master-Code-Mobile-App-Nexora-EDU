@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nexorait_education_app/core/utils/photo_recovery.dart';
 import 'package:nexorait_education_app/features/admin/class_schedule/presentaion/page/ongoing_class_page.dart';
 import 'package:nexorait_education_app/features/admin/student_classes/presentaion/pages/create_student_classes.dart';
 import 'package:nexorait_education_app/features/admin/students/presentaion/pages/create_student_page.dart';
@@ -216,12 +217,12 @@ class AppRoutes {
         );
 
       case '/image_capture':
+        final args = (settings.arguments as Map<String, dynamic>?) ?? const {};
         return MaterialPageRoute(
           builder: (_) => StudentImageCapturePage(
-            registered:
-                (settings.arguments as Map<String, dynamic>)['registered']
-                    as bool? ??
-                false,
+            registered: args['registered'] as bool? ?? false,
+            recovered: args[PhotoRecovery.recoveredArg] as bool? ?? false,
+            recoveredImagePath: args[PhotoRecovery.recoveredPathArg] as String?,
           ),
         );
       case '/payment-scan':

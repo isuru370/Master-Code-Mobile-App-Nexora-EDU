@@ -9,6 +9,7 @@ import '../../../../../core/navigation/role_router.dart';
 import '../../../../../core/navigation/staff_features.dart';
 import '../../../../../core/storage/session_storage.dart';
 import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/utils/photo_recovery.dart';
 import '../../../../../core/utils/printer_service.dart';
 import '../../../../../core/widgets/nx_ui.dart';
 import '../../../../../core/widgets/privacy_policy_link.dart';
@@ -91,6 +92,12 @@ class _DashboardPageState extends State<DashboardPage> {
       if (!mounted) return;
 
       context.read<MobileDashboardBloc>().add(GetMobileDashboardEvent());
+
+      // The phone killed the app while a photo was being chosen ->
+      // open the photo page again with that photo
+      await PhotoRecovery.resumeIfNeeded(context);
+
+      if (!mounted) return;
 
       await _checkPrinterStatus();
     });
