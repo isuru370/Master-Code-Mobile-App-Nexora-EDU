@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../data/datasources/card_fee_remote_data_source.dart';
 import '../../data/model/re_assign/re_assign_request_model.dart';
 import '../bloc/student_card/student_card_bloc.dart';
 import '../../../../../core/theme/app_colors.dart';
+import '../../../students/presentaion/widgets/admission_receipt_dialog.dart';
 
 class ReAssignCardPage extends StatefulWidget {
   final String oldQrCode;
@@ -47,6 +49,37 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
 
   String _selectedReason = 'damaged';
 
+  // Card fee (Admissions items ticked "Use for card replacement")
+  List<CardFeeItem> _fees = const [];
+  bool _loadingFees = true;
+  int? _selectedFeeId;
+  String _paymentMethod = 'cash'; // Cash is chosen by default
+
+  static const Map<String, String> _methods = {
+    'cash': 'Cash',
+    'bank_transfer': 'Bank transfer',
+    'card': 'Card',
+    'online': 'Online',
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFees();
+  }
+
+  Future<void> _loadFees() async {
+    final fees = await CardFeeRemoteDataSource().fetch();
+    if (!mounted) return;
+
+    setState(() {
+      _fees = fees;
+      _loadingFees = false;
+      // the first (cheapest) item is chosen; staff can change it
+      _selectedFeeId = fees.isNotEmpty ? fees.first.id : null;
+    });
+  }
+
   @override
   void dispose() {
     _newQrController.dispose();
@@ -67,6 +100,11 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
       return;
     }
 
+    if (_fees.isNotEmpty && _selectedFeeId == null) {
+      _showError('Please choose the card fee.');
+      return;
+    }
+
     final remarks = _remarksController.text.trim();
 
     context.read<StudentCardBloc>().add(
@@ -76,6 +114,8 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
           newQrCode: newQrCode,
           reason: _selectedReason,
           remarks: remarks.isEmpty ? null : remarks,
+          admissionId: _selectedFeeId,
+          paymentMethod: _paymentMethod,
         ),
       ),
     );
@@ -87,6 +127,21 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
         content: Text(message),
         backgroundColor: AppColors.danger,
         behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  Widget _boxed(Widget child) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
+        boxShadow: AppColors.softShadow,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: child,
       ),
     );
   }
@@ -113,7 +168,30 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
             ),
           );
 
-          Navigator.pop(context);
+          final payment = state.response.data?.payment;
+
+          if (payment == null) {
+            Navigator.pop(context);
+            return;
+          }
+
+          // Card fee receipt (prints automatically), then back
+          showReceiptDialog(
+            context: context,
+            receipt: ReceiptDialogData(
+              title: 'Card Fee Receipt',
+              itemLabel: 'For',
+              receiptNumber: payment.receiptNumber,
+              studentName: payment.studentName,
+              studentId: payment.studentCustomId,
+              itemName: payment.item,
+              amount: payment.amount,
+              paymentMethod: payment.paymentMethod,
+              paidAt: payment.paidAt,
+            ),
+          ).then((_) {
+            if (context.mounted) Navigator.pop(context);
+          });
         }
 
         if (state is StudentCardError) {
@@ -379,6 +457,78 @@ class _ReAssignCardPageState extends State<ReAssignCardPage> {
                       ),
                     ),
                   ),
+
+                  const SizedBox(height: 20),
+
+                  // ---------------------------------------------------------
+                  // CARD FEE
+                  // ---------------------------------------------------------
+                  const Text(
+                    'Card Fee',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  if (_loadingFees)
+                    const LinearProgressIndicator(minHeight: 3)
+                  else if (_fees.isEmpty)
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: AppColors.warningLight,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Text(
+                        'No card fee is set up. Add one on the web: Admissions > New, '
+                        'tick "Use for card replacement" (Rs. 0 for free). '
+                        'The card will be re-assigned without a fee.',
+                        style: TextStyle(fontSize: 13, height: 1.4),
+                      ),
+                    )
+                  else ...[
+                    _boxed(
+                      DropdownButtonFormField<int>(
+                        initialValue: _selectedFeeId,
+                        isExpanded: true,
+                        decoration: const InputDecoration(
+                          labelText: 'Fee',
+                          prefixIcon: Icon(Icons.receipt_long_rounded, color: AppColors.primary),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.all(16),
+                        ),
+                        items: _fees
+                            .map((fee) => DropdownMenuItem<int>(
+                                  value: fee.id,
+                                  child: Text(fee.label, overflow: TextOverflow.ellipsis),
+                                ))
+                            .toList(),
+                        onChanged: isLoading ? null : (value) => setState(() => _selectedFeeId = value),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _boxed(
+                      DropdownButtonFormField<String>(
+                        initialValue: _paymentMethod,
+                        decoration: const InputDecoration(
+                          labelText: 'Payment method',
+                          prefixIcon: Icon(Icons.payments_rounded, color: AppColors.primary),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.all(16),
+                        ),
+                        items: _methods.entries
+                            .map((entry) => DropdownMenuItem<String>(
+                                  value: entry.key,
+                                  child: Text(entry.value),
+                                ))
+                            .toList(),
+                        onChanged: isLoading
+                            ? null
+                            : (value) => setState(() => _paymentMethod = value ?? 'cash'),
+                      ),
+                    ),
+                  ],
 
                   const SizedBox(height: 20),
 
