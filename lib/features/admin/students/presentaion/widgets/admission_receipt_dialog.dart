@@ -16,22 +16,72 @@ Future<void> showAdmissionReceiptDialog({
   required CreateStudentResponseModel response,
   String doneLabel = 'Done',
 }) {
+  final payment = response.admissionPayment!;
+
+  return showReceiptDialog(
+    context: context,
+    doneLabel: doneLabel,
+    receipt: ReceiptDialogData(
+      title: 'Admission Receipt',
+      itemLabel: 'Admission',
+      receiptNumber: payment.receiptNumber,
+      studentName: response.student.initialName,
+      studentId: response.student.customId ?? '-',
+      itemName: payment.admissionName,
+      amount: double.tryParse(payment.amount) ?? 0,
+      paymentMethod: payment.paymentMethod,
+      paidAt: payment.paidAt,
+    ),
+  );
+}
+
+/// What the receipt dialog shows and prints (admission, card fee ...)
+class ReceiptDialogData {
+  final String title;
+  final String itemLabel;
+  final String receiptNumber;
+  final String studentName;
+  final String studentId;
+  final String itemName;
+  final double amount;
+  final String paymentMethod;
+  final String paidAt;
+
+  const ReceiptDialogData({
+    required this.title,
+    required this.itemLabel,
+    required this.receiptNumber,
+    required this.studentName,
+    required this.studentId,
+    required this.itemName,
+    required this.amount,
+    required this.paymentMethod,
+    required this.paidAt,
+  });
+}
+
+/// Receipt dialog that prints automatically (any admission-type payment)
+Future<void> showReceiptDialog({
+  required BuildContext context,
+  required ReceiptDialogData receipt,
+  String doneLabel = 'Done',
+}) {
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
     builder: (_) =>
-        _AdmissionReceiptDialog(response: response, doneLabel: doneLabel),
+        _AdmissionReceiptDialog(receipt: receipt, doneLabel: doneLabel),
   );
 }
 
 enum _PrintStatus { printing, printed, failed }
 
 class _AdmissionReceiptDialog extends StatefulWidget {
-  final CreateStudentResponseModel response;
+  final ReceiptDialogData receipt;
   final String doneLabel;
 
   const _AdmissionReceiptDialog({
-    required this.response,
+    required this.receipt,
     required this.doneLabel,
   });
 
@@ -46,7 +96,7 @@ class _AdmissionReceiptDialogState extends State<_AdmissionReceiptDialog> {
   _PrintStatus _status = _PrintStatus.printing;
   String? _error;
 
-  AdmissionPaymentPrintModel get _payment => widget.response.admissionPayment!;
+  ReceiptDialogData get _receipt => widget.receipt;
 
   @override
   void initState() {
@@ -69,18 +119,16 @@ class _AdmissionReceiptDialogState extends State<_AdmissionReceiptDialog> {
         }
       }
 
-      final student = widget.response.student;
-
       await AdmissionReceiptPrint.printReceipt(
         printerService: _printerService,
         instituteName: AdmissionReceiptPrint.defaultInstituteName,
-        receiptNumber: _payment.receiptNumber,
-        studentName: student.initialName,
-        studentId: student.customId ?? '-',
-        admissionName: _payment.admissionName,
-        amount: double.tryParse(_payment.amount) ?? 0,
-        paymentMethod: _payment.paymentMethod,
-        paidAt: _payment.paidAt,
+        receiptNumber: _receipt.receiptNumber,
+        studentName: _receipt.studentName,
+        studentId: _receipt.studentId,
+        admissionName: _receipt.itemName,
+        amount: _receipt.amount,
+        paymentMethod: _receipt.paymentMethod,
+        paidAt: _receipt.paidAt,
       );
 
       if (!mounted) return;
@@ -105,27 +153,25 @@ class _AdmissionReceiptDialogState extends State<_AdmissionReceiptDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final student = widget.response.student;
-
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       title: Row(
         children: [
           const Icon(Icons.receipt_long_rounded, color: AppColors.success),
           const SizedBox(width: 10),
-          const Expanded(child: Text('Admission Receipt')),
+          Expanded(child: Text(_receipt.title)),
         ],
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _line('Receipt No', _payment.receiptNumber),
-          _line('Student', '${student.initialName} (${student.customId ?? '-'})'),
-          _line('Admission', _payment.admissionName),
-          _line('Amount', 'Rs. ${_payment.amount}'),
-          _line('Method', _payment.paymentMethod),
-          _line('Paid At', _payment.paidAt),
+          _line('Receipt No', _receipt.receiptNumber),
+          _line('Student', '${_receipt.studentName} (${_receipt.studentId})'),
+          _line(_receipt.itemLabel, _receipt.itemName),
+          _line('Amount', 'Rs. ${_receipt.amount.toStringAsFixed(2)}'),
+          _line('Method', _receipt.paymentMethod),
+          _line('Paid At', _receipt.paidAt),
           const SizedBox(height: 14),
           _statusBox(),
         ],
