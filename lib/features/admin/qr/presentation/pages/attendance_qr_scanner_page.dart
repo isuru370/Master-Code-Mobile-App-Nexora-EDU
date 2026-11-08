@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -989,10 +990,10 @@ class _AttendanceQrScannerPageState extends State<AttendanceQrScannerPage>
     final monthPayment = _monthPayment(data);
     final isPaid = monthPayment.isPaid;
 
-    // Month of the last payment (e.g. 2026-10), or this month if none
+    // Month of the last payment ("2026 Oct"), or this month if none
     final paymentMonthLabel = payment != null && payment.paymentMonth.isNotEmpty
-        ? payment.paymentMonth
-        : AppDateTime.getShortMonthName(DateTime.now());
+        ? AppDateTime.yearMonthLabel(payment.paymentMonth)
+        : DateFormat('yyyy MMM').format(DateTime.now());
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

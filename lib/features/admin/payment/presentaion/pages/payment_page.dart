@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 
+import '../../../../../core/utils/app_datetime.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/utils/printer_service.dart';
 import '../../../qr/data/model/scan_payment_new/scan_payment_response_model.dart';
@@ -1157,13 +1158,14 @@ class _PaymentPageState extends State<PaymentPage> {
         : attendance;
   }
 
+  /// Latest payment: Amount / Month / Method, big enough to read at a glance
   Widget _paymentInfoItem({
     required String title,
     required String value,
     required IconData icon,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -1174,15 +1176,15 @@ class _PaymentPageState extends State<PaymentPage> {
         children: [
           Row(
             children: [
-              Icon(icon, size: 13, color: AppColors.primary),
+              Icon(icon, size: 15, color: AppColors.primary),
               const SizedBox(width: 4),
               Expanded(
                 child: Text(
                   title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 9,
+                  style: const TextStyle(
+                    fontSize: 11,
                     color: AppColors.textSecondary,
                     fontWeight: FontWeight.w600,
                   ),
@@ -1191,13 +1193,17 @@ class _PaymentPageState extends State<PaymentPage> {
             ],
           ),
 
-          const SizedBox(height: 3),
+          const SizedBox(height: 4),
 
-          Text(
-            value,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
+          // shrinks only when it would not fit the column
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              value,
+              maxLines: 1,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+            ),
           ),
         ],
       ),
@@ -1425,19 +1431,8 @@ String _formatAmount(dynamic value) {
   return amount.toStringAsFixed(2);
 }
 
-String _formatPaymentMonth(String value) {
-  try {
-    final date = DateTime.parse(value);
-
-    return '${date.year} / ${date.month.toString().padLeft(2, '0')}';
-  } catch (e) {
-    if (value.length >= 7) {
-      return '${value.substring(0, 4)} / ${value.substring(5, 7)}';
-    }
-
-    return value;
-  }
-}
+/// "2026-10" -> "2026 Oct"
+String _formatPaymentMonth(String value) => AppDateTime.yearMonthLabel(value);
 
 String _getCurrentMonthPaymentStatus(dynamic payment) {
   final lastPayment = payment.lastPayment;

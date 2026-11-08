@@ -11,6 +11,8 @@ class TodayPaymentsResponseModel {
 
   final int total;
 
+  final int lastPage;
+
   const TodayPaymentsResponseModel({
     required this.success,
     required this.data,
@@ -18,7 +20,21 @@ class TodayPaymentsResponseModel {
     required this.date,
     required this.search,
     required this.total,
+    this.lastPage = 1,
   });
+
+  /// The same response with more rows (the next pages)
+  TodayPaymentsResponseModel withMoreData(List<TodayPaymentItemModel> more) {
+    return TodayPaymentsResponseModel(
+      success: success,
+      data: [...data, ...more],
+      summary: summary,
+      date: date,
+      search: search,
+      total: total,
+      lastPage: lastPage,
+    );
+  }
 
   factory TodayPaymentsResponseModel.fromJson(
     Map<String, dynamic> json,
@@ -49,6 +65,11 @@ class TodayPaymentsResponseModel {
             meta['total']?.toString() ?? '0',
           ) ??
           0,
+
+      lastPage: int.tryParse(
+            meta['last_page']?.toString() ?? '1',
+          ) ??
+          1,
     );
   }
 }
