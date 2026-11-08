@@ -3,8 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 
-import '../../../../../core/utils/app_datetime.dart';
+import '../../../../../core/institute/institute_info.dart';
 import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/utils/app_datetime.dart';
 import '../../../../../core/utils/printer_service.dart';
 import '../../../qr/data/model/scan_payment_new/scan_payment_response_model.dart';
 import '../../data/models/mark_payment_item_model.dart';
@@ -13,7 +14,6 @@ import '../../data/models/mark_payment_response_model.dart';
 import '../../data/payment_month_info.dart';
 import '../bloc/mark_payment/mark_payment_bloc.dart';
 import 'utils/payment_receipt_print.dart';
-import '../../../../../core/institute/institute_info.dart';
 
 class PaymentPage extends StatefulWidget {
   final String? markMethod;
@@ -100,7 +100,10 @@ class _PaymentPageState extends State<PaymentPage> {
           });
 
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(backgroundColor: AppColors.danger, content: Text(state.message)),
+            SnackBar(
+              backgroundColor: AppColors.danger,
+              content: Text(state.message),
+            ),
           );
         }
       },
@@ -364,10 +367,12 @@ class _PaymentPageState extends State<PaymentPage> {
                                         ),
 
                                         // Hall fee is part of the amount above
-                                        if (!payment.isFreeCard && payment.hallFee > 0)
+                                        if (!payment.isFreeCard &&
+                                            payment.hallFee > 0)
                                           _premiumBadge(
                                             icon: Icons.meeting_room_rounded,
-                                            text: 'Class ${_formatAmount(payment.classFee)} + Hall ${_formatAmount(payment.hallFee)}',
+                                            text:
+                                                'Class ${_formatAmount(payment.classFee)} + Hall ${_formatAmount(payment.hallFee)}',
                                             color: AppColors.info,
                                           ),
 
@@ -415,7 +420,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
                                                 const Expanded(
                                                   child: Text(
-                                                    'Payment Status',
+                                                    'Last Payment Month',
                                                     style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.w700,
@@ -472,20 +477,6 @@ class _PaymentPageState extends State<PaymentPage> {
                                                   ),
 
                                                   const SizedBox(width: 8),
-
-                                                  // METHOD
-                                                  Expanded(
-                                                    child: _paymentInfoItem(
-                                                      title: 'Method',
-                                                      value:
-                                                          latestPayment
-                                                              .paymentMethod
-                                                              ?.toUpperCase() ??
-                                                          '-',
-                                                      icon: Icons
-                                                          .account_balance_wallet_rounded,
-                                                    ),
-                                                  ),
                                                 ],
                                               ),
                                             ] else ...[
@@ -494,7 +485,8 @@ class _PaymentPageState extends State<PaymentPage> {
                                               Text(
                                                 'No payments made yet.',
                                                 style: TextStyle(
-                                                  color: AppColors.textSecondary,
+                                                  color:
+                                                      AppColors.textSecondary,
                                                   fontSize: 12,
                                                 ),
                                               ),
@@ -643,7 +635,8 @@ class _PaymentPageState extends State<PaymentPage> {
     var loadingInfo = false;
 
     double amountOf(int enrollmentId) =>
-        double.tryParse(amountControllers[enrollmentId]?.text.trim() ?? '') ?? 0;
+        double.tryParse(amountControllers[enrollmentId]?.text.trim() ?? '') ??
+        0;
 
     Future<void> loadInfos(StateSetter setDialogState) async {
       final month = DateFormat('yyyy-MM').format(tempSelectedDate);
@@ -660,7 +653,8 @@ class _PaymentPageState extends State<PaymentPage> {
       );
 
       // Month changed again while loading, or the dialog was closed
-      if (!dialogOpen || month != DateFormat('yyyy-MM').format(tempSelectedDate)) {
+      if (!dialogOpen ||
+          month != DateFormat('yyyy-MM').format(tempSelectedDate)) {
         return;
       }
 
@@ -674,7 +668,9 @@ class _PaymentPageState extends State<PaymentPage> {
           giveTute[id] = false;
 
           // The student's own fee option first; the cashier can pick another
-          final option = info != null && info.feeOptionEnabled ? info.studentOption : null;
+          final option = info != null && info.feeOptionEnabled
+              ? info.studentOption
+              : null;
           chosenOption[id] = option?.id;
 
           // No attendance this month (institute rule): no payment by default
@@ -705,431 +701,345 @@ class _PaymentPageState extends State<PaymentPage> {
               (sum, payment) => sum + amountOf(payment.enrollmentId as int),
             );
 
+            Future<void> pickMonth() async {
+              final picked = await showMonthYearPicker(
+                context: dialogContext,
+                initialDate: tempSelectedDate,
+                firstDate: DateTime.now().subtract(
+                  const Duration(days: 365 * 5),
+                ),
+                lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
+              );
+
+              if (picked != null) {
+                setDialogState(() {
+                  tempSelectedDate = picked;
+                });
+                loadInfos(setDialogState);
+              }
+            }
+
             return AlertDialog(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
+              insetPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 24,
+              ),
               titlePadding: EdgeInsets.zero,
-              contentPadding: const EdgeInsets.fromLTRB(20, 16, 20, 10),
-              actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              contentPadding: const EdgeInsets.fromLTRB(14, 12, 14, 4),
+              actionsPadding: const EdgeInsets.fromLTRB(14, 8, 14, 14),
 
+              // ============================================================
+              // HEADER: class count + payment month (tap to change)
+              // ============================================================
               title: Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.fromLTRB(14, 10, 10, 10),
                 decoration: BoxDecoration(
                   gradient: AppColors.primaryGradient,
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(12),
                   ),
                 ),
-                child: const Text(
-                  'Confirm Payment',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
-
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
                   children: [
-                    // ========================================================
-                    // SELECTED COUNT
-                    // ========================================================
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      margin: const EdgeInsets.only(bottom: 12),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.school,
-                            size: 20,
-                            color: AppColors.primary,
-                          ),
-
-                          const SizedBox(width: 8),
-
-                          Text(
-                            '${selectedPayments.length} class(es) selected',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                        ],
+                    Expanded(
+                      child: Text(
+                        'Pay ${selectedPayments.length} class${selectedPayments.length == 1 ? '' : 'es'}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                     ),
-
-                    // ========================================================
-                    // PAYMENT MONTH
-                    // ========================================================
-                    InkWell(
-                      onTap: () async {
-                        final picked = await showMonthYearPicker(
-                          context: dialogContext,
-                          initialDate: tempSelectedDate,
-                          firstDate: DateTime.now().subtract(
-                            const Duration(days: 365 * 5),
-                          ),
-                          lastDate: DateTime.now().add(
-                            const Duration(days: 365 * 5),
-                          ),
-                        );
-
-                        if (picked != null) {
-                          setDialogState(() {
-                            tempSelectedDate = picked;
-                          });
-                          loadInfos(setDialogState);
-                        }
-                      },
-                      child: InputDecorator(
-                        decoration: InputDecoration(
-                          labelText: 'Payment Month',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              DateFormat('yyyy-MM').format(tempSelectedDate),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
+                    Material(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(999),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(999),
+                        onTap: pickMonth,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(12, 6, 6, 6),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.calendar_month_rounded,
+                                size: 16,
+                                color: AppColors.primary,
                               ),
-                            ),
-
-                            const Icon(
-                              Icons.arrow_drop_down,
-                              color: AppColors.textSecondary,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    // ========================================================
-                    // INFO
-                    // ========================================================
-                    if (selectedPayments.length == 1)
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryLight,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: AppColors.primaryLight),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.info_outline,
-                              color: AppColors.primary,
-                              size: 18,
-                            ),
-
-                            const SizedBox(width: 8),
-
-                            Expanded(
-                              child: Text(
-                                'Default month is based on last payment date. You can change it if needed.',
-                                style: TextStyle(
-                                  fontSize: 12,
+                              const SizedBox(width: 6),
+                              Text(
+                                DateFormat('yyyy MMM').format(tempSelectedDate),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w800,
                                   color: AppColors.primary,
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      )
-                    else
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: AppColors.warningLight,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: AppColors.warningLight),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.info_outline,
-                              color: AppColors.warningText,
-                              size: 18,
-                            ),
-
-                            const SizedBox(width: 8),
-
-                            Expanded(
-                              child: Text(
-                                'Multiple classes selected. Default month is current month. You can change it if needed.',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: AppColors.warningText,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                    const SizedBox(height: 12),
-
-                    // ========================================================
-                    // SELECTED CLASSES
-                    // ========================================================
-                    const Text(
-                      'Selected Classes:',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13,
-                      ),
-                    ),
-
-                    const SizedBox(height: 6),
-
-                    if (loadingInfo)
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 6),
-                        child: LinearProgressIndicator(minHeight: 2),
-                      ),
-
-                    ...selectedPayments.map((payment) {
-                      final id = payment.enrollmentId as int;
-                      final info = infos[id];
-                      final editable = info?.customAmount ?? false;
-                      final options = info != null && info.feeOptionEnabled
-                          ? info.feeOptions
-                          : const <PaymentFeeOption>[];
-
-                      return Container(
-                        margin: const EdgeInsets.symmetric(vertical: 4),
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: AppColors.border),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    '${payment.className} - ${payment.subject}',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      color: AppColors.darkLight,
-                                    ),
-                                  ),
-                                ),
-                                if (!editable)
-                                  Text(
-                                    'LKR ${_formatAmount(amountOf(id))}',
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                              ],
-                            ),
-
-                            if (info != null) ...[
-                              const SizedBox(height: 4),
-                              Text(
-                                _monthInfoLine(info),
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600,
-                                  color: info.noAttendance
-                                      ? AppColors.textSecondary
-                                      : AppColors.primary,
-                                ),
+                              const Icon(
+                                Icons.arrow_drop_down,
+                                color: AppColors.primary,
                               ),
                             ],
-
-                            if (info != null && info.alreadyPaid) ...[
-                              const SizedBox(height: 4),
-                              Text(
-                                'Already paid for ${info.monthName}'
-                                '${info.paidReceipt != null ? ' (${info.paidReceipt})' : ''}',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.dangerText,
-                                ),
-                              ),
-                            ],
-
-                            if (options.isNotEmpty) ...[
-                              const SizedBox(height: 8),
-                              DropdownButtonFormField<int>(
-                                // new month = new list and selection
-                                key: ValueKey('fee-option-$id-${info!.monthName}'),
-                                initialValue: chosenOption[id],
-                                isExpanded: true,
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  labelText: 'Fee option for ${info.monthName}',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                items: options
-                                    .map(
-                                      (option) => DropdownMenuItem<int>(
-                                        value: option.id,
-                                        child: Text(
-                                          '${option.label} - LKR ${_formatAmount(option.amount)}'
-                                          '${option.isStudentOption ? ' (student)' : ''}',
-                                          style: const TextStyle(fontSize: 12),
-                                        ),
-                                      ),
-                                    )
-                                    .toList(),
-                                onChanged: (value) => setDialogState(() {
-                                  chosenOption[id] = value;
-                                  final picked = options.where((o) => o.id == value);
-                                  if (picked.isNotEmpty) {
-                                    amountControllers[id]!.text =
-                                        _formatAmount(picked.first.amount);
-                                  }
-                                }),
-                              ),
-                            ],
-
-                            if (editable) ...[
-                              const SizedBox(height: 8),
-                              TextField(
-                                controller: amountControllers[id],
-                                keyboardType: const TextInputType.numberWithOptions(
-                                  decimal: true,
-                                ),
-                                onChanged: (_) => setDialogState(() {}),
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  labelText: 'Amount (LKR)',
-                                  helperText: info!.noAttendance
-                                      ? 'No attendance this month. Leave 0 to skip.'
-                                      : 'Fee LKR ${_formatAmount(info.grossFee)}. Less is saved as a discount.',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                              ),
-                            ],
-
-                            if (info != null && info.tuteEnabled)
-                              CheckboxListTile(
-                                dense: true,
-                                contentPadding: EdgeInsets.zero,
-                                controlAffinity: ListTileControlAffinity.leading,
-                                value: info.tuteIssued ? true : (giveTute[id] ?? false),
-                                onChanged: info.tuteIssued
-                                    ? null
-                                    : (value) => setDialogState(
-                                          () => giveTute[id] = value ?? false,
-                                        ),
-                                title: Text(
-                                  info.tuteIssued
-                                      ? 'Tute already given${info.tuteIssuedAt != null ? ' (${info.tuteIssuedAt})' : ''}'
-                                      : 'Give ${info.monthName} tute',
-                                  style: const TextStyle(fontSize: 12),
-                                ),
-                              ),
-                          ],
-                        ),
-                      );
-                    }),
-
-                    const SizedBox(height: 12),
-
-                    // ========================================================
-                    // TOTAL
-                    // ========================================================
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppColors.surfaceSecondary,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        children: [
-                          const Expanded(
-                            child: Text(
-                              'Total',
-                              style: TextStyle(fontWeight: FontWeight.w700),
-                            ),
                           ),
-
-                          Text(
-                            'LKR ${_formatAmount(total)}',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w800,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
 
+              content: SizedBox(
+                width: double.maxFinite,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (loadingInfo)
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 6),
+                          child: LinearProgressIndicator(minHeight: 2),
+                        ),
+
+                      ...selectedPayments.map((payment) {
+                        final id = payment.enrollmentId as int;
+                        final info = infos[id];
+                        final editable = info?.customAmount ?? false;
+                        final options = info != null && info.feeOptionEnabled
+                            ? info.feeOptions
+                            : const <PaymentFeeOption>[];
+
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 8),
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: info != null && info.alreadyPaid
+                                  ? AppColors.danger
+                                  : AppColors.border,
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Class name + amount
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      payment.className,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w800,
+                                        color: AppColors.dark,
+                                      ),
+                                    ),
+                                  ),
+                                  if (!editable)
+                                    Text(
+                                      'LKR ${_formatAmount(amountOf(id))}',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                ],
+                              ),
+
+                              // Attendance + already paid, in one line
+                              if (info != null) ...[
+                                const SizedBox(height: 6),
+                                Wrap(
+                                  spacing: 6,
+                                  runSpacing: 4,
+                                  children: [
+                                    _attendanceBox(info),
+                                    if (info.alreadyPaid)
+                                      _alreadyPaidChip(info.paidReceipt),
+                                  ],
+                                ),
+                              ],
+
+                              if (options.isNotEmpty) ...[
+                                const SizedBox(height: 8),
+                                DropdownButtonFormField<int>(
+                                  // new month = new list and selection
+                                  key: ValueKey(
+                                    'fee-option-$id-${info!.monthName}',
+                                  ),
+                                  initialValue: chosenOption[id],
+                                  isExpanded: true,
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    labelText: 'Fee option',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  items: options
+                                      .map(
+                                        (option) => DropdownMenuItem<int>(
+                                          value: option.id,
+                                          child: Text(
+                                            '${option.label} - LKR ${_formatAmount(option.amount)}'
+                                            '${option.isStudentOption ? ' (student)' : ''}',
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                                  onChanged: (value) => setDialogState(() {
+                                    chosenOption[id] = value;
+                                    final picked = options.where(
+                                      (o) => o.id == value,
+                                    );
+                                    if (picked.isNotEmpty) {
+                                      amountControllers[id]!.text =
+                                          _formatAmount(picked.first.amount);
+                                    }
+                                  }),
+                                ),
+                              ],
+
+                              if (editable) ...[
+                                const SizedBox(height: 8),
+                                TextField(
+                                  controller: amountControllers[id],
+                                  keyboardType:
+                                      const TextInputType.numberWithOptions(
+                                        decimal: true,
+                                      ),
+                                  onChanged: (_) => setDialogState(() {}),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    labelText: 'Amount (LKR)',
+                                    helperText: info!.noAttendance
+                                        ? 'Leave 0 to skip'
+                                        : 'Fee LKR ${_formatAmount(info.grossFee)}',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                ),
+                              ],
+
+                              if (info != null && info.tuteEnabled)
+                                CheckboxListTile(
+                                  dense: true,
+                                  visualDensity: VisualDensity.compact,
+                                  contentPadding: EdgeInsets.zero,
+                                  controlAffinity:
+                                      ListTileControlAffinity.leading,
+                                  value: info.tuteIssued
+                                      ? true
+                                      : (giveTute[id] ?? false),
+                                  onChanged: info.tuteIssued
+                                      ? null
+                                      : (value) => setDialogState(
+                                          () => giveTute[id] = value ?? false,
+                                        ),
+                                  title: Text(
+                                    info.tuteIssued
+                                        ? 'Tute already given${info.tuteIssuedAt != null ? ' (${info.tuteIssuedAt})' : ''}'
+                                        : 'Give ${info.monthName} tute',
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
+                ),
+              ),
+
               // ============================================================
-              // ACTIONS
+              // ACTIONS: Cancel + Pay in one row, total on the Pay button
               // ============================================================
               actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(dialogContext),
-                  child: const Text('Cancel'),
-                ),
-
-                ElevatedButton(
-                  onPressed: _isSubmitting || loadingInfo
-                      ? null
-                      : () {
-                          setState(() {
-                            _selectedPaymentDate = tempSelectedDate;
-                          });
-
-                          final amounts = {
-                            for (final payment in selectedPayments)
-                              payment.enrollmentId as int:
-                                  amountOf(payment.enrollmentId as int),
-                          };
-                          final tutes = Map<int, bool>.from(giveTute);
-                          final feeOptions = Map<int, int?>.from(chosenOption);
-
-                          Navigator.pop(dialogContext);
-
-                          _submitBulkPayments(
-                            classes,
-                            amounts: amounts,
-                            giveTute: tutes,
-                            feeOptions: feeOptions,
-                          );
-                        },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(dialogContext),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text('Cancel'),
+                      ),
                     ),
-                  ),
-                  child: const Text('Pay Now'),
+
+                    const SizedBox(width: 10),
+
+                    Expanded(
+                      flex: 2,
+                      child: ElevatedButton(
+                        onPressed: _isSubmitting || loadingInfo
+                            ? null
+                            : () {
+                                setState(() {
+                                  _selectedPaymentDate = tempSelectedDate;
+                                });
+
+                                final amounts = {
+                                  for (final payment in selectedPayments)
+                                    payment.enrollmentId as int: amountOf(
+                                      payment.enrollmentId as int,
+                                    ),
+                                };
+                                final tutes = Map<int, bool>.from(giveTute);
+                                final feeOptions = Map<int, int?>.from(
+                                  chosenOption,
+                                );
+
+                                Navigator.pop(dialogContext);
+
+                                _submitBulkPayments(
+                                  classes,
+                                  amounts: amounts,
+                                  giveTute: tutes,
+                                  feeOptions: feeOptions,
+                                );
+                              },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'Pay LKR ${_formatAmount(total)}',
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             );
@@ -1149,13 +1059,64 @@ class _PaymentPageState extends State<PaymentPage> {
     });
   }
 
-  /// "Attendance in November 2026: 1" (+ no attendance warning)
-  String _monthInfoLine(PaymentMonthInfo info) {
-    final attendance = 'Attendance in ${info.monthName}: ${info.attendanceCount}';
+  /// Attendance of the payment month in one short line:
+  /// green = came, amber = no attendance (rule: amount 0)
+  Widget _attendanceBox(PaymentMonthInfo info) {
+    final count = info.attendanceCount;
+    final came = count > 0;
+    final color = came ? AppColors.success : AppColors.warningText;
 
-    return info.noAttendance
-        ? '$attendance · No attendance: no payment is taken'
-        : attendance;
+    final text = came
+        ? 'Attendance: $count day${count == 1 ? '' : 's'}'
+        : info.noAttendance
+        ? 'No attendance · amount 0'
+        : 'No attendance yet';
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            came ? Icons.how_to_reg_rounded : Icons.event_busy_rounded,
+            size: 14,
+            color: color,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Red chip: this month is already paid (receipt number if known)
+  Widget _alreadyPaidChip(String? receipt) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: AppColors.danger.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        'Already paid${receipt != null ? ' · $receipt' : ''}',
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+          color: AppColors.dangerText,
+        ),
+      ),
+    );
   }
 
   /// Latest payment: Amount / Month / Method, big enough to read at a glance
@@ -1224,7 +1185,10 @@ class _PaymentPageState extends State<PaymentPage> {
         .where((item) => _selectedEnrollmentIds.contains(item.enrollmentId))
         .where((item) => item.isFreeCard == false)
         // Payment Rules: a 0 amount (e.g. no fee this month) is not sent
-        .where((item) => (amounts[item.enrollmentId] ?? item.finalFee.toDouble()) > 0)
+        .where(
+          (item) =>
+              (amounts[item.enrollmentId] ?? item.finalFee.toDouble()) > 0,
+        )
         .toList();
 
     if (selectedPayments.isEmpty) {
@@ -1267,7 +1231,8 @@ class _PaymentPageState extends State<PaymentPage> {
 
     final request = MarkPaymentRequestModel(
       payments: selectedPayments.map((item) {
-        final finalAmount = amounts[item.enrollmentId] ?? item.finalFee.toDouble();
+        final finalAmount =
+            amounts[item.enrollmentId] ?? item.finalFee.toDouble();
 
         return MarkPaymentItemModel(
           code: student.customId,
