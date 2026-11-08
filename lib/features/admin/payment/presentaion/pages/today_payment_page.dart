@@ -232,6 +232,7 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
         classFee: item.feeOption.fee,
         hallFee: item.hallFee,
         receiptNumber: item.receiptNumber,
+        paidAmount: item.amount,
       );
 
       // ============================================================

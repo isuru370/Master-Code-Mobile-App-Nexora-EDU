@@ -1294,6 +1294,7 @@ class _PaymentPageState extends State<PaymentPage> {
         classFee: item.classFee,
         hallFee: item.hallFee,
         receiptNumber: item.receiptNumber,
+        paidAmount: item.paidAmount,
       );
     }).toList();
 

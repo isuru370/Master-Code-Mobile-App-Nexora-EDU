@@ -17,7 +17,7 @@ class PaymentReceiptPrint {
     required String studentName,
     required String studentId,
     required String paymentMonth,
-    required String paymentMethod,
+    String paymentMethod = '', // not printed on the receipt
     required List<ReceiptClassDetail> classes,
     PaperSize paperSize = PaperSize.mm58,
   }) async {
@@ -26,7 +26,6 @@ class PaymentReceiptPrint {
       studentName: studentName,
       studentId: studentId,
       paymentMonth: paymentMonth,
-      paymentMethod: paymentMethod,
       classes: classes,
       paperSize: paperSize,
     );
@@ -39,7 +38,6 @@ class PaymentReceiptPrint {
     required String studentName,
     required String studentId,
     required String paymentMonth,
-    required String paymentMethod,
     required List<ReceiptClassDetail> classes,
     PaperSize paperSize = PaperSize.mm58,
   }) async {
@@ -104,12 +102,6 @@ class PaymentReceiptPrint {
     bytes.addAll(
       generator.text(
         'Month : ${monthLabel(paymentMonth)}',
-      ),
-    );
-
-    bytes.addAll(
-      generator.text(
-        'Method: ${paymentMethod.toUpperCase()}',
       ),
     );
 
@@ -227,49 +219,33 @@ class PaymentReceiptPrint {
       }
 
       // -------------------------------------------------------
-      // Class fee + hall fee (hall fee only when it is not 0)
+      // Class fee = the amount paid (minus the hall fee, shown
+      // on its own line only when it is not 0)
       // -------------------------------------------------------
 
-      if (item.hallFee > 0) {
-        bytes.addAll(
-          generator.row([
-            PosColumn(text: 'Class fee', width: 6),
-            PosColumn(
-              text: 'LKR ${item.classFee.toStringAsFixed(2)}',
-              width: 6,
-              styles: const PosStyles(align: PosAlign.right),
-            ),
-          ]),
-        );
+      bytes.addAll(
+        generator.row([
+          PosColumn(text: 'Class fee', width: 6),
+          PosColumn(
+            text: 'LKR ${item.paidClassFee.toStringAsFixed(2)}',
+            width: 6,
+            styles: const PosStyles(align: PosAlign.right, bold: true),
+          ),
+        ]),
+      );
 
+      if (item.hallFee > 0) {
         bytes.addAll(
           generator.row([
             PosColumn(text: 'Hall fee', width: 6),
             PosColumn(
               text: 'LKR ${item.hallFee.toStringAsFixed(2)}',
               width: 6,
-              styles: const PosStyles(align: PosAlign.right),
+              styles: const PosStyles(align: PosAlign.right, bold: true),
             ),
           ]),
         );
       }
-
-      bytes.addAll(
-        generator.row([
-          PosColumn(
-            text: 'Amount',
-            width: 6,
-          ),
-          PosColumn(
-            text: 'LKR ${item.totalFee.toStringAsFixed(2)}',
-            width: 6,
-            styles: const PosStyles(
-              align: PosAlign.right,
-              bold: true,
-            ),
-          ),
-        ]),
-      );
 
       bytes.addAll(
         generator.hr(
@@ -284,7 +260,7 @@ class PaymentReceiptPrint {
 
     final total = classes.fold<double>(
       0,
-      (sum, item) => sum + item.totalFee,
+      (sum, item) => sum + item.paidTotal,
     );
 
     final totalHallFee = classes.fold<double>(
@@ -305,24 +281,27 @@ class PaymentReceiptPrint {
       );
     }
 
+    // TOTAL: centered, bold, the amount in large letters
     bytes.addAll(
-      generator.row([
-        PosColumn(
-          text: 'TOTAL FEE',
-          width: 7,
-          styles: const PosStyles(
-            bold: true,
-          ),
+      generator.text(
+        'TOTAL',
+        styles: const PosStyles(
+          align: PosAlign.center,
+          bold: true,
         ),
-        PosColumn(
-          text: 'LKR ${total.toStringAsFixed(2)}',
-          width: 5,
-          styles: const PosStyles(
-            align: PosAlign.right,
-            bold: true,
-          ),
+      ),
+    );
+
+    bytes.addAll(
+      generator.text(
+        'LKR ${total.toStringAsFixed(2)}',
+        styles: const PosStyles(
+          align: PosAlign.center,
+          bold: true,
+          width: PosTextSize.size2,
+          height: PosTextSize.size2,
         ),
-      ]),
+      ),
     );
 
     bytes.addAll(
@@ -395,8 +374,21 @@ class ReceiptClassDetail {
   final double hallFee;
   final String receiptNumber;
 
+  /// Amount actually paid for this class (hall fee included).
+  /// null = not known, the fee is printed.
+  final double? paidAmount;
+
   /// Class fee + hall fee.
   double get totalFee => classFee + hallFee;
+
+  /// What was paid: the entered amount, or the fee when not known.
+  double get paidTotal => paidAmount ?? totalFee;
+
+  /// Class part of what was paid (the hall fee is printed on its own).
+  double get paidClassFee {
+    final value = paidTotal - hallFee;
+    return value < 0 ? 0 : value;
+  }
 
   const ReceiptClassDetail({
     required this.className,
@@ -407,5 +399,6 @@ class ReceiptClassDetail {
     required this.classFee,
     this.hallFee = 0,
     required this.receiptNumber,
+    this.paidAmount,
   });
 }
