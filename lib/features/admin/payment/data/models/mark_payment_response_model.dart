@@ -15,6 +15,10 @@ class MarkPaymentResponseModel {
   final double totalBalance;
   final String paidAt;
 
+  /// Payment Rules: print the receipt after the payment.
+  /// Servers without this rule do not send it: print, as before.
+  final bool printReceipt;
+
   const MarkPaymentResponseModel({
     required this.payments,
     required this.receipt,
@@ -27,6 +31,7 @@ class MarkPaymentResponseModel {
     required this.totalPaid,
     required this.totalBalance,
     required this.paidAt,
+    this.printReceipt = true,
   });
 
   factory MarkPaymentResponseModel.fromJson(
@@ -90,6 +95,8 @@ class MarkPaymentResponseModel {
 
       paidAt:
           json['paid_at']?.toString() ?? '',
+
+      printReceipt: json['print_receipt'] != false,
     );
   }
 
