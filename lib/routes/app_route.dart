@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nexorait_education_app/core/utils/photo_recovery.dart';
+import 'package:nexorait_education_app/features/feedback/send_feedback_page.dart';
 import 'package:nexorait_education_app/features/admin/class_schedule/presentaion/page/ongoing_class_page.dart';
 import 'package:nexorait_education_app/features/admin/student_classes/presentaion/pages/create_student_classes.dart';
 import 'package:nexorait_education_app/features/admin/students/presentaion/pages/create_student_page.dart';
@@ -82,6 +83,9 @@ class AppRoutes {
       // Income Report + PDF (all staff; dashboard feature "income_report")
       case '/income-report':
         return MaterialPageRoute(builder: (_) => const IncomeReportPage());
+
+      case SendFeedbackPage.routeName:
+        return MaterialPageRoute(builder: (_) => const SendFeedbackPage());
 
       case '/print_test_screen':
         return MaterialPageRoute(builder: (_) => PrintTestPage());
