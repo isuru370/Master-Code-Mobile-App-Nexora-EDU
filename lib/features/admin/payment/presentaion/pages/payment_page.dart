@@ -59,20 +59,23 @@ class _PaymentPageState extends State<PaymentPage> {
           final response = state.response;
 
           // ============================================================
-          // PRINT BACKEND RECEIPT
+          // PRINT BACKEND RECEIPT (Payment Rules: only when it is on;
+          // a receipt can still be reprinted from Today Payments)
           // ============================================================
 
-          try {
-            await _printBulkReceipt(paymentResponse: response);
-          } catch (e) {
-            if (!mounted) return;
+          if (response.printReceipt) {
+            try {
+              await _printBulkReceipt(paymentResponse: response);
+            } catch (e) {
+              if (!mounted) return;
 
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: AppColors.warning,
-                content: Text('Receipt print failed: $e'),
-              ),
-            );
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: AppColors.warning,
+                  content: Text('Receipt print failed: $e'),
+                ),
+              );
+            }
           }
 
           setState(() {
