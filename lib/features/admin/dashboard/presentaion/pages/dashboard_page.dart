@@ -587,6 +587,14 @@ class _DashboardPageState extends State<DashboardPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             _drawerTile(
+              icon: Icons.feedback_outlined,
+              title: 'Send Feedback',
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/send_feedback');
+              },
+            ),
+            _drawerTile(
               icon: Icons.privacy_tip_outlined,
               title: 'Privacy Policy',
               onTap: () => AppLinks.openPrivacyPolicy(context),

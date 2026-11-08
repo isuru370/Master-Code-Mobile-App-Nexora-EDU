@@ -436,6 +436,22 @@ class _TeacherProfilePageState extends State<TeacherProfilePage> {
             width: double.infinity,
             height: 50,
             child: OutlinedButton.icon(
+              onPressed: busy ? null : () => Navigator.pushNamed(context, '/send_feedback'),
+              icon: const Icon(Icons.feedback_outlined, size: 19),
+              label: const Text('Send Feedback', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.primary,
+                side: const BorderSide(color: AppColors.border),
+                backgroundColor: AppColors.surface,
+                shape: RoundedRectangleBorder(borderRadius: AppColors.radiusMedium),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: OutlinedButton.icon(
               onPressed: _loggingOut ? null : _logout,
               icon: _loggingOut
                   ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
