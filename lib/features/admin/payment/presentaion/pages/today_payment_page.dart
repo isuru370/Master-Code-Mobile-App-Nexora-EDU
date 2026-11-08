@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -23,6 +25,34 @@ class TodayPaymentPage extends StatefulWidget {
 
 class _TodayPaymentPageState extends State<TodayPaymentPage> {
   DateTime _selectedDate = DateTime.now();
+
+  /// Search by student name or ID (the server also matches card number,
+  /// mobile and class)
+  final TextEditingController _searchController = TextEditingController();
+  Timer? _searchDebounce;
+
+  @override
+  void dispose() {
+    _searchDebounce?.cancel();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String _) {
+    setState(() {}); // clear button
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(const Duration(milliseconds: 450), () {
+      _expandedItems.clear();
+      _loadPayments();
+    });
+  }
+
+  void _clearSearch() {
+    _searchDebounce?.cancel();
+    _searchController.clear();
+    setState(() => _expandedItems.clear());
+    _loadPayments();
+  }
 
   final PrinterService _printerService = PrinterService();
 
@@ -55,7 +85,10 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
 
     context.read<MarkPaymentBloc>().add(
       TodayPaymentsRequested(
-        requestModel: TodayPaymentsRequestModel(date: _selectedDate),
+        requestModel: TodayPaymentsRequestModel(
+          date: _selectedDate,
+          search: _searchController.text,
+        ),
       ),
     );
   }
@@ -528,6 +561,50 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
 
               /*
               |--------------------------------------------------------------------------
+              | Search: student name or ID
+              |--------------------------------------------------------------------------
+              */
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: _onSearchChanged,
+                  textInputAction: TextInputAction.search,
+                  onSubmitted: (_) {
+                    _searchDebounce?.cancel();
+                    _loadPayments();
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Search student name or ID',
+                    prefixIcon: const Icon(Icons.search_rounded, color: AppColors.primary),
+                    suffixIcon: _searchController.text.isEmpty
+                        ? null
+                        : IconButton(
+                            tooltip: 'Clear',
+                            icon: const Icon(Icons.close_rounded),
+                            onPressed: _clearSearch,
+                          ),
+                    filled: true,
+                    fillColor: Colors.white,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+                    ),
+                  ),
+                ),
+              ),
+
+              /*
+              |--------------------------------------------------------------------------
               | Payment List
               |--------------------------------------------------------------------------
               */
@@ -619,7 +696,10 @@ class _TodayPaymentPageState extends State<TodayPaymentPage> {
                               const SizedBox(height: 8),
 
                               Text(
-                                'There are no payments for this date.',
+                                _searchController.text.trim().isEmpty
+                                    ? 'There are no payments for this date.'
+                                    : 'No payments match "${_searchController.text.trim()}" on this date.',
+                                textAlign: TextAlign.center,
                                 style: TextStyle(color: AppColors.textSecondary),
                               ),
                             ],

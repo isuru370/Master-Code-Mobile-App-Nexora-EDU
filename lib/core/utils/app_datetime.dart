@@ -186,6 +186,19 @@ class AppDateTime {
     return DateFormat('MMM').format(date);
   }
 
+  /// Payment month "2026-10" / "2026-10-01" -> "2026 Oct".
+  /// Anything else is returned as it is.
+  static String yearMonthLabel(String? value) {
+    final text = (value ?? '').trim();
+    final match = RegExp(r'^(\d{4})-(\d{2})').firstMatch(text);
+    if (match == null) return text;
+
+    final month = int.tryParse(match.group(2)!) ?? 0;
+    if (month < 1 || month > 12) return text;
+
+    return DateFormat('yyyy MMM').format(DateTime(int.parse(match.group(1)!), month));
+  }
+
   /// Get date range for past N days
   static List<DateTime> getPastDays(int days) {
     final today = AppDateTime.today();

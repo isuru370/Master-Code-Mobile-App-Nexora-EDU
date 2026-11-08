@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../../core/utils/app_datetime.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexorait_education_app/features/admin/qr/presentation/bloc/read_payment/read_payment_bloc.dart';
 
@@ -619,9 +620,10 @@ class _AttendancePageNewState extends State<AttendancePageNew> {
     return normalizedMonth != null && normalizedMonth == _currentYearMonth();
   }
 
+  /// "2026 Oct"
   String _paymentMonthLabel(String? paymentMonth) {
     final normalizedMonth = _normalizeYearMonth(paymentMonth);
-    return normalizedMonth ?? 'No Payment';
+    return normalizedMonth == null ? 'No Payment' : AppDateTime.yearMonthLabel(normalizedMonth);
   }
 
   String? _normalizeYearMonth(String? value) {

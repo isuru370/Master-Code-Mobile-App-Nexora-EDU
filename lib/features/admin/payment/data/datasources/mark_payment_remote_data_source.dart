@@ -60,7 +60,22 @@ class MarkPaymentRemoteDataSource {
     }
   }
 
+  /// All of the day's payments: the server sends 50 a time, so every page
+  /// is fetched and joined (before, only the first 10 were shown).
   Future<TodayPaymentsResponseModel> getTodayPayments({
+    required TodayPaymentsRequestModel requestModel,
+  }) async {
+    var response = await _getTodayPaymentsPage(requestModel: requestModel.copyWith(page: 1));
+
+    for (var page = 2; page <= response.lastPage && page <= 40; page++) {
+      final next = await _getTodayPaymentsPage(requestModel: requestModel.copyWith(page: page));
+      response = response.withMoreData(next.data);
+    }
+
+    return response;
+  }
+
+  Future<TodayPaymentsResponseModel> _getTodayPaymentsPage({
     required TodayPaymentsRequestModel requestModel,
   }) async {
     try {
