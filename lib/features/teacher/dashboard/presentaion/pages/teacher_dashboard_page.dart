@@ -8,6 +8,7 @@ import '../../../navigation/teacher_bottom_navigation.dart';
 import '../../../profile/presentaion/pages/teacher_profile_page.dart';
 import '../../../students/presentaion/pages/teacher_students_page.dart';
 import '../../../timetable/presentaion/pages/teacher_timetable_page.dart';
+import '../../../tools/presentation/teacher_tools_section.dart';
 import '../../data/models/teacher_dashboard_model.dart';
 import '../../data/models/teacher_dashboard_summary_model.dart';
 import '../../data/models/teacher_dashboard_teacher_model.dart';
@@ -170,6 +171,9 @@ class _TeacherHomePageState extends State<_TeacherHomePage> {
             _buildQuickActions(),
 
             const SizedBox(height: 28),
+
+            // Attendance / class days / payments, when the institute turned them on
+            const TeacherToolsSection(),
 
             _buildSectionHeader(title: "Attendance Overview"),
 
