@@ -1,6 +1,7 @@
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../../core/receipt/receipt_settings.dart';
 import '../../../../../../core/utils/app_datetime.dart';
 import '../../../../../../core/utils/printer_service.dart';
 
@@ -21,7 +22,11 @@ class PaymentReceiptPrint {
     required List<ReceiptClassDetail> classes,
     PaperSize paperSize = PaperSize.mm58,
   }) async {
+    // What to print (web: Settings > Receipt); all on if not reachable
+    final settings = await ReceiptSettings.load();
+
     final bytes = await buildReceiptData(
+      settings: settings,
       instituteName: instituteName,
       studentName: studentName,
       studentId: studentId,
@@ -40,6 +45,7 @@ class PaymentReceiptPrint {
     required String paymentMonth,
     required List<ReceiptClassDetail> classes,
     PaperSize paperSize = PaperSize.mm58,
+    ReceiptSettings settings = ReceiptSettings.allOn,
   }) async {
     final profile = await CapabilityProfile.load();
 
@@ -93,50 +99,62 @@ class PaymentReceiptPrint {
     // RECEIPT INFO
     // =========================================================
 
-    bytes.addAll(
-      generator.text(
-        'Date  : $formattedDate',
-      ),
-    );
+    if (settings.date) {
+      bytes.addAll(
+        generator.text(
+          'Date  : $formattedDate',
+        ),
+      );
+    }
 
-    bytes.addAll(
-      generator.text(
-        'Month : ${monthLabel(paymentMonth)}',
-      ),
-    );
+    if (settings.month) {
+      bytes.addAll(
+        generator.text(
+          'Month : ${monthLabel(paymentMonth)}',
+        ),
+      );
+    }
 
-    bytes.addAll(
-      generator.hr(),
-    );
+    if (settings.date || settings.month) {
+      bytes.addAll(
+        generator.hr(),
+      );
+    }
 
     // =========================================================
     // STUDENT DETAILS
     // =========================================================
 
-    bytes.addAll(
-      generator.text(
-        'STUDENT DETAILS',
-        styles: const PosStyles(
-          bold: true,
+    if (settings.studentName || settings.studentId) {
+      bytes.addAll(
+        generator.text(
+          'STUDENT DETAILS',
+          styles: const PosStyles(
+            bold: true,
+          ),
         ),
-      ),
-    );
+      );
 
-    bytes.addAll(
-      generator.text(
-        'Name : $studentName',
-      ),
-    );
+      if (settings.studentName) {
+        bytes.addAll(
+          generator.text(
+            'Name : $studentName',
+          ),
+        );
+      }
 
-    bytes.addAll(
-      generator.text(
-        'ID   : $studentId',
-      ),
-    );
+      if (settings.studentId) {
+        bytes.addAll(
+          generator.text(
+            'ID   : $studentId',
+          ),
+        );
+      }
 
-    bytes.addAll(
-      generator.hr(),
-    );
+      bytes.addAll(
+        generator.hr(),
+      );
+    }
 
     // =========================================================
     // CLASS DETAILS
@@ -162,7 +180,7 @@ class PaymentReceiptPrint {
       // Grade
       // -------------------------------------------------------
 
-      if (item.grade.isNotEmpty) {
+      if (settings.grade && item.grade.isNotEmpty) {
         bytes.addAll(
           generator.text(
             'Grade   : ${item.grade}',
@@ -174,7 +192,7 @@ class PaymentReceiptPrint {
       // Teacher
       // -------------------------------------------------------
 
-      if (item.teacherName.isNotEmpty) {
+      if (settings.teacher && item.teacherName.isNotEmpty) {
         bytes.addAll(
           generator.text(
             'Teacher : ${item.teacherName}',
@@ -186,7 +204,7 @@ class PaymentReceiptPrint {
       // Category
       // -------------------------------------------------------
 
-      if (item.categoryName.isNotEmpty) {
+      if (settings.category && item.categoryName.isNotEmpty) {
         bytes.addAll(
           generator.text(
             'Category: ${item.categoryName}',
@@ -198,7 +216,7 @@ class PaymentReceiptPrint {
       // Fee Option
       // -------------------------------------------------------
 
-      if (item.feeOptionName.isNotEmpty) {
+      if (settings.feeOption && item.feeOptionName.isNotEmpty) {
         bytes.addAll(
           generator.text(
             'Option  : ${item.feeOptionName}',
@@ -210,7 +228,7 @@ class PaymentReceiptPrint {
       // Receipt Number
       // -------------------------------------------------------
 
-      if (item.receiptNumber.isNotEmpty) {
+      if (settings.receiptNumber && item.receiptNumber.isNotEmpty) {
         bytes.addAll(
           generator.text(
             'Receipt : ${item.receiptNumber}',
@@ -223,28 +241,30 @@ class PaymentReceiptPrint {
       // on its own line only when it is not 0)
       // -------------------------------------------------------
 
-      bytes.addAll(
-        generator.row([
-          PosColumn(text: 'Class fee', width: 6),
-          PosColumn(
-            text: 'LKR ${item.paidClassFee.toStringAsFixed(2)}',
-            width: 6,
-            styles: const PosStyles(align: PosAlign.right, bold: true),
-          ),
-        ]),
-      );
-
-      if (item.hallFee > 0) {
+      if (settings.fees) {
         bytes.addAll(
           generator.row([
-            PosColumn(text: 'Hall fee', width: 6),
+            PosColumn(text: 'Class fee', width: 6),
             PosColumn(
-              text: 'LKR ${item.hallFee.toStringAsFixed(2)}',
+              text: 'LKR ${item.paidClassFee.toStringAsFixed(2)}',
               width: 6,
               styles: const PosStyles(align: PosAlign.right, bold: true),
             ),
           ]),
         );
+
+        if (item.hallFee > 0) {
+          bytes.addAll(
+            generator.row([
+              PosColumn(text: 'Hall fee', width: 6),
+              PosColumn(
+                text: 'LKR ${item.hallFee.toStringAsFixed(2)}',
+                width: 6,
+                styles: const PosStyles(align: PosAlign.right, bold: true),
+              ),
+            ]),
+          );
+        }
       }
 
       bytes.addAll(
@@ -268,7 +288,7 @@ class PaymentReceiptPrint {
       (sum, item) => sum + item.hallFee,
     );
 
-    if (totalHallFee > 0 && classes.length > 1) {
+    if (settings.fees && totalHallFee > 0 && classes.length > 1) {
       bytes.addAll(
         generator.row([
           PosColumn(text: 'Hall fee', width: 7),
@@ -312,19 +332,22 @@ class PaymentReceiptPrint {
     // PAYMENT COUNT
     // =========================================================
 
-    bytes.addAll(
-      generator.text(
-        'Classes Paid : ${classes.length}',
-      ),
-    );
+    if (settings.classesCount) {
+      bytes.addAll(
+        generator.text(
+          'Classes Paid : ${classes.length}',
+        ),
+      );
+
+      bytes.addAll(
+        generator.hr(),
+      );
+    }
 
     // =========================================================
     // FOOTER
     // =========================================================
 
-    bytes.addAll(
-      generator.hr(),
-    );
 
     bytes.addAll(
       generator.text(
@@ -336,14 +359,28 @@ class PaymentReceiptPrint {
       ),
     );
 
-    bytes.addAll(
-      generator.text(
-        'Please keep this receipt',
-        styles: const PosStyles(
-          align: PosAlign.center,
+    if (settings.keepNote) {
+      bytes.addAll(
+        generator.text(
+          'Please keep this receipt',
+          styles: const PosStyles(
+            align: PosAlign.center,
+          ),
         ),
-      ),
-    );
+      );
+    }
+
+    // Institute's own line (e.g. a phone number)
+    if (settings.footer.isNotEmpty) {
+      bytes.addAll(
+        generator.text(
+          settings.footer,
+          styles: const PosStyles(
+            align: PosAlign.center,
+          ),
+        ),
+      );
+    }
 
     bytes.addAll(
       generator.feed(1),
