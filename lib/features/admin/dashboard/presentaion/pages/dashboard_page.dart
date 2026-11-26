@@ -6,6 +6,9 @@ import 'package:nexorait_education_app/core/enums/scan_type.dart';
 import '../../../../../core/enums/scan_student_card.dart';
 import '../../../../../core/features/app_features.dart';
 import '../../../../../core/navigation/role_router.dart';
+import '../../../../../core/offline/offline_banner.dart';
+import '../../../../../core/offline/offline_store.dart';
+import '../../../../../core/offline/offline_sync.dart';
 import '../../../../../core/navigation/staff_features.dart';
 import '../../../../../core/storage/session_storage.dart';
 import '../../../../../core/theme/app_colors.dart';
@@ -87,6 +90,9 @@ class _DashboardPageState extends State<DashboardPage> {
 
     _loadSession();
     _loadAppFeatures();
+
+    // Offline mode: download today's classes, send what was saved offline
+    OfflineSync.instance.start();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
@@ -289,11 +295,40 @@ class _DashboardPageState extends State<DashboardPage> {
     );
 
     if (confirm != true) return;
+    if (!mounted) return;
 
+    // Offline attendance / payments must reach the server first:
+    // they are lost if the session is cleared now
+    if (!await OfflineSync.instance.allSent()) {
+      if (!mounted) return;
+      await showDialog<void>(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          title: const Text('Offline items not sent'),
+          content: const Text(
+            'Some attendance or payments saved offline are not on the server yet. '
+            'Connect to the internet and sync before you logout.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    if (!mounted) return;
     setState(() => _loggingOut = true);
 
     // Deletes the token on the server, then clears the saved session
     await AuthRemoteDataSource().logout();
+
+    // The next user may work in another branch: drop today's offline data
+    OfflineSync.instance.stop();
+    await OfflineStore.clearPack();
 
     if (!mounted) return;
 
@@ -781,7 +816,29 @@ class _DashboardPageState extends State<DashboardPage> {
                     return ListView(
                       padding: const EdgeInsets.all(16),
                       children: [
-                        const SizedBox(height: 40),
+                        const OfflineBanner(),
+                        const SizedBox(height: 12),
+                        // Offline: the scanners still work from today's data
+                        Row(
+                          children: [
+                            Expanded(
+                              child: FilledButton.icon(
+                                onPressed: () => Navigator.pushNamed(context, '/attendance-scan'),
+                                icon: const Icon(Icons.qr_code_scanner_rounded),
+                                label: const Text('Attendance'),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: FilledButton.icon(
+                                onPressed: () => Navigator.pushNamed(context, '/payment-scan'),
+                                icon: const Icon(Icons.payments_rounded),
+                                label: const Text('Payment'),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
                         NxCard(
                           child: Column(
                             children: [
@@ -929,6 +986,9 @@ class _DashboardPageState extends State<DashboardPage> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
       children: [
+        const OfflineBanner(),
+        const SizedBox(height: 12),
+
         // Printer
         if (_showPrinterBanner) ...[
           NxAlert(
