@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
+import '../../features/admin/image_upload/data/datasources/image_upload_remote_datasource.dart';
+import '../../features/admin/image_upload/data/models/image_upload/image_upload_request_model.dart';
 import '../constants/api_constants.dart';
 import '../storage/session_storage.dart';
 import 'offline_store.dart';
@@ -86,6 +89,7 @@ class OfflineSync {
 
     try {
       final sent = await _sendQueue();
+      await _uploadPhotos();
       final pack = await OfflineStore.readPack();
       final today = _today();
       if (forcePack || pack == null || pack['date'] != today || sent) {
@@ -167,20 +171,69 @@ class OfflineSync {
       final results = decoded is Map ? decoded['results'] : null;
       if (results is! List) throw _ServerAnswer('Invalid sync answer.');
 
+      final byUuid = {for (final q in chunk) q['local_uuid'].toString(): q};
       final changes = <String, Map<String, dynamic>>{};
       for (final r in results.whereType<Map>()) {
         final status = r['status']?.toString() ?? 'retry';
-        if (status == 'retry') continue;   // server error: send again later
-        changes[r['local_uuid'].toString()] = {
+        if (status == 'retry') continue;   // server error / waits for its student: send again later
+        final uuid = r['local_uuid'].toString();
+        changes[uuid] = {
           '_status': status == 'duplicate' ? 'synced' : status,
           '_message': r['message'],
           if (r['receipt_number'] != null) '_server_receipt': r['receipt_number'],
+          if (r['custom_id'] != null) '_custom_id': r['custom_id'],
+          if (r['student_id'] != null) '_server_student_id': r['student_id'],
+          // a new student: the phone numbers and other details are on the server now
+          if (byUuid[uuid]?['type'] == 'student') 'student': _keepOfStudent(byUuid[uuid]!['student']),
         };
       }
       await OfflineStore.updateQueue(changes);
     }
 
     return true;
+  }
+
+  static Map<String, dynamic> _keepOfStudent(dynamic form) {
+    if (form is! Map) return const {};
+    return {
+      for (final key in const ['initial_name', 'temporary_qr_code', 'card_qr_code'])
+        if (form[key] != null) key: form[key],
+    };
+  }
+
+  /// Photos taken without internet: uploaded once their student is saved.
+  Future<void> _uploadPhotos() async {
+    final queue = await OfflineStore.readQueue();
+    for (final q in queue) {
+      final photoId = q['_photo']?.toString();
+      final customId = q['_custom_id']?.toString();
+      if (photoId == null || customId == null || q['_photo_done'] == true || q['_status'] != 'synced') continue;
+
+      final file = await OfflineStore.photo(photoId);
+      if (file == null) {
+        await OfflineStore.updateQueue({q['local_uuid'].toString(): {'_photo_done': true}});
+        continue;
+      }
+
+      await uploadPhoto(photoId, customId);
+      await OfflineStore.updateQueue({q['local_uuid'].toString(): {'_photo_done': true}});
+    }
+  }
+
+  /// Upload a photo kept on the phone to the student (Custom ID). A network
+  /// error is thrown (try again later); a refusal by the server is not.
+  Future<void> uploadPhoto(String photoId, String customId) async {
+    final file = await OfflineStore.photo(photoId);
+    if (file == null) return;
+    try {
+      await ImageUploadRemoteDatasource()
+          .updateImage(request: ImageUploadRequestModel(image: file, studentCode: customId))
+          .timeout(const Duration(seconds: 60));
+    } catch (e) {
+      if (e is TimeoutException || e is SocketException || e is http.ClientException) rethrow;
+      debugPrint('OFFLINE PHOTO NOT SAVED ($customId): $e');
+    }
+    await OfflineStore.deletePhoto(photoId);
   }
 
   Future<void> _downloadPack() async {

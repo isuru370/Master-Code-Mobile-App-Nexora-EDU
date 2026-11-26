@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 
 import '../../../../../core/constants/api_constants.dart';
 import '../../../../../core/errors/app_exceptions.dart';
+import '../../../../../core/offline/offline_engine.dart';
+import '../../../../../core/offline/offline_students.dart';
 import '../../../../../core/storage/session_storage.dart';
 import '../../../students/data/models/create_student/create_student_response_model.dart';
 import '../model/admission/admission_response_model.dart';
@@ -15,10 +17,19 @@ class AdmissionRemoteDatasource {
   Future<AdmissionResponseModel> fetchAdmissionData() async {
     try {
       final token = await SessionStorage.getToken();
-      final response = await http.get(
-        Uri.parse('${ApiConstants.apiUrl}/admission'),
-        headers: ApiConstants.headers(token: token),
-      );
+      final http.Response response;
+      try {
+        response = await http
+            .get(
+              Uri.parse('${ApiConstants.apiUrl}/admission'),
+              headers: ApiConstants.headers(token: token),
+            )
+            .timeout(OfflineEngine.timeout);
+      } catch (e) {
+        if (!OfflineEngine.isNetworkError(e)) rethrow;
+        // no internet: from today's offline data
+        return AdmissionResponseModel.fromJson(await OfflineStudents.admissions());
+      }
 
       debugPrint('ADMISSION RESPONSE CODE: ${response.statusCode}');
       debugPrint('ADMISSION RESPONSE BODY: ${response.body}');

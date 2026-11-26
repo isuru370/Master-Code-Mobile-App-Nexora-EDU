@@ -123,6 +123,48 @@ class OfflineStore {
     return 'OF-$device-${next.toString().padLeft(4, '0')}';
   }
 
+  static const _localIdKey = 'offline_local_id_counter';
+  static const _photoKey = 'offline_photo_counter';
+
+  /// Id of a student / class made on this phone until the server saves it: -1, -2 ...
+  static Future<int> nextLocalId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final next = (prefs.getInt(_localIdKey) ?? 0) + 1;
+    await prefs.setInt(_localIdKey, next);
+    return -next;
+  }
+
+  /* ---------------------------------------------------------- photos */
+
+  static Future<Directory> _photoDir() async {
+    final dir = Directory('${(await getApplicationDocumentsDirectory()).path}/nexora_offline_photos');
+    if (!await dir.exists()) await dir.create(recursive: true);
+    return dir;
+  }
+
+  static bool isOfflinePhoto(String? id) => id != null && id.startsWith('OF-PHOTO-');
+
+  /// A student photo taken without internet: kept here and uploaded once the
+  /// student is on the server. Returns its id (OF-PHOTO-7).
+  static Future<String> savePhoto(File image) async {
+    final prefs = await SharedPreferences.getInstance();
+    final next = (prefs.getInt(_photoKey) ?? 0) + 1;
+    await prefs.setInt(_photoKey, next);
+    final id = 'OF-PHOTO-$next';
+    await image.copy('${(await _photoDir()).path}/$id.jpg');
+    return id;
+  }
+
+  static Future<File?> photo(String id) async {
+    final file = File('${(await _photoDir()).path}/$id.jpg');
+    return await file.exists() ? file : null;
+  }
+
+  static Future<void> deletePhoto(String id) async {
+    final file = await photo(id);
+    if (file != null) await file.delete();
+  }
+
   /// Random UUID v4.
   static String uuid() {
     final random = Random.secure();

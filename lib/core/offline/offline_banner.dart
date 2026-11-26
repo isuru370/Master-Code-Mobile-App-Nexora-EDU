@@ -163,11 +163,20 @@ class _OfflineItemsPageState extends State<OfflineItemsPage> {
     final receipt = q['receipt_number']?.toString();
 
     return ListTile(
-      leading: Icon(q['type'] == 'payment' ? Icons.payments_rounded : Icons.how_to_reg_rounded, color: color),
+      leading: Icon(
+        switch (q['type']) {
+          'payment' => Icons.payments_rounded,
+          'student' => Icons.person_add_alt_1_rounded,
+          'enrollment' => Icons.class_rounded,
+          _ => Icons.how_to_reg_rounded,
+        },
+        color: color,
+      ),
       title: Text(q['_label']?.toString() ?? q['type'].toString()),
       subtitle: Text([
         if (time != null) '${time.day}/${time.month} ${OfflineBanner._time(time)}',
         if (receipt != null) receipt,
+        if (q['_custom_id'] != null) 'ID ${q['_custom_id']}',
         if (q['_message'] != null && status != 'synced') q['_message'].toString(),
       ].join(' - ')),
       trailing: Text(label, style: TextStyle(color: color, fontWeight: FontWeight.w700)),

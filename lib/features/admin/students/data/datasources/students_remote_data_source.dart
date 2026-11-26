@@ -5,6 +5,10 @@ import 'package:http/http.dart' as http;
 
 import '../../../../../core/constants/api_constants.dart';
 import '../../../../../core/errors/app_exceptions.dart';
+import '../../../../../core/offline/offline_engine.dart';
+import '../../../../../core/offline/offline_store.dart';
+import '../../../../../core/offline/offline_students.dart';
+import '../../../../../core/offline/offline_sync.dart';
 import '../../../../../core/storage/session_storage.dart';
 import '../models/create_student/create_student_response_model.dart';
 import '../models/students_model.dart';
@@ -70,93 +74,73 @@ class StudentRemoteDataSource {
     }
   }
 
-  Future<CreateStudentResponseModel> createStudent(StudentModel student) async {
+  /// POST /student (temporary card)
+  Future<CreateStudentResponseModel> createStudent(StudentModel student) =>
+      _register('/student', student.toJson());
+
+  /// POST /student-new (permanent card)
+  Future<CreateStudentResponseModel> createNewStudent(StudentModel student) =>
+      _register('/student-new', student.toNewJson());
+
+  /// Register online; without internet the student is saved on the phone
+  /// and sent later (offline mode).
+  Future<CreateStudentResponseModel> _register(String path, Map<String, dynamic> body) async {
+    final token = await SessionStorage.getToken();
+
+    // a photo taken offline is not on the server: upload it after registering
+    final photoId = body['quick_image_id']?.toString();
+    final offlinePhoto = OfflineStore.isOfflinePhoto(photoId);
+    final online = Map<String, dynamic>.from(body);
+    if (offlinePhoto) online.remove('quick_image_id');
+
+    final http.Response response;
     try {
-      final token = await SessionStorage.getToken();
-      final uri = Uri.parse('${ApiConstants.apiUrl}/student');
-
-      final response = await http.post(
-        uri,
-        headers: {
-          ...ApiConstants.headers(token: token),
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: jsonEncode(student.toJson()),
-      );
-
-      debugPrint('CREATE STUDENT RESPONSE CODE: ${response.statusCode}');
-      debugPrint('CREATE STUDENT RESPONSE BODY: ${response.body}');
-
-      final decoded = jsonDecode(response.body);
-
-      if (response.statusCode == 201) {
-        return CreateStudentResponseModel.fromJson(
-          decoded as Map<String, dynamic>,
-        );
-      }
-
-      if (response.statusCode == 401) {
-        throw UnauthorizedException('Unauthorized');
-      }
-
-      if (decoded is Map<String, dynamic> && decoded['message'] != null) {
-        throw ServerException(
-          decoded['message'].toString(),
-          response.statusCode,
-        );
-      }
-
-      throw ServerException('Server Error', response.statusCode);
+      response = await http
+          .post(
+            Uri.parse('${ApiConstants.apiUrl}$path'),
+            headers: {
+              ...ApiConstants.headers(token: token),
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: jsonEncode(online),
+          )
+          .timeout(OfflineEngine.timeout);
     } catch (e) {
-      debugPrint('CREATE STUDENT ERROR: $e');
-      rethrow;
+      if (!OfflineEngine.isNetworkError(e)) rethrow;
+      try {
+        return CreateStudentResponseModel.fromJson(await OfflineStudents.register(body));
+      } catch (offlineError) {
+        throw ServerException(offlineError.toString().replaceFirst('Exception: ', ''), 0);
+      }
     }
-  }
 
-  Future<CreateStudentResponseModel> createNewStudent(
-    StudentModel student,
-  ) async {
-    try {
-      final token = await SessionStorage.getToken();
-      final uri = Uri.parse('${ApiConstants.apiUrl}/student-new');
+    debugPrint('CREATE STUDENT RESPONSE CODE: ${response.statusCode}');
+    debugPrint('CREATE STUDENT RESPONSE BODY: ${response.body}');
 
-      final response = await http.post(
-        uri,
-        headers: {
-          ...ApiConstants.headers(token: token),
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: jsonEncode(student.toNewJson()),
-      );
+    final decoded = jsonDecode(response.body);
 
-      debugPrint('CREATE STUDENT RESPONSE CODE: ${response.statusCode}');
-      debugPrint('CREATE STUDENT RESPONSE BODY: ${response.body}');
-
-      final decoded = jsonDecode(response.body);
-
-      if (response.statusCode == 201) {
-        return CreateStudentResponseModel.fromJson(
-          decoded as Map<String, dynamic>,
-        );
+    if (response.statusCode == 201) {
+      final created = CreateStudentResponseModel.fromJson(decoded as Map<String, dynamic>);
+      final customId = created.student.customId;
+      if (offlinePhoto && customId != null && customId.isNotEmpty) {
+        try {
+          await OfflineSync.instance.uploadPhoto(photoId!, customId);
+        } catch (e) {
+          debugPrint('PHOTO UPLOAD AFTER REGISTRATION FAILED: $e');
+        }
       }
-
-      if (response.statusCode == 401) {
-        throw UnauthorizedException('Unauthorized');
-      }
-
-      if (decoded is Map<String, dynamic> && decoded['message'] != null) {
-        throw ServerException(
-          decoded['message'].toString(),
-          response.statusCode,
-        );
-      }
-
-      throw ServerException('Server Error', response.statusCode);
-    } catch (e) {
-      debugPrint('CREATE STUDENT ERROR: $e');
-      rethrow;
+      return created;
     }
+
+    if (response.statusCode == 401) {
+      throw UnauthorizedException('Unauthorized');
+    }
+
+    if (decoded is Map<String, dynamic> && decoded['message'] != null) {
+      throw ServerException(decoded['message'].toString(), response.statusCode);
+    }
+
+    throw ServerException('Server Error', response.statusCode);
   }
 }

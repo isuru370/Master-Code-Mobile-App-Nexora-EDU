@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../../core/constants/api_constants.dart';
+import '../../../../../core/offline/offline_engine.dart';
+import '../../../../../core/offline/offline_students.dart';
 import '../../../../../core/storage/session_storage.dart';
 import '../model/assignment/assignment_card_request_model.dart';
 import '../model/assignment/assignment_card_response_model.dart';
@@ -22,15 +24,26 @@ class StudentCardRemoteDataSource {
     try {
       final token = await SessionStorage.getToken();
 
-      final response = await http.post(
-        Uri.parse('${ApiConstants.apiUrl}/qr-code'),
-        headers: {
-          ...ApiConstants.headers(token: token),
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: jsonEncode(requestModel.toJson()),
-      );
+      final http.Response response;
+      try {
+        response = await http
+            .post(
+              Uri.parse('${ApiConstants.apiUrl}/qr-code'),
+              headers: {
+                ...ApiConstants.headers(token: token),
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+              },
+              body: jsonEncode(requestModel.toJson()),
+            )
+            .timeout(OfflineEngine.timeout);
+      } catch (e) {
+        if (!OfflineEngine.isNetworkError(e)) rethrow;
+        // no internet: a card from today's offline data
+        return StudentCardResponseModel.fromJson(
+          await OfflineStudents.scanCard(requestModel.qrCode),
+        );
+      }
 
       final Map<String, dynamic> jsonBody =
           jsonDecode(response.body) as Map<String, dynamic>;

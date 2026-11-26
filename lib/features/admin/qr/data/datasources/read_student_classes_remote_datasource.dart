@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../../core/constants/api_constants.dart';
+import '../../../../../core/offline/offline_engine.dart';
+import '../../../../../core/offline/offline_students.dart';
 import '../../../../../core/storage/session_storage.dart';
 import '../model/read_student_classes/read_student_classes_response_model.dart';
 
@@ -17,11 +19,22 @@ class ReadStudentClassesRemoteDatasource {
       '${ApiConstants.apiUrl}/student-class-enrollments/read-student-class',
     );
 
-    final response = await http.post(
-      uri,
-      headers: ApiConstants.headers(token: token),
-      body: jsonEncode({'qr_code': qrCode}),
-    );
+    final http.Response response;
+    try {
+      response = await http
+          .post(
+            uri,
+            headers: ApiConstants.headers(token: token),
+            body: jsonEncode({'qr_code': qrCode}),
+          )
+          .timeout(OfflineEngine.timeout);
+    } catch (e) {
+      if (!OfflineEngine.isNetworkError(e)) rethrow;
+      // no internet: today's classes + the classes added on this phone
+      return ReadStudentClassesResponseModel.fromJson(
+        await OfflineStudents.studentClasses(qrCode),
+      );
+    }
 
     debugPrint('Status code: ${response.statusCode}');
     debugPrint('Response body: ${response.body}');

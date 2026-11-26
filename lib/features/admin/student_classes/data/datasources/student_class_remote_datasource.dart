@@ -4,6 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../../core/constants/api_constants.dart';
+import '../../../../../core/offline/offline_engine.dart';
+import '../../../../../core/offline/offline_students.dart';
 import '../../../../../core/storage/session_storage.dart';
 import '../models/deactivate_enrollment/deactivate_enrollment_request_model.dart';
 import '../models/deactivate_enrollment/deactivate_enrollment_response_model.dart';
@@ -23,10 +25,21 @@ class StudentClassRemoteDatasource {
     try {
       final url = '${ApiConstants.apiUrl}/student-classes/${request.gradeId}';
 
-      final response = await http.get(
-        Uri.parse(url),
-        headers: ApiConstants.headers(token: token),
-      );
+      final http.Response response;
+      try {
+        response = await http
+            .get(
+              Uri.parse(url),
+              headers: ApiConstants.headers(token: token),
+            )
+            .timeout(OfflineEngine.timeout);
+      } catch (e) {
+        if (!OfflineEngine.isNetworkError(e)) rethrow;
+        // no internet: the classes from today's offline data
+        return GetClassesByGradeResponseModel.fromJson(
+          await OfflineStudents.classesByGrade(int.tryParse(request.gradeId) ?? 0),
+        );
+      }
 
       debugPrint('STATUS CODE: ${response.statusCode}');
       debugPrint('RESPONSE BODY: ${response.body}');
@@ -56,11 +69,22 @@ class StudentClassRemoteDatasource {
     try {
       final url = '${ApiConstants.apiUrl}/student-class-enrollments';
 
-      final response = await http.post(
-        Uri.parse(url),
-        headers: ApiConstants.headers(token: token),
-        body: jsonEncode(request.toJson()),
-      );
+      final http.Response response;
+      try {
+        response = await http
+            .post(
+              Uri.parse(url),
+              headers: ApiConstants.headers(token: token),
+              body: jsonEncode(request.toJson()),
+            )
+            .timeout(OfflineEngine.timeout);
+      } catch (e) {
+        if (!OfflineEngine.isNetworkError(e)) rethrow;
+        // no internet: the class is added on this phone and sent later
+        return CreateStudentClassResponseModel.fromJson(
+          await OfflineStudents.enroll(request.toJson()),
+        );
+      }
 
       debugPrint('STATUS CODE: ${response.statusCode}');
       debugPrint('RESPONSE BODY: ${response.body}');

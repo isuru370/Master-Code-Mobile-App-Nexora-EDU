@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import '../../features/admin/qr/data/model/scan_attendance_new/attendance_class_choice_model.dart';
+import 'offline_pack.dart';
 import 'offline_store.dart';
 import 'offline_sync.dart';
 
@@ -33,17 +34,7 @@ class OfflineEngine {
 
   /* ------------------------------------------------------------ pack */
 
-  static Future<_Pack> _pack() async {
-    final json = await OfflineStore.readPack();
-    final today = _date(DateTime.now());
-    if (json == null || json['date'] != today) {
-      throw Exception(
-        'No internet, and today\'s offline data is not on this phone. '
-        'Connect to the internet once to download it.',
-      );
-    }
-    return _Pack(json, await OfflineStore.readQueue());
-  }
+  static Future<OfflinePack> _pack() => OfflinePack.load();
 
   /* ------------------------------------------------------ attendance */
 
@@ -67,7 +58,7 @@ class OfflineEngine {
       throw Exception('No active class found for this student at this time.');
     }
 
-    _Open current;
+    OfflineOpenClass current;
     if (scheduleId != null) {
       final match = open.where((o) => _int(o.schedule['id']) == scheduleId);
       if (match.isEmpty) throw Exception('The selected class is not open for attendance now.');
@@ -100,6 +91,7 @@ class OfflineEngine {
         'happened_at': OfflineStore.timestamp(now),
         'student_id': studentId,
         'enrollment_id': _int(current.enrollment['id']),
+        ...pack.refs(studentId: studentId, enrollmentId: _int(current.enrollment['id'])),
         'schedule_id': scheduleIdNow,
         'mark_method': markMethod == 'manual_mobile' ? 'manual_mobile' : 'qr_mobile',
         '_status': 'pending',
@@ -164,7 +156,7 @@ class OfflineEngine {
 
     final month = _month(DateTime.now());
     final classes = pack.enrollmentsOf(_int(student['id'])).map((enrollment) {
-      final schedule = pack.scheduleFor(enrollment) ?? const <String, dynamic>{};
+      final schedule = pack.classInfo(enrollment);
       final paid = pack.isMonthPaid(enrollment, month);
       final fee = _num(enrollment['payable']);
       final option = enrollment['fee_option'];
@@ -301,7 +293,7 @@ class OfflineEngine {
     for (final c in checked) {
       final item = c['item'] as Map<String, dynamic>;
       final enrollment = c['enrollment'] as Map<String, dynamic>;
-      final schedule = pack.scheduleFor(enrollment) ?? const <String, dynamic>{};
+      final schedule = pack.classInfo(enrollment);
       final receipt = await OfflineStore.nextReceiptNumber();
       final amount = _num(item['amount']);
 
@@ -311,6 +303,7 @@ class OfflineEngine {
         'happened_at': OfflineStore.timestamp(now),
         'student_id': _int(enrollment['student_id']),
         'enrollment_id': _int(enrollment['id']),
+        ...pack.refs(studentId: _int(enrollment['student_id']), enrollmentId: _int(enrollment['id'])),
         'payment_month': c['month'],
         'amount': amount,
         'discount_amount': _num(item['discount_amount']),
@@ -441,129 +434,5 @@ class OfflineEngine {
     if (parts.length < 2) return month;
     final m = int.tryParse(parts[1]) ?? 1;
     return '${_monthNames[(m - 1).clamp(0, 11)]} ${parts[0]}';
-  }
-}
-
-class _Open {
-  _Open(this.schedule, this.enrollment);
-  final Map<String, dynamic> schedule;
-  final Map<String, dynamic> enrollment;
-}
-
-class _Pack {
-  _Pack(this.json, this.queue);
-
-  final Map<String, dynamic> json;
-  final List<Map<String, dynamic>> queue;
-
-  List<Map<String, dynamic>> _list(String key) =>
-      (json[key] as List? ?? const []).whereType<Map>().map((e) => Map<String, dynamic>.from(e)).toList();
-
-  late final List<Map<String, dynamic>> schedules = _list('schedules');
-  late final List<Map<String, dynamic>> students = _list('students');
-  late final List<Map<String, dynamic>> enrollments = _list('enrollments');
-
-  Map<String, dynamic> get paymentRules {
-    final rules = json['rules'];
-    final payment = rules is Map ? rules['payment'] : null;
-    return payment is Map ? Map<String, dynamic>.from(payment) : const {};
-  }
-
-  static int _int(dynamic v) => int.tryParse(v?.toString() ?? '') ?? 0;
-
-  Map<String, dynamic>? studentByCode(String code) {
-    final wanted = code.trim().toUpperCase();
-    for (final s in students) {
-      final codes = (s['codes'] as List? ?? const []).map((c) => c.toString().toUpperCase());
-      if (codes.contains(wanted)) return s;
-    }
-    return null;
-  }
-
-  Map<String, dynamic>? studentById(int id) {
-    for (final s in students) {
-      if (_int(s['id']) == id) return s;
-    }
-    return null;
-  }
-
-  Map<String, dynamic>? enrollment(int id) {
-    for (final e in enrollments) {
-      if (_int(e['id']) == id) return e;
-    }
-    return null;
-  }
-
-  List<Map<String, dynamic>> enrollmentsOf(int studentId) =>
-      enrollments.where((e) => _int(e['student_id']) == studentId).toList();
-
-  Map<String, dynamic>? scheduleFor(Map<String, dynamic> enrollment) {
-    for (final s in schedules) {
-      if (_int(s['student_class_id']) == _int(enrollment['student_class_id']) &&
-          _int(s['class_category_fee_id']) == _int(enrollment['class_category_fee_id'])) {
-        return s;
-      }
-    }
-    return null;
-  }
-
-  List<Map<String, dynamic>> feeOptions(int classCategoryFeeId) {
-    final all = json['fee_options'];
-    if (all is! Map) return const [];
-    final list = all[classCategoryFeeId.toString()];
-    return (list as List? ?? const []).whereType<Map>().map((e) => Map<String, dynamic>.from(e)).toList();
-  }
-
-  /// The student's classes open for attendance now (Payment & Attendance Rules).
-  List<_Open> openClasses(int studentId, DateTime now) {
-    final open = <_Open>[];
-    for (final e in enrollmentsOf(studentId)) {
-      for (final s in schedules) {
-        if (_int(s['student_class_id']) != _int(e['student_class_id']) ||
-            _int(s['class_category_fee_id']) != _int(e['class_category_fee_id'])) {
-          continue;
-        }
-        final from = DateTime.tryParse(s['scan_from']?.toString() ?? '')?.toLocal();
-        final until = DateTime.tryParse(s['scan_until']?.toString() ?? '')?.toLocal();
-        if (from != null && until != null && !now.isBefore(from) && !now.isAfter(until)) {
-          open.add(_Open(s, e));
-        }
-      }
-    }
-    return open;
-  }
-
-  bool attendanceMarked(int studentId, int scheduleId) => queue.any((q) =>
-      q['type'] == 'attendance' &&
-      _int(q['student_id']) == studentId &&
-      _int(q['schedule_id']) == scheduleId &&
-      q['_status'] != 'failed');
-
-  /// Paid on the server (pack) or on this phone (queue), for any enrollment
-  /// of the same student + class + category (a fee option change makes a
-  /// new enrollment).
-  bool isMonthPaid(Map<String, dynamic> enrollment, String month) {
-    final studentId = _int(enrollment['student_id']);
-    final classId = _int(enrollment['student_class_id']);
-    final feeId = _int(enrollment['class_category_fee_id']);
-
-    final sameGroup = enrollments
-        .where((e) =>
-            _int(e['student_id']) == studentId &&
-            _int(e['student_class_id']) == classId &&
-            _int(e['class_category_fee_id']) == feeId)
-        .toList();
-
-    for (final e in sameGroup) {
-      if ((e['paid_months'] as List? ?? const []).map((m) => m.toString()).contains(month)) return true;
-    }
-
-    final ids = sameGroup.map((e) => _int(e['id'])).toSet();
-    return queue.any((q) =>
-        q['type'] == 'payment' &&
-        ids.contains(_int(q['enrollment_id'])) &&
-        q['payment_month'] == month &&
-        q['_status'] != 'failed' &&
-        q['_status'] != 'conflict');
   }
 }
