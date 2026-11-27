@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../../../../../core/constants/api_constants.dart';
+import '../../../../../core/offline/offline_engine.dart';
 import '../../../../../core/storage/session_storage.dart';
 import '../models/mark_payment_request_model.dart';
 import '../models/mark_payment_response_model.dart';
@@ -20,11 +21,24 @@ class MarkPaymentRemoteDataSource {
     try {
       final token = await SessionStorage.getToken();
 
-      final response = await http.post(
-        Uri.parse('${ApiConstants.apiUrl}/new-payment/bulk-pay'),
-        headers: ApiConstants.headers(token: token),
-        body: jsonEncode(requestModel.toJson()),
-      );
+      final http.Response response;
+      try {
+        response = await http
+            .post(
+              Uri.parse('${ApiConstants.apiUrl}/new-payment/bulk-pay'),
+              headers: ApiConstants.headers(token: token),
+              body: jsonEncode(requestModel.toJson()),
+            )
+            .timeout(OfflineEngine.timeout);
+      } catch (e) {
+        if (!OfflineEngine.isNetworkError(e)) rethrow;
+        // no internet: saved on this phone with an offline receipt number
+        final items = (requestModel.toJson()['payments'] as List)
+            .whereType<Map>()
+            .map((item) => Map<String, dynamic>.from(item))
+            .toList();
+        return MarkPaymentResponseModel.fromJson(await OfflineEngine.bulkPay(items));
+      }
 
       final dynamic decoded = jsonDecode(response.body);
 

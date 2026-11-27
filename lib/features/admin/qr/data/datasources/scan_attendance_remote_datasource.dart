@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../../core/constants/api_constants.dart';
+import '../../../../../core/offline/offline_engine.dart';
 import '../../../../../core/storage/session_storage.dart';
 import '../model/scan_attendance_new/attendance_class_choice_model.dart';
 import '../model/scan_attendance_new/scan_attendance_request_model.dart';
@@ -15,11 +16,26 @@ class ScanAttendanceRemoteDatasource {
   }) async {
     final token = await SessionStorage.getToken();
 
-    final response = await http.post(
-      Uri.parse('${ApiConstants.apiUrl}/new-attendance/scan'),
-      headers: ApiConstants.headers(token: token),
-      body: jsonEncode(requestModel.toJson()),
-    );
+    final http.Response response;
+    try {
+      response = await http
+          .post(
+            Uri.parse('${ApiConstants.apiUrl}/new-attendance/scan'),
+            headers: ApiConstants.headers(token: token),
+            body: jsonEncode(requestModel.toJson()),
+          )
+          .timeout(OfflineEngine.timeout);
+    } catch (e) {
+      if (!OfflineEngine.isNetworkError(e)) rethrow;
+      // no internet: mark it on this phone from today's offline data
+      return ScanAttendanceResponseModel.fromJson(
+        await OfflineEngine.scanAttendance(
+          code: requestModel.code,
+          markMethod: requestModel.markMethod,
+          scheduleId: requestModel.scheduleId,
+        ),
+      );
+    }
 
     debugPrint('ATTENDANCE STATUS: ${response.statusCode}');
 

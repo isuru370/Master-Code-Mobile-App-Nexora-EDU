@@ -338,7 +338,7 @@ class _CreateNewStudentPageState extends State<CreateNewStudentPage> {
                                       return null;
                                     }
 
-                                    final regex = RegExp(r'^QP-\d{3}$');
+                                    final regex = RegExp(r'^(QP-\d{3,}|OF-PHOTO-\d+)$'); // OF-PHOTO: taken offline
                                     if (!regex.hasMatch(value.trim())) {
                                       return 'Use format like QP-001';
                                     }

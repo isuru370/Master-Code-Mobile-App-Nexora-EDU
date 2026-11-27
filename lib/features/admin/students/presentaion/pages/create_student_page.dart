@@ -176,7 +176,7 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
             if (!mounted) return;
 
             await _showRegisteredDialog(
-              customId: response.student.customId ?? '-',
+              customId: response.student.customId ?? 'After sync',
               card: response.student.temporaryQrCode ?? '-',
               name: response.student.initialName,
             );
@@ -330,7 +330,7 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
                                 return null;
                               }
 
-                              final regex = RegExp(r'^QP-\d{3}$');
+                              final regex = RegExp(r'^(QP-\d{3,}|OF-PHOTO-\d+)$'); // OF-PHOTO: taken offline
                               if (!regex.hasMatch(value.trim())) {
                                 return 'Use format like QP-001';
                               }

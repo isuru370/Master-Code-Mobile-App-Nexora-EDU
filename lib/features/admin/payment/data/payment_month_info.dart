@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../../../../core/constants/api_constants.dart';
+import '../../../../core/offline/offline_engine.dart';
 import '../../../../core/storage/session_storage.dart';
 
 /// One class + one month on the payment screen (POST /api/new-payment/month-info):
@@ -121,15 +122,26 @@ class PaymentMonthInfo {
     try {
       final token = await SessionStorage.getToken();
 
-      final response = await http.post(
-        Uri.parse('${ApiConstants.apiUrl}/new-payment/month-info'),
-        headers: ApiConstants.headers(token: token),
-        body: jsonEncode({
-          'code': code,
-          'enrollment_id': enrollmentId,
-          'payment_month': paymentMonth,
-        }),
-      );
+      final http.Response response;
+      try {
+        response = await http
+            .post(
+              Uri.parse('${ApiConstants.apiUrl}/new-payment/month-info'),
+              headers: ApiConstants.headers(token: token),
+              body: jsonEncode({
+                'code': code,
+                'enrollment_id': enrollmentId,
+                'payment_month': paymentMonth,
+              }),
+            )
+            .timeout(OfflineEngine.timeout);
+      } catch (e) {
+        if (!OfflineEngine.isNetworkError(e)) rethrow;
+        // no internet: fee, fee options and "already paid" from today's offline data
+        return PaymentMonthInfo.fromJson(
+          await OfflineEngine.monthInfo(code: code, enrollmentId: enrollmentId, paymentMonth: paymentMonth),
+        );
+      }
 
       if (response.statusCode != 200) return null;
 

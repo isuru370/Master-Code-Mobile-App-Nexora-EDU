@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../../core/constants/api_constants.dart';
+import '../../../../../core/offline/offline_engine.dart';
 import '../../../../../core/storage/session_storage.dart';
 import '../model/scan_payment_new/scan_payment_request_model.dart';
 import '../model/scan_payment_new/scan_payment_response_model.dart';
@@ -14,13 +15,24 @@ class ScanPaymentRemoteDatasource {
   }) async {
     final token = await SessionStorage.getToken();
 
-    final response = await http.post(
-      Uri.parse('${ApiConstants.apiUrl}/new-payment/read'),
-      headers: ApiConstants.headers(token: token),
-      body: jsonEncode(
-        requestModel.toJson(),
-      ),
-    );
+    final http.Response response;
+    try {
+      response = await http
+          .post(
+            Uri.parse('${ApiConstants.apiUrl}/new-payment/read'),
+            headers: ApiConstants.headers(token: token),
+            body: jsonEncode(
+              requestModel.toJson(),
+            ),
+          )
+          .timeout(OfflineEngine.timeout);
+    } catch (e) {
+      if (!OfflineEngine.isNetworkError(e)) rethrow;
+      // no internet: the student and classes from today's offline data
+      return ScanPaymentResponseModel.fromJson(
+        await OfflineEngine.readPayment(requestModel.code),
+      );
+    }
 
     debugPrint(
       'PAYMENT SCAN STATUS: ${response.statusCode}',
