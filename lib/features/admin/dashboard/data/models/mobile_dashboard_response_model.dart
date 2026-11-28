@@ -9,17 +9,23 @@ class MobileDashboardResponseModel {
   final String message;
   final MobileDashboardData data;
 
+  /// Offline: the last dashboard saved on the phone, and when it was loaded.
+  /// null = fresh from the server.
+  final DateTime? cachedAt;
+
   MobileDashboardResponseModel({
     required this.success,
     required this.message,
     required this.data,
+    this.cachedAt,
   });
 
-  factory MobileDashboardResponseModel.fromJson(Map<String, dynamic> json) {
+  factory MobileDashboardResponseModel.fromJson(Map<String, dynamic> json, {DateTime? cachedAt}) {
     return MobileDashboardResponseModel(
       success: json['success'] == true,
       message: JsonRead.toStr(json['message']) ?? '',
       data: MobileDashboardData.fromJson(JsonRead.map(json['data'])),
+      cachedAt: cachedAt,
     );
   }
 }

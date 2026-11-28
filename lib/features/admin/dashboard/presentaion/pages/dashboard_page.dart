@@ -6,7 +6,6 @@ import 'package:nexorait_education_app/core/enums/scan_type.dart';
 import '../../../../../core/enums/scan_student_card.dart';
 import '../../../../../core/features/app_features.dart';
 import '../../../../../core/navigation/role_router.dart';
-import '../../../../../core/offline/offline_banner.dart';
 import '../../../../../core/offline/offline_store.dart';
 import '../../../../../core/offline/offline_sync.dart';
 import '../../../../../core/navigation/staff_features.dart';
@@ -22,6 +21,7 @@ import '../../../../auth/data/models/user_model.dart';
 import '../../data/models/mobile_dashboard_response_model.dart';
 import '../bloc/mobile_dashboard/mobile_dashboard_bloc.dart';
 import '../widgets/dashboard_sections.dart';
+import '../widgets/offline_dashboard.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -31,7 +31,6 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  String? _token;
   UserModel? _user;
   bool _showPrinterBanner = false;
   bool _loadingSession = true;
@@ -84,6 +83,26 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
+  bool _wasOnline = true;
+
+  /// Back online while the saved (offline) dashboard is shown: load it again.
+  void _onSyncStatus() {
+    final online = OfflineSync.instance.status.value.online;
+    if (online && !_wasOnline && mounted) {
+      final state = context.read<MobileDashboardBloc>().state;
+      if (state is MobileDashboardError || (state is MobileDashboardLoaded && state.dashboard.cachedAt != null)) {
+        context.read<MobileDashboardBloc>().add(GetMobileDashboardEvent());
+      }
+    }
+    _wasOnline = online;
+  }
+
+  @override
+  void dispose() {
+    OfflineSync.instance.status.removeListener(_onSyncStatus);
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -93,6 +112,8 @@ class _DashboardPageState extends State<DashboardPage> {
 
     // Offline mode: download today's classes, send what was saved offline
     OfflineSync.instance.start();
+    _wasOnline = OfflineSync.instance.status.value.online;
+    OfflineSync.instance.status.addListener(_onSyncStatus);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
@@ -143,7 +164,6 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Future<void> _loadSession() async {
-    final token = await SessionStorage.getToken();
     final user = await SessionStorage.getUser();
     final role = await SessionStorage.getRole();
     final branches = await SessionStorage.getBranches();
@@ -152,7 +172,6 @@ class _DashboardPageState extends State<DashboardPage> {
     if (!mounted) return;
 
     setState(() {
-      _token = token;
       _user = user;
       _role = role;
       _branches = branches;
@@ -329,6 +348,7 @@ class _DashboardPageState extends State<DashboardPage> {
     // The next user may work in another branch: drop today's offline data
     OfflineSync.instance.stop();
     await OfflineStore.clearPack();
+    await OfflineStore.clearCache();
 
     if (!mounted) return;
 
@@ -474,20 +494,6 @@ class _DashboardPageState extends State<DashboardPage> {
     }
 
     return _moneyFormat.format(number);
-  }
-
-  String _getGreeting() {
-    final hour = DateTime.now().hour;
-
-    if (hour < 12) {
-      return 'Good Morning';
-    }
-
-    if (hour < 17) {
-      return 'Good Afternoon';
-    }
-
-    return 'Good Evening';
   }
 
   void _showPrinterSuggestionDialog() {
@@ -813,38 +819,17 @@ class _DashboardPageState extends State<DashboardPage> {
                   }
 
                   if (state is MobileDashboardError) {
+                    // no dashboard on the phone yet: the offline part still works
                     return ListView(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
                       children: [
-                        const OfflineBanner(),
-                        const SizedBox(height: 12),
-                        // Offline: the scanners still work from today's data
-                        Row(
-                          children: [
-                            Expanded(
-                              child: FilledButton.icon(
-                                onPressed: () => Navigator.pushNamed(context, '/attendance-scan'),
-                                icon: const Icon(Icons.qr_code_scanner_rounded),
-                                label: const Text('Attendance'),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: FilledButton.icon(
-                                onPressed: () => Navigator.pushNamed(context, '/payment-scan'),
-                                icon: const Icon(Icons.payments_rounded),
-                                label: const Text('Payment'),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 24),
+                        ..._offlineFirstTop(width: width),
                         NxCard(
                           child: Column(
                             children: [
                               NxEmpty(
-                                icon: Icons.error_outline_rounded,
-                                tone: NxTone.red,
+                                icon: Icons.cloud_off_rounded,
+                                tone: NxTone.gray,
                                 message: state.message,
                                 onRetry: _refreshDashboard,
                               ),
@@ -866,9 +851,8 @@ class _DashboardPageState extends State<DashboardPage> {
 
                   return _buildDashboard(
                     state.dashboard.data,
-                    userName: userName,
-                    userEmail: userEmail,
                     width: width,
+                    cachedAt: state.dashboard.cachedAt,
                   );
                 },
               ),
@@ -882,11 +866,194 @@ class _DashboardPageState extends State<DashboardPage> {
   |--------------------------------------------------------------------------
   */
 
+  /// Buttons: the work that runs offline (big), the rest (small, grey offline).
+  (List<WorkAction>, List<WorkAction>) _workActions() {
+    final main = <WorkAction>[
+      if (_can('attendance'))
+        WorkAction(
+          label: 'Attendance',
+          sub: 'Scan student card',
+          icon: Icons.qr_code_scanner_rounded,
+          color: AppColors.primary,
+          tint: AppColors.primaryLight,
+          offline: true,
+          onTap: () => Navigator.pushNamed(context, '/attendance-scan'),
+        ),
+      if (_can('payment'))
+        WorkAction(
+          label: 'Payment',
+          sub: 'Class fees',
+          icon: Icons.payments_rounded,
+          color: AppColors.successText,
+          tint: AppColors.successLight,
+          offline: true,
+          onTap: () => Navigator.pushNamed(context, '/payment-scan'),
+        ),
+      if (_can('register_student'))
+        WorkAction(
+          label: 'Register',
+          sub: 'New student',
+          icon: Icons.person_add_alt_1_rounded,
+          color: AppColors.violet,
+          tint: AppColors.violetLight,
+          offline: true,
+          onTap: _openRegisterChooser,
+        ),
+      if (_can('add_class'))
+        WorkAction(
+          label: 'Add Class',
+          sub: 'Join a class',
+          icon: Icons.class_rounded,
+          color: AppColors.warningText,
+          tint: AppColors.warningLight,
+          offline: true,
+          onTap: () => Navigator.pushNamed(
+            context,
+            '/qr-scan',
+            arguments: {'type': ScanType.classes},
+          ),
+        ),
+    ];
+
+    final more = <WorkAction>[
+      if (_can('admission'))
+        WorkAction(
+          label: 'Admission',
+          icon: Icons.how_to_reg_rounded,
+          color: AppColors.warningText,
+          onTap: () => Navigator.pushNamed(context, '/admission-payment'),
+        ),
+      if (_can('student_tute'))
+        WorkAction(
+          label: 'Student Tute',
+          icon: Icons.menu_book_rounded,
+          color: AppColors.infoText,
+          onTap: () => Navigator.pushNamed(
+            context,
+            '/qr-scan',
+            arguments: {'type': ScanType.tute},
+          ),
+        ),
+      if (_can('today_payments'))
+        WorkAction(
+          label: 'Today Payments',
+          icon: Icons.receipt_long_rounded,
+          color: AppColors.successText,
+          onTap: () => Navigator.pushNamed(context, '/today-payment'),
+        ),
+      if (_can('today_classes'))
+        WorkAction(
+          label: 'Today Classes',
+          icon: Icons.today_rounded,
+          color: AppColors.primary,
+          onTap: () => Navigator.pushNamed(context, '/today-class'),
+        ),
+      if (_hasCourses) ...[
+        WorkAction(
+          label: 'Course Attendance',
+          icon: Icons.school_rounded,
+          color: AppColors.primary,
+          onTap: () => Navigator.pushNamed(context, '/course-attendance'),
+        ),
+        WorkAction(
+          label: 'Course Payment',
+          icon: Icons.account_balance_wallet_rounded,
+          color: AppColors.successText,
+          onTap: () => Navigator.pushNamed(context, '/course-payment'),
+        ),
+      ],
+      if (_canTeacherAdvance)
+        WorkAction(
+          label: 'Teacher Advance',
+          icon: Icons.volunteer_activism_rounded,
+          color: AppColors.violet,
+          onTap: () => Navigator.pushNamed(context, '/teacher-advance'),
+        ),
+    ];
+
+    return (main, more);
+  }
+
+  /// The part of the dashboard that works offline: sync card, work buttons,
+  /// today, what is saved on this phone, today's classes.
+  /// [dashboard] null = no dashboard on the phone yet; [cachedAt] set = the
+  /// dashboard saved on the phone (offline).
+  List<Widget> _offlineFirstTop({
+    required double width,
+    MobileDashboardData? dashboard,
+    DateTime? cachedAt,
+  }) {
+    final fresh = dashboard != null && cachedAt == null;
+    final (main, more) = _workActions();
+    final showBranch = dashboard != null && dashboard.branch == null && dashboard.branches.length > 1;
+
+    return [
+      const OfflineSyncHero(),
+      const SizedBox(height: 16),
+
+      // Printer
+      if (_showPrinterBanner) ...[
+        NxAlert(
+          tone: NxTone.amber,
+          icon: Icons.print_disabled_rounded,
+          message: 'Printer not connected. Connect it to print receipts.',
+          action: TextButton(
+            onPressed: () async {
+              await Navigator.pushNamed(context, '/print_test_screen');
+              await _checkPrinterStatus();
+            },
+            child: const Text('Connect'),
+          ),
+        ),
+        const SizedBox(height: 12),
+      ],
+
+      // Alerts from the server (low cards, cancelled classes ...)
+      if (fresh) DashboardAlertsList(alerts: dashboard.alerts),
+
+      DashboardWorkGrid(main: main, more: more, columns: width > 600 ? 4 : 2),
+      const SizedBox(height: 20),
+
+      TodayTiles(
+        serverAttendance: fresh ? dashboard.todayAttendanceCount : null,
+        serverCollected: fresh ? dashboard.collection.todayTotal : null,
+        serverMine: fresh && dashboard.isCashier ? dashboard.collection.myToday : null,
+        serverClasses: fresh ? dashboard.classes.todayRunning : null,
+        onTapPayments: _can('today_payments') ? () => Navigator.pushNamed(context, '/today-payment') : null,
+      ),
+      const SizedBox(height: 12),
+
+      // Money in detail (server)
+      if (fresh) ...[
+        CollectionSummaryCard(
+          collection: dashboard.collection,
+          highlightMine: dashboard.isCashier,
+          onTap: _can('today_payments') ? () => Navigator.pushNamed(context, '/today-payment') : null,
+        ),
+        const SizedBox(height: 8),
+      ],
+      const SizedBox(height: 12),
+
+      const PhoneQueuePreview(),
+
+      // Today's classes: the server's while online, today's offline data otherwise
+      if (fresh) ...[
+        DashboardSectionTitle(
+          title: "Today's Classes",
+          actionText: 'See all',
+          onAction: _can('today_classes') ? () => Navigator.pushNamed(context, '/today-class') : null,
+        ),
+        TodayClassesList(classes: dashboard.todayClasses, showBranch: showBranch),
+      ] else
+        OfflineClassesList(showBranch: showBranch),
+      const SizedBox(height: 24),
+    ];
+  }
+
   Widget _buildDashboard(
     MobileDashboardData dashboard, {
-    required String userName,
-    required String userEmail,
     required double width,
+    DateTime? cachedAt,
   }) {
     final columns = width > 900
         ? 4
@@ -894,83 +1061,9 @@ class _DashboardPageState extends State<DashboardPage> {
         ? 3
         : 2;
 
-    // Looking at several branches -> show the branch name on class rows
-    final showBranch =
-        dashboard.branch == null && dashboard.branches.length > 1;
-
-    final quickActions = <Widget>[
-      if (_can('attendance'))
-        _QuickActionCard(
-          icon: Icons.assignment_turned_in_sharp,
-          label: 'Attendance',
-          tone: NxTone.blue,
-          onTap: () => Navigator.pushNamed(context, '/attendance-scan'),
-        ),
-      if (_can('payment'))
-        _QuickActionCard(
-          icon: Icons.payments_rounded,
-          label: 'Payment',
-          tone: NxTone.green,
-          onTap: () => Navigator.pushNamed(context, '/payment-scan'),
-        ),
-      if (_can('add_class'))
-        _QuickActionCard(
-          icon: Icons.class_rounded,
-          label: 'Add Class',
-          tone: NxTone.violet,
-          onTap: () => Navigator.pushNamed(
-            context,
-            '/qr-scan',
-            arguments: {'type': ScanType.classes},
-          ),
-        ),
-      if (_can('student_tute'))
-        _QuickActionCard(
-          icon: Icons.menu_book_rounded,
-          label: 'Student Tute',
-          tone: NxTone.info,
-          onTap: () => Navigator.pushNamed(
-            context,
-            '/qr-scan',
-            arguments: {'type': ScanType.tute},
-          ),
-        ),
-      if (_hasCourses) ...[
-        _QuickActionCard(
-          icon: Icons.school_rounded,
-          label: 'Course Attendance',
-          tone: NxTone.blue,
-          onTap: () => Navigator.pushNamed(context, '/course-attendance'),
-        ),
-        _QuickActionCard(
-          icon: Icons.account_balance_wallet_rounded,
-          label: 'Course Payment',
-          tone: NxTone.green,
-          onTap: () => Navigator.pushNamed(context, '/course-payment'),
-        ),
-      ],
-      if (_can('admission'))
-        _QuickActionCard(
-          icon: Icons.how_to_reg_rounded,
-          label: 'Admission',
-          tone: NxTone.amber,
-          onTap: () => Navigator.pushNamed(context, '/admission-payment'),
-        ),
-      if (_canTeacherAdvance)
-        _QuickActionCard(
-          icon: Icons.volunteer_activism_rounded,
-          label: 'Teacher Advance',
-          tone: NxTone.violet,
-          onTap: () => Navigator.pushNamed(context, '/teacher-advance'),
-        ),
-      if (_can('register_student'))
-        _QuickActionCard(
-          icon: Icons.person_add_alt_1_rounded,
-          label: 'Register Student',
-          tone: NxTone.violet,
-          onTap: _openRegisterChooser,
-        ),
-    ];
+    // Saved on the phone (offline): the numbers are as of then
+    final asOf = cachedAt == null ? null : asOfNote(cachedAt);
+    String titled(String title) => asOf == null ? title : '$title · $asOf';
 
     final overview = [
       ('Students', dashboard.students.total.toString(), Icons.people_alt_rounded, NxTone.blue),
@@ -981,134 +1074,33 @@ class _DashboardPageState extends State<DashboardPage> {
       ('Temporary', dashboard.students.temporary.toString(), Icons.qr_code_2_rounded, NxTone.red),
       ('New This Month', dashboard.students.newThisMonth.toString(), Icons.fiber_new_rounded, NxTone.amber),
       ('Tutes Today', dashboard.tutesIssuedToday.toString(), Icons.menu_book_rounded, NxTone.info),
+      // Only Admin gets the SMS balance from the server
+      if (dashboard.smsBalance != null)
+        (
+          'SMS Balance',
+          dashboard.smsBalance!.success ? _money(dashboard.smsBalance!.data.currentBalance) : 'N/A',
+          Icons.sms_rounded,
+          NxTone.blue,
+        ),
     ];
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
       children: [
-        const OfflineBanner(),
-        const SizedBox(height: 12),
-
-        // Printer
-        if (_showPrinterBanner) ...[
-          NxAlert(
-            tone: NxTone.amber,
-            icon: Icons.print_disabled_rounded,
-            message: 'Printer not connected. Connect it to print receipts.',
-            action: TextButton(
-              onPressed: () async {
-                await Navigator.pushNamed(context, '/print_test_screen');
-                await _checkPrinterStatus();
-              },
-              child: const Text('Connect'),
-            ),
-          ),
-          const SizedBox(height: 12),
-        ],
-
-        // Alerts from the server (low cards, cancelled classes ...)
-        DashboardAlertsList(alerts: dashboard.alerts),
-
-        // Hero
-        _heroCard(
-          userName: userName,
-          userEmail: userEmail,
-          // Only Admin gets the SMS balance from the server
-          smsBalance: dashboard.smsBalance == null
-              ? null
-              : dashboard.smsBalance!.success
-              ? _money(dashboard.smsBalance!.data.currentBalance)
-              : 'N/A',
-          tokenActive: _token != null,
-          roleLabel: _roleLabel,
-          branchLabel: dashboard.branch?.name ?? _branchLabel,
-        ),
-        const SizedBox(height: 16),
-
-        // Today classes / attendance
-        Row(
-          children: [
-            Expanded(
-              child: NxStatCard(
-                onTap: _can('today_classes')
-                    ? () => Navigator.pushNamed(context, '/today-class')
-                    : null,
-                label: 'Today Classes',
-                value: dashboard.classes.todayRunning.toString(),
-                icon: Icons.today_rounded,
-                tone: NxTone.amber,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: NxStatCard(
-                onTap: _can('attendance')
-                    ? () => Navigator.pushNamed(context, '/attendance-scan')
-                    : null,
-                label: 'Attendance',
-                value: dashboard.todayAttendanceCount.toString(),
-                note: 'Marked today',
-                icon: Icons.fact_check_rounded,
-                tone: NxTone.blue,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-
-        // Money
-        CollectionSummaryCard(
-          collection: dashboard.collection,
-          highlightMine: dashboard.isCashier,
-          onTap: _can('today_payments')
-              ? () => Navigator.pushNamed(context, '/today-payment')
-              : null,
-        ),
-        const SizedBox(height: 24),
-
-        // Quick actions
-        if (quickActions.isNotEmpty) ...[
-          const DashboardSectionTitle(title: 'Quick Actions'),
-          GridView(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: width > 600 ? 3 : 2,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              mainAxisExtent: 64,
-            ),
-            children: quickActions,
-          ),
-          const SizedBox(height: 24),
-        ],
+        ..._offlineFirstTop(width: width, dashboard: dashboard, cachedAt: cachedAt),
 
         // Finance (Admin / Branch Admin only - null for Cashier)
         if (dashboard.finance != null) ...[
-          const DashboardSectionTitle(title: "Today's Finance"),
+          DashboardSectionTitle(title: titled("Today's Finance")),
           FinanceSummaryCard(finance: dashboard.finance!),
           const SizedBox(height: 24),
         ],
 
-        // Today's classes
-        DashboardSectionTitle(
-          title: "Today's Classes",
-          actionText: 'See all',
-          onAction: _can('today_classes')
-              ? () => Navigator.pushNamed(context, '/today-class')
-              : null,
-        ),
-        TodayClassesList(
-          classes: dashboard.todayClasses,
-          showBranch: showBranch,
-        ),
-        const SizedBox(height: 24),
-
         // Recent payments
         DashboardSectionTitle(
-          title: 'Recent Payments',
-          actionText: 'See all',
-          onAction: _can('today_payments')
+          title: titled('Recent Payments'),
+          actionText: asOf == null ? 'See all' : null,
+          onAction: asOf == null && _can('today_payments')
               ? () => Navigator.pushNamed(context, '/today-payment')
               : null,
         ),
@@ -1116,7 +1108,7 @@ class _DashboardPageState extends State<DashboardPage> {
         const SizedBox(height: 24),
 
         // ID cards
-        const DashboardSectionTitle(title: 'ID Card Stock'),
+        DashboardSectionTitle(title: titled('ID Card Stock')),
         CardStockCard(
           cards: dashboard.cards,
           // permanent-card institutes do not use temporary cards
@@ -1125,7 +1117,7 @@ class _DashboardPageState extends State<DashboardPage> {
         const SizedBox(height: 24),
 
         // Overview
-        const DashboardSectionTitle(title: 'Overview'),
+        DashboardSectionTitle(title: titled('Institute Overview')),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -1153,76 +1145,6 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Widget _sectionHeader(String title) => NxDrawerSection(title);
 
-  Widget _heroCard({
-    required String userName,
-    required String userEmail,
-    required String? smsBalance,
-    required bool tokenActive,
-    String roleLabel = '',
-    String branchLabel = '',
-  }) {
-    return NxHero(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            _getGreeting().toUpperCase(),
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: .75),
-              fontSize: 11,
-              letterSpacing: .8,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            userName,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            userEmail,
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: .8),
-              fontSize: 13,
-            ),
-          ),
-          const SizedBox(height: 14),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              NxHeroChip(
-                icon: Icons.calendar_today_rounded,
-                text: DateFormat('EEE, dd MMM yyyy').format(DateTime.now()),
-              ),
-              if (roleLabel.isNotEmpty)
-                NxHeroChip(icon: Icons.badge_rounded, text: roleLabel),
-              if (branchLabel.isNotEmpty)
-                NxHeroChip(
-                  icon: Icons.store_mall_directory_rounded,
-                  text: branchLabel,
-                ),
-              if (smsBalance != null)
-                NxHeroChip(icon: Icons.sms_rounded, text: 'SMS: $smsBalance'),
-              if (!tokenActive)
-                const NxHeroChip(
-                  icon: Icons.warning_amber_rounded,
-                  text: 'No session',
-                ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
   /// Sidebar item: closes the drawer, then opens the page.
   Widget _drawerTile({
     required IconData icon,
@@ -1239,24 +1161,5 @@ class _DashboardPageState extends State<DashboardPage> {
         onTap();
       },
     );
-  }
-}
-
-class _QuickActionCard extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final NxTone tone;
-  final VoidCallback onTap;
-
-  const _QuickActionCard({
-    required this.icon,
-    required this.label,
-    required this.tone,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return NxQuickAction(icon: icon, title: label, tone: tone, onTap: onTap);
   }
 }
