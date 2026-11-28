@@ -101,6 +101,31 @@ class OfflineStore {
         await _write('queue', queue);
       });
 
+  /* ----------------------------------------------------------- cache */
+
+  /// The last answer of a screen (dashboard), shown "as of" while offline.
+  /// Only numbers and names the screen already shows.
+  static Future<void> writeCache(String key, Map<String, dynamic> body) => _locked(() => _write(
+        'cache_$key',
+        {'saved_at': DateTime.now().toIso8601String(), 'body': body},
+      ));
+
+  static Future<({DateTime savedAt, Map<String, dynamic> body})?> readCache(String key) async {
+    final data = await _read('cache_$key');
+    if (data is! Map || data['body'] is! Map) return null;
+    final savedAt = DateTime.tryParse(data['saved_at']?.toString() ?? '');
+    if (savedAt == null) return null;
+    return (savedAt: savedAt, body: Map<String, dynamic>.from(data['body'] as Map));
+  }
+
+  /// Logout: the next user may see other branches.
+  static Future<void> clearCache() => _locked(() async {
+        final dir = await getApplicationDocumentsDirectory();
+        await for (final entity in dir.list()) {
+          if (entity is File && entity.path.contains('nexora_offline_cache_')) await entity.delete();
+        }
+      });
+
   /* ------------------------------------------------------ device / ids */
 
   /// Short id of this phone, also on its offline receipts (OF-A3F2-0007).

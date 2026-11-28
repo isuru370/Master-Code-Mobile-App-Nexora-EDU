@@ -11,19 +11,66 @@ import '../constants/api_constants.dart';
 import '../storage/session_storage.dart';
 import 'offline_store.dart';
 
-/// What the offline banner shows.
+/// What the offline banner and the dashboard show.
 class OfflineStatus {
   const OfflineStatus({
     this.packDate,
     this.classCount = 0,
     this.syncAt,
+    this.generatedAt,
     this.pending = 0,
     this.needsReview = 0,
     this.online = true,
     this.syncing = false,
     this.lastSync,
     this.lastMessage,
+    this.schedules = const [],
+    this.recent = const [],
+    this.phoneAttendance = 0,
+    this.phonePayments = 0,
+    this.phoneTotal = 0,
+    this.phoneStudents = 0,
+    this.attendanceBySchedule = const {},
   });
+
+  /// When today's data was downloaded.
+  final DateTime? generatedAt;
+
+  /// Today's classes (pack), for the dashboard when offline.
+  final List<Map<String, dynamic>> schedules;
+
+  /// The newest items saved on this phone (dashboard preview).
+  final List<Map<String, dynamic>> recent;
+
+  /// Saved on this phone today (not refused).
+  final int phoneAttendance;
+  final int phonePayments;
+  final double phoneTotal;
+  final int phoneStudents;
+
+  /// Attendance marked on this phone per class schedule id.
+  final Map<int, int> attendanceBySchedule;
+
+  OfflineStatus copyWith({bool? online, bool? syncing, DateTime? lastSync, String? lastMessage, bool clearMessage = false}) =>
+      OfflineStatus(
+        packDate: packDate,
+        classCount: classCount,
+        syncAt: syncAt,
+        generatedAt: generatedAt,
+        pending: pending,
+        needsReview: needsReview,
+        online: online ?? this.online,
+        syncing: syncing ?? this.syncing,
+        lastSync: lastSync ?? this.lastSync,
+        lastMessage: clearMessage ? null : (lastMessage ?? this.lastMessage),
+        schedules: schedules,
+        recent: recent,
+        phoneAttendance: phoneAttendance,
+        phonePayments: phonePayments,
+        phoneTotal: phoneTotal,
+        phoneStudents: phoneStudents,
+        attendanceBySchedule: attendanceBySchedule,
+      );
 
   /// Date of the pack on the phone (today = ready for offline).
   final String? packDate;
@@ -109,16 +156,48 @@ class OfflineSync {
   Future<void> refreshCounts() async {
     final queue = await OfflineStore.readQueue();
     final pack = await OfflineStore.readPack();
+
+    // saved on this phone today and not refused
+    final today = _today();
+    final todays = queue.where((q) {
+      final at = DateTime.tryParse(q['happened_at']?.toString() ?? '')?.toLocal();
+      final day = at == null ? '' : '${at.year}-${at.month.toString().padLeft(2, '0')}-${at.day.toString().padLeft(2, '0')}';
+      return day == today && q['_status'] != 'failed' && q['_status'] != 'conflict';
+    }).toList();
+    final payments = todays.where((q) => q['type'] == 'payment').toList();
+    final bySchedule = <int, int>{};
+    for (final q in todays.where((q) => q['type'] == 'attendance')) {
+      final id = int.tryParse(q['schedule_id']?.toString() ?? '') ?? 0;
+      bySchedule[id] = (bySchedule[id] ?? 0) + 1;
+    }
+
+    final recent = [...queue]
+      ..sort((a, b) => (b['happened_at'] ?? '').toString().compareTo((a['happened_at'] ?? '').toString()));
+    // waiting / refused first: what still needs the internet or a person
+    recent.sort((a, b) => (a['_status'] == 'synced' ? 1 : 0).compareTo(b['_status'] == 'synced' ? 1 : 0));
+
+    final s = status.value;
     status.value = OfflineStatus(
       packDate: pack?['date']?.toString(),
       classCount: (pack?['schedules'] as List?)?.length ?? 0,
       syncAt: DateTime.tryParse(pack?['sync_at']?.toString() ?? '')?.toLocal(),
+      generatedAt: DateTime.tryParse(pack?['generated_at']?.toString() ?? '')?.toLocal(),
       pending: queue.where((q) => q['_status'] == 'pending').length,
       needsReview: queue.where((q) => q['_status'] == 'conflict' || q['_status'] == 'failed').length,
-      online: status.value.online,
-      syncing: status.value.syncing,
-      lastSync: status.value.lastSync,
-      lastMessage: status.value.lastMessage,
+      online: s.online,
+      syncing: s.syncing,
+      lastSync: s.lastSync,
+      lastMessage: s.lastMessage,
+      schedules: ((pack?['schedules'] as List?) ?? const [])
+          .whereType<Map>()
+          .map((e) => Map<String, dynamic>.from(e))
+          .toList(),
+      recent: recent.take(4).toList(),
+      phoneAttendance: bySchedule.values.fold(0, (a, b) => a + b),
+      phonePayments: payments.length,
+      phoneTotal: payments.fold(0.0, (sum, q) => sum + (double.tryParse(q['amount']?.toString() ?? '') ?? 0)),
+      phoneStudents: todays.where((q) => q['type'] == 'student').length,
+      attendanceBySchedule: bySchedule,
     );
   }
 
@@ -253,17 +332,13 @@ class OfflineSync {
   }
 
   void _set({bool? online, bool? syncing, DateTime? lastSync, String? message}) {
-    final s = status.value;
-    status.value = OfflineStatus(
-      packDate: s.packDate,
-      classCount: s.classCount,
-      syncAt: s.syncAt,
-      pending: s.pending,
-      needsReview: s.needsReview,
-      online: online ?? s.online,
-      syncing: syncing ?? s.syncing,
-      lastSync: lastSync ?? s.lastSync,
-      lastMessage: message ?? (online == true ? null : s.lastMessage),
+    status.value = status.value.copyWith(
+      online: online,
+      syncing: syncing,
+      lastSync: lastSync,
+      lastMessage: message,
+      // back online: the last error is over
+      clearMessage: online == true && message == null,
     );
   }
 
