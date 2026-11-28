@@ -8,12 +8,16 @@ class MarkPaymentReceiptModel {
   final String paymentMethod;
   final int paymentCount;
 
+  /// Several classes paid at once (Payment Rules): the discount given.
+  final double multiClassDiscount;
+
   const MarkPaymentReceiptModel({
     required this.studentDetails,
     required this.classes,
     required this.total,
     required this.paymentMethod,
     required this.paymentCount,
+    this.multiClassDiscount = 0,
   });
 
   factory MarkPaymentReceiptModel.fromJson(Map<String, dynamic> json) {
@@ -43,6 +47,8 @@ class MarkPaymentReceiptModel {
       paymentMethod: json['payment_method']?.toString() ?? '',
 
       paymentCount: int.tryParse(json['payment_count']?.toString() ?? '0') ?? 0,
+
+      multiClassDiscount: double.tryParse(json['multi_class_discount']?.toString() ?? '0') ?? 0.0,
     );
   }
 

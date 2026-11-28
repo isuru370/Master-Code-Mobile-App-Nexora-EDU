@@ -21,6 +21,7 @@ class PaymentReceiptPrint {
     String paymentMethod = '', // not printed on the receipt
     required List<ReceiptClassDetail> classes,
     PaperSize paperSize = PaperSize.mm58,
+    double multiClassDiscount = 0,
   }) async {
     // What to print (web: Settings > Receipt); all on if not reachable
     final settings = await ReceiptSettings.load();
@@ -33,6 +34,7 @@ class PaymentReceiptPrint {
       paymentMonth: paymentMonth,
       classes: classes,
       paperSize: paperSize,
+      multiClassDiscount: multiClassDiscount,
     );
 
     await printerService.printData(bytes);
@@ -46,6 +48,7 @@ class PaymentReceiptPrint {
     required List<ReceiptClassDetail> classes,
     PaperSize paperSize = PaperSize.mm58,
     ReceiptSettings settings = ReceiptSettings.allOn,
+    double multiClassDiscount = 0,
   }) async {
     final profile = await CapabilityProfile.load();
 
@@ -294,6 +297,20 @@ class PaymentReceiptPrint {
           PosColumn(text: 'Hall fee', width: 7),
           PosColumn(
             text: 'LKR ${totalHallFee.toStringAsFixed(2)}',
+            width: 5,
+            styles: const PosStyles(align: PosAlign.right),
+          ),
+        ]),
+      );
+    }
+
+    // Several classes paid at once (Payment Rules): the total is already less it
+    if (multiClassDiscount > 0) {
+      bytes.addAll(
+        generator.row([
+          PosColumn(text: 'Multi-class disc.', width: 7),
+          PosColumn(
+            text: '-LKR ${multiClassDiscount.toStringAsFixed(2)}',
             width: 5,
             styles: const PosStyles(align: PosAlign.right),
           ),

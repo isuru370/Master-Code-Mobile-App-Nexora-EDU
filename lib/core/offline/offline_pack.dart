@@ -66,6 +66,13 @@ class OfflinePack {
 
   List<Map<String, dynamic>> get cards => _list('cards', registration);
 
+  /// Payment Rules > multi-class discount {enabled, min_classes, amount}.
+  Map<String, dynamic> get multiClassRule {
+    final rules = json['rules'];
+    final rule = rules is Map ? rules['multi_class_discount'] : null;
+    return rule is Map ? Map<String, dynamic>.from(rule) : const {'enabled': false};
+  }
+
   Map<String, dynamic> get paymentRules {
     final rules = json['rules'];
     final payment = rules is Map ? rules['payment'] : null;
