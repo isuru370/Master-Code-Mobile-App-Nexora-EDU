@@ -308,9 +308,14 @@ class DashboardWorkGrid extends StatelessWidget {
               ),
             if (more.isNotEmpty) ...[
               const SizedBox(height: 10),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
+              // equal tiles in rows (2 on a phone, 4 on a tablet)
+              GridView.count(
+                crossAxisCount: columns,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: columns > 2 ? 3.2 : 2.9,
                 children: [
                   for (final a in more)
                     _SmallAction(
@@ -405,29 +410,41 @@ class _SmallAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = enabled ? action.color : const Color(0xFF64748B);
     return Material(
       color: enabled ? Colors.white : _border,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12), side: const BorderSide(color: _border)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14), side: const BorderSide(color: _border)),
       child: InkWell(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         onTap: enabled
             ? action.onTap
             : () => ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('${action.label} needs internet.')),
                 ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Row(
-            mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(action.icon, size: 16, color: enabled ? action.color : const Color(0xFF64748B)),
-              const SizedBox(width: 6),
-              Text(action.label,
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(color: color.withValues(alpha: .12), borderRadius: BorderRadius.circular(10)),
+                child: Icon(action.icon, size: 18, color: color),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  action.label,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 13,
+                    height: 1.2,
                     fontWeight: FontWeight.w600,
                     color: enabled ? AppColors.textPrimary : const Color(0xFF475569),
-                  )),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
