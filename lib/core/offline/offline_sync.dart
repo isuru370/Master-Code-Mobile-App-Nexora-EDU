@@ -21,6 +21,7 @@ class OfflineStatus {
     this.pending = 0,
     this.needsReview = 0,
     this.online = true,
+    this.serverDown = false,
     this.syncing = false,
     this.lastSync,
     this.lastMessage,
@@ -32,6 +33,9 @@ class OfflineStatus {
     this.phoneStudents = 0,
     this.attendanceBySchedule = const {},
   });
+
+  /// The phone has internet but the server does not answer (down / 5xx).
+  final bool serverDown;
 
   /// When today's data was downloaded.
   final DateTime? generatedAt;
@@ -51,7 +55,7 @@ class OfflineStatus {
   /// Attendance marked on this phone per class schedule id.
   final Map<int, int> attendanceBySchedule;
 
-  OfflineStatus copyWith({bool? online, bool? syncing, DateTime? lastSync, String? lastMessage, bool clearMessage = false}) =>
+  OfflineStatus copyWith({bool? online, bool? serverDown, bool? syncing, DateTime? lastSync, String? lastMessage, bool clearMessage = false}) =>
       OfflineStatus(
         packDate: packDate,
         classCount: classCount,
@@ -60,6 +64,7 @@ class OfflineStatus {
         pending: pending,
         needsReview: needsReview,
         online: online ?? this.online,
+        serverDown: serverDown ?? this.serverDown,
         syncing: syncing ?? this.syncing,
         lastSync: lastSync ?? this.lastSync,
         lastMessage: clearMessage ? null : (lastMessage ?? this.lastMessage),
@@ -141,11 +146,23 @@ class OfflineSync {
       final today = _today();
       if (forcePack || pack == null || pack['date'] != today || sent) {
         await _downloadPack();
+      } else if (!sent) {
+        // nothing to send: still check the server is there (banner / dashboard)
+        await _ping();
       }
-      _set(online: true, lastSync: DateTime.now(), message: null);
+      _set(online: true, serverDown: false, lastSync: DateTime.now(), message: null);
     } catch (e) {
-      final offline = e is! _ServerAnswer;
-      _set(online: !offline, message: offline ? 'No internet' : e.toString());
+      if (e is _ServerAnswer && e.code < 500) {
+        // the server answered (a refusal): it is up
+        _set(online: true, serverDown: false, message: e.toString());
+      } else if (e is _ServerAnswer) {
+        // 5xx / Cloudflare 52x: the server is down
+        _set(online: false, serverDown: true, message: 'Server is not working now');
+      } else {
+        // no answer at all: no internet on the phone, or the server is down?
+        final internet = await _internetWorks();
+        _set(online: false, serverDown: internet, message: internet ? 'Server is not working now' : 'No internet');
+      }
     } finally {
       _busy = false;
       await refreshCounts();
@@ -185,6 +202,7 @@ class OfflineSync {
       pending: queue.where((q) => q['_status'] == 'pending').length,
       needsReview: queue.where((q) => q['_status'] == 'conflict' || q['_status'] == 'failed').length,
       online: s.online,
+      serverDown: s.serverDown,
       syncing: s.syncing,
       lastSync: s.lastSync,
       lastMessage: s.lastMessage,
@@ -243,12 +261,12 @@ class OfflineSync {
           .timeout(const Duration(seconds: 30));
 
       if (response.statusCode != 200) {
-        throw _ServerAnswer('Sync refused by the server (${response.statusCode}).');
+        throw _ServerAnswer('Sync refused by the server (${response.statusCode}).', response.statusCode);
       }
 
       final decoded = jsonDecode(response.body);
       final results = decoded is Map ? decoded['results'] : null;
-      if (results is! List) throw _ServerAnswer('Invalid sync answer.');
+      if (results is! List) throw _ServerAnswer('Invalid sync answer.', 502);
 
       final byUuid = {for (final q in chunk) q['local_uuid'].toString(): q};
       final changes = <String, Map<String, dynamic>>{};
@@ -324,16 +342,40 @@ class OfflineSync {
         .timeout(const Duration(seconds: 30));
 
     if (response.statusCode == 404) return;   // server without offline mode
-    if (response.statusCode != 200) throw _ServerAnswer('Could not download today\'s offline data (${response.statusCode}).');
+    if (response.statusCode != 200) {
+      throw _ServerAnswer('Could not download today\'s offline data (${response.statusCode}).', response.statusCode);
+    }
 
     final decoded = jsonDecode(response.body);
     final data = decoded is Map ? decoded['data'] : null;
     if (data is Map<String, dynamic>) await OfflineStore.writePack(data);
   }
 
-  void _set({bool? online, bool? syncing, DateTime? lastSync, String? message}) {
+  /// A light call to the server (GET /api/me). Any answer below 500 = up.
+  Future<void> _ping() async {
+    final token = await SessionStorage.getToken();
+    final response = await http
+        .get(Uri.parse(ApiConstants.me), headers: ApiConstants.headers(token: token))
+        .timeout(const Duration(seconds: 15));
+    if (response.statusCode >= 500) throw _ServerAnswer('Server error (${response.statusCode}).', response.statusCode);
+  }
+
+  /// Does the phone reach the internet (a site other than our server)?
+  static Future<bool> _internetWorks() async {
+    try {
+      final response = await http
+          .head(Uri.parse('https://clients3.google.com/generate_204'))
+          .timeout(const Duration(seconds: 6));
+      return response.statusCode < 500;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  void _set({bool? online, bool? serverDown, bool? syncing, DateTime? lastSync, String? message}) {
     status.value = status.value.copyWith(
       online: online,
+      serverDown: serverDown,
       syncing: syncing,
       lastSync: lastSync,
       lastMessage: message,
@@ -349,8 +391,9 @@ class OfflineSync {
 }
 
 class _ServerAnswer implements Exception {
-  _ServerAnswer(this.message);
+  _ServerAnswer(this.message, this.code);
   final String message;
+  final int code;
   @override
   String toString() => message;
 }

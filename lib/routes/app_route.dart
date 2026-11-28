@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nexorait_education_app/core/utils/photo_recovery.dart';
 import 'package:nexorait_education_app/features/feedback/send_feedback_page.dart';
+import 'package:nexorait_education_app/features/offline_guide/offline_guide_page.dart';
 import 'package:nexorait_education_app/features/admin/class_schedule/presentaion/page/ongoing_class_page.dart';
 import 'package:nexorait_education_app/features/admin/student_classes/presentaion/pages/create_student_classes.dart';
 import 'package:nexorait_education_app/features/admin/students/presentaion/pages/create_student_page.dart';
@@ -86,6 +87,8 @@ class AppRoutes {
 
       case SendFeedbackPage.routeName:
         return MaterialPageRoute(builder: (_) => const SendFeedbackPage());
+      case OfflineGuidePage.routeName:
+        return MaterialPageRoute(builder: (_) => const OfflineGuidePage());
 
       case '/print_test_screen':
         return MaterialPageRoute(builder: (_) => PrintTestPage());

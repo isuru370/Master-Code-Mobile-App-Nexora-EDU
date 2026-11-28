@@ -8,6 +8,8 @@ import '../../../../../core/features/app_features.dart';
 import '../../../../../core/navigation/role_router.dart';
 import '../../../../../core/offline/offline_store.dart';
 import '../../../../../core/offline/offline_sync.dart';
+import '../../../../../core/offline/server_down_page.dart';
+import '../../../../offline_guide/offline_guide_page.dart';
 import '../../../../../core/navigation/staff_features.dart';
 import '../../../../../core/storage/session_storage.dart';
 import '../../../../../core/theme/app_colors.dart';
@@ -628,6 +630,11 @@ class _DashboardPageState extends State<DashboardPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             _drawerTile(
+              icon: Icons.help_outline_rounded,
+              title: 'Offline Guide',
+              onTap: () => Navigator.pushNamed(context, OfflineGuidePage.routeName),
+            ),
+            _drawerTile(
               icon: Icons.feedback_outlined,
               title: 'Send Feedback',
               onTap: () => Navigator.pushNamed(context, '/send_feedback'),
@@ -821,23 +828,26 @@ class _DashboardPageState extends State<DashboardPage> {
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
                       children: [
                         ..._offlineFirstTop(width: width),
-                        NxCard(
-                          child: Column(
-                            children: [
-                              NxEmpty(
-                                icon: Icons.cloud_off_rounded,
-                                tone: NxTone.gray,
-                                message: state.message,
-                                onRetry: _refreshDashboard,
-                              ),
-                              if (_hasManyBranches)
-                                TextButton(
-                                  onPressed: _showBranchPicker,
-                                  child: const Text('Change Branch'),
+                        // server down / no internet: what still works, try again, guide;
+                        // another error (no access to the branch ...): its message
+                        ValueListenableBuilder<OfflineStatus>(
+                          valueListenable: OfflineSync.instance.status,
+                          builder: (context, sync, _) => !sync.online
+                              ? ServerDownCard(onRetry: _refreshDashboard)
+                              : NxCard(
+                                  child: NxEmpty(
+                                    icon: Icons.error_outline_rounded,
+                                    tone: NxTone.red,
+                                    message: state.message,
+                                    onRetry: _refreshDashboard,
+                                  ),
                                 ),
-                            ],
-                          ),
                         ),
+                        if (_hasManyBranches)
+                          TextButton(
+                            onPressed: _showBranchPicker,
+                            child: const Text('Change Branch'),
+                          ),
                       ],
                     );
                   }
