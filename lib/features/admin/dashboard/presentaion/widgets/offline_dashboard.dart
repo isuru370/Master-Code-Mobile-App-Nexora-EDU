@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../core/offline/offline_banner.dart';
+import '../../../../../core/offline/server_down_page.dart';
+import '../../../../offline_guide/offline_guide_page.dart';
 import '../../../../../core/offline/offline_sync.dart';
 import '../../../../../core/theme/app_colors.dart';
 
@@ -79,6 +81,12 @@ class OfflineSyncHero extends StatelessWidget {
           title = 'Connect to the internet';
           foot = 'Do not log out. Items are safe on this phone.';
           button = 'Try again';
+        } else if (!s.online && s.serverDown) {
+          bg = AppColors.warningText;
+          kicker = 'Server down · working offline';
+          title = s.readyToday ? 'Attendance and payments still work' : 'Today\'s data not downloaded';
+          foot = 'Sends when the server is back';
+          button = 'Try now';
         } else if (!s.online) {
           bg = AppColors.darkLight;
           kicker = s.readyToday ? 'Offline · working from today\'s data' : 'Offline · today\'s data not downloaded';
@@ -131,7 +139,15 @@ class OfflineSyncHero extends StatelessWidget {
                         width: 40,
                         height: 40,
                         decoration: BoxDecoration(color: Colors.white.withValues(alpha: .16), borderRadius: BorderRadius.circular(12)),
-                        child: Icon(s.online ? Icons.cloud_done_rounded : Icons.cloud_off_rounded, color: white, size: 22),
+                        child: Icon(
+                          s.online
+                              ? Icons.cloud_done_rounded
+                              : s.serverDown
+                                  ? Icons.dns_rounded
+                                  : Icons.cloud_off_rounded,
+                          color: white,
+                          size: 22,
+                        ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
@@ -144,6 +160,11 @@ class OfflineSyncHero extends StatelessWidget {
                             Text(title, style: const TextStyle(color: white, fontSize: 17, fontWeight: FontWeight.w800)),
                           ],
                         ),
+                      ),
+                      IconButton(
+                        tooltip: 'Offline guide',
+                        onPressed: () => Navigator.pushNamed(context, OfflineGuidePage.routeName),
+                        icon: const Icon(Icons.help_outline_rounded, color: white),
                       ),
                     ],
                   ),
@@ -328,7 +349,7 @@ class DashboardWorkGrid extends StatelessWidget {
             if (!s.online && more.any((a) => !a.offline)) ...[
               const SizedBox(height: 8),
               const Text(
-                'Grey buttons need internet. They open again when the phone is online.',
+                'Grey buttons need the server. They open again when it is back.',
                 style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
               ),
             ],
@@ -418,8 +439,8 @@ class _SmallAction extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         onTap: enabled
             ? action.onTap
-            : () => ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('${action.label} needs internet.')),
+            : () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => ServerDownPage(feature: action.label)),
                 ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
