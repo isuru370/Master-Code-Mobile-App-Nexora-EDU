@@ -38,6 +38,25 @@ class PaymentFeeOption {
       );
 }
 
+/// Payment Rules > multi-class discount: [amount] off each class fee when at
+/// least [minClasses] different classes are paid at once.
+class MultiClassRule {
+  const MultiClassRule({required this.enabled, required this.minClasses, required this.amount});
+
+  static const off = MultiClassRule(enabled: false, minClasses: 0, amount: 0);
+
+  final bool enabled;
+  final int minClasses;
+  final double amount;
+
+  factory MultiClassRule.fromJson(dynamic json) {
+    if (json is! Map) return off;
+    final min = int.tryParse(json['min_classes']?.toString() ?? '') ?? 0;
+    final amount = double.tryParse(json['amount']?.toString() ?? '') ?? 0;
+    return MultiClassRule(enabled: json['enabled'] == true && min >= 2 && amount > 0, minClasses: min, amount: amount);
+  }
+}
+
 class PaymentMonthInfo {
   const PaymentMonthInfo({
     required this.enrollmentId,
@@ -53,7 +72,21 @@ class PaymentMonthInfo {
     required this.tuteEnabled,
     required this.tuteIssued,
     required this.tuteIssuedAt,
+    this.classFee = 0,
+    this.branchId = 0,
+    this.countsForMultiClass = false,
+    this.multiClass = MultiClassRule.off,
   });
+
+  /// Class fee only (the multi-class discount comes off it, not the hall fee).
+  final double classFee;
+  final int branchId;
+
+  /// Not a free card and has a fee: counts for the multi-class discount.
+  final bool countsForMultiClass;
+
+  /// Payment Rules > multi-class discount (several classes paid at once).
+  final MultiClassRule multiClass;
 
   final int enrollmentId;
   final String monthName;
@@ -109,7 +142,33 @@ class PaymentMonthInfo {
       tuteEnabled: tute['enabled'] == true,
       tuteIssued: tute['issued'] == true,
       tuteIssuedAt: tute['issued_at']?.toString(),
+      classFee: _num(json['class_fee']),
+      branchId: int.tryParse(json['branch_id']?.toString() ?? '') ?? 0,
+      countsForMultiClass: json['counts_for_multi_class'] == true,
+      multiClass: MultiClassRule.fromJson(json['multi_class_discount']),
     );
+  }
+
+  /// The multi-class discount of each class paid together (enrollment id =>
+  /// LKR), as the server works it out: classes that count, per branch, at
+  /// least the rule's number of classes; never more than the class fee.
+  /// [paying] = the enrollments sent (amount above 0).
+  static Map<int, double> multiClassDiscounts(Iterable<PaymentMonthInfo> paying) {
+    final infos = paying.where((i) => i.countsForMultiClass && i.classFee > 0).toList();
+    if (infos.isEmpty) return const {};
+    final rule = infos.first.multiClass;
+    if (!rule.enabled) return const {};
+
+    final perBranch = <int, int>{};
+    for (final info in infos) {
+      perBranch[info.branchId] = (perBranch[info.branchId] ?? 0) + 1;
+    }
+
+    return {
+      for (final info in infos)
+        if ((perBranch[info.branchId] ?? 0) >= rule.minClasses)
+          info.enrollmentId: rule.amount < info.classFee ? rule.amount : info.classFee,
+    };
   }
 
   /// Null when it could not be loaded (old server, no network): the payment

@@ -236,6 +236,34 @@ class OfflineEngine {
       'already_paid': pack.isMonthPaid(enrollment, month),
       'paid': null,
       'tute': {'enabled': false, 'issued': false, 'issued_at': null},
+      // multi-class discount (several classes paid at once)
+      'class_fee': _num(enrollment['class_fee']),
+      'branch_id': _int(enrollment['branch_id']),
+      'counts_for_multi_class': _countsForMultiClass(enrollment),
+      'multi_class_discount': pack.multiClassRule,
+    };
+  }
+
+  static bool _countsForMultiClass(Map<String, dynamic> enrollment) =>
+      enrollment['is_free_card'] != true && _num(enrollment['class_fee']) > 0;
+
+  /// enrollment id => multi-class discount, as the server works it out.
+  static Map<int, double> _multiClassDiscounts(OfflinePack pack, List<Map<String, dynamic>> enrollments) {
+    final rule = pack.multiClassRule;
+    final min = _int(rule['min_classes']);
+    final amount = _num(rule['amount']);
+    if (rule['enabled'] != true || min < 2 || amount <= 0) return const {};
+
+    final counted = enrollments.where(_countsForMultiClass).toList();
+    final perBranch = <int, Set<String>>{};
+    for (final e in counted) {
+      perBranch.putIfAbsent(_int(e['branch_id']), () => <String>{}).add('${e['student_class_id']}|${e['class_category_fee_id']}');
+    }
+
+    return {
+      for (final e in counted)
+        if ((perBranch[_int(e['branch_id'])]?.length ?? 0) >= min)
+          _int(e['id']): amount < _num(e['class_fee']) ? amount : _num(e['class_fee']),
     };
   }
 
@@ -249,6 +277,12 @@ class OfflineEngine {
     final rules = pack.paymentRules;
     final checked = <Map<String, dynamic>>[];
 
+    // several classes paid at once (Payment Rules): off each class fee
+    final multiClass = _multiClassDiscounts(
+      pack,
+      [for (final item in items) ?pack.enrollment(_int(item['enrollment_id']))],
+    );
+
     // check everything first: nothing is saved if one is wrong
     for (final item in items) {
       final enrollment = pack.enrollment(_int(item['enrollment_id']));
@@ -260,7 +294,7 @@ class OfflineEngine {
       }
 
       final amount = _num(item['amount']);
-      final discount = _num(item['discount_amount']);
+      final discount = _num(item['discount_amount']) + (multiClass[_int(enrollment['id'])] ?? 0);
       final payable = _num(enrollment['payable']) - discount;
       if (amount <= 0) throw Exception('Payment amount must be greater than zero.');
 
@@ -307,6 +341,7 @@ class OfflineEngine {
         'payment_month': c['month'],
         'amount': amount,
         'discount_amount': _num(item['discount_amount']),
+        if ((multiClass[_int(enrollment['id'])] ?? 0) > 0) 'multi_class_discount': multiClass[_int(enrollment['id'])],
         if (item['fee_option_id'] != null) 'fee_option_id': _int(item['fee_option_id']),
         'mark_method': item['mark_method'] == 'manual_mobile' ? 'manual_mobile' : 'qr_mobile',
         'receipt_number': receipt,
@@ -340,9 +375,12 @@ class OfflineEngine {
         'class_fee': enrollment['class_fee'],
         'hall_fee': enrollment['hall_fee'],
         'paid_amount': amount,
+        'multi_class_discount': multiClass[_int(enrollment['id'])] ?? 0,
         'receipt_no': receipt,
       });
     }
+
+    final multiClassTotal = multiClass.values.fold<double>(0, (a, b) => a + b);
 
     OfflineSync.instance.queued();
 
@@ -356,6 +394,7 @@ class OfflineEngine {
         },
         'classes': receiptClasses,
         'total': total,
+        'multi_class_discount': multiClassTotal,
         'payment_method': 'cash',
         'payment_count': payments.length,
       },
@@ -363,7 +402,7 @@ class OfflineEngine {
       'total_final_fee': feeTotal - hallTotal,
       'total_hall_fee': hallTotal,
       'total_gross_fee': feeTotal,
-      'total_discount': 0,
+      'total_discount': multiClassTotal,
       'total_payable': feeTotal,
       'total_paid': total,
       'total_balance': (feeTotal - total) > 0 ? feeTotal - total : 0,

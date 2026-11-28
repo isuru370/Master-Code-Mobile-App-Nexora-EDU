@@ -627,6 +627,8 @@ class _PaymentPageState extends State<PaymentPage> {
     final infos = <int, PaymentMonthInfo?>{};
     final giveTute = <int, bool>{};
     final chosenOption = <int, int?>{};
+    // Payment Rules > multi-class discount: enrollment id => LKR off
+    var multiClass = <int, double>{};
     final amountControllers = <int, TextEditingController>{
       for (final payment in selectedPayments)
         payment.enrollmentId as int: TextEditingController(
@@ -682,6 +684,18 @@ class _PaymentPageState extends State<PaymentPage> {
               : (option?.amount ?? payment.finalFee.toDouble());
           amountControllers[id]!.text = _formatAmount(amount);
         }
+
+        // Several classes paid at once: the rule's amount off each class fee
+        // (the server works it out the same way)
+        multiClass = PaymentMonthInfo.multiClassDiscounts([
+          for (final payment in selectedPayments)
+            if (infos[payment.enrollmentId as int] != null && amountOf(payment.enrollmentId as int) > 0)
+              infos[payment.enrollmentId as int]!,
+        ]);
+        multiClass.forEach((id, discount) {
+          amountControllers[id]!.text = _formatAmount(amountOf(id) - discount);
+        });
+
         loadingInfo = false;
       });
     }
@@ -857,6 +871,18 @@ class _PaymentPageState extends State<PaymentPage> {
                                 ],
                               ),
 
+                              if ((multiClass[id] ?? 0) > 0) ...[
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Multi-class discount - LKR ${_formatAmount(multiClass[id])}',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.successText,
+                                  ),
+                                ),
+                              ],
+
                               // Attendance + already paid, in one line
                               if (info != null) ...[
                                 const SizedBox(height: 6),
@@ -965,6 +991,27 @@ class _PaymentPageState extends State<PaymentPage> {
                           ),
                         );
                       }),
+
+                      if (multiClass.isNotEmpty)
+                        Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.only(bottom: 8),
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: AppColors.successLight,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            'Multi-class discount: ${multiClass.length} classes x '
+                            'LKR ${_formatAmount(multiClass.values.first)} = '
+                            'LKR ${_formatAmount(multiClass.values.fold<double>(0, (a, b) => a + b))}',
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.successText,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -1309,6 +1356,7 @@ class _PaymentPageState extends State<PaymentPage> {
       paymentMonth: DateFormat('yyyy-MM').format(_selectedPaymentDate),
       paymentMethod: receipt.paymentMethod,
       classes: classes,
+      multiClassDiscount: receipt.multiClassDiscount,
     );
   }
 
