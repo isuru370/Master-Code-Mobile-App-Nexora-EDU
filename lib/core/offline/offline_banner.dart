@@ -116,7 +116,11 @@ class _OfflineItemsPageState extends State<OfflineItemsPage> {
   Future<void> _sync() async {
     await OfflineSync.instance.run();
     if (!mounted) return;
-    setState(() => _items = OfflineSync.instance.items());
+    // a block body: an arrow would return the Future to setState
+    final items = OfflineSync.instance.items();
+    setState(() {
+      _items = items;
+    });
   }
 
   @override
