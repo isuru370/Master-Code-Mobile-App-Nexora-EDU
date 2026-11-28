@@ -31,7 +31,6 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  String? _token;
   UserModel? _user;
   bool _showPrinterBanner = false;
   bool _loadingSession = true;
@@ -165,7 +164,6 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Future<void> _loadSession() async {
-    final token = await SessionStorage.getToken();
     final user = await SessionStorage.getUser();
     final role = await SessionStorage.getRole();
     final branches = await SessionStorage.getBranches();
@@ -174,7 +172,6 @@ class _DashboardPageState extends State<DashboardPage> {
     if (!mounted) return;
 
     setState(() {
-      _token = token;
       _user = user;
       _role = role;
       _branches = branches;
